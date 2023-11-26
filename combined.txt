@@ -1,0 +1,737 @@
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\pyproject.toml -----
+[tool.poetry]
+name = "4-rl"
+version = "0.1.0"
+description = ""
+authors = ["Yannick Molinghen <yannick.molinghen@ulb.be>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.13"
+matplotlib = "3.6"
+seaborn = "^0.12.2"
+pytest = "^7.4.2"
+gymnasium = "^0.29.1"
+laser-learning-environment = "0.1.8"
+opencv-python = "^4.8.1.78"
+rlenv = { git = "https://github.com/yamoling/rlenv", tag = "v0.4.4" }
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+
+[tool.ruff]
+# Check https://beta.ruff.rs/docs/rules/ for all rules
+fixable = ["ALL"]
+line-length = 140
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\pyproject.toml -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\analysis.py -----
+from dataclasses import (
+    dataclass,
+)  # dataclass is a decorator that allows you to create a class with a minimal amount of code (see https://docs.python.org/3/library/dataclasses.html)
+
+
+@dataclass
+class Parameters:
+    reward_live: float
+    """Reward for living at each time step"""
+
+    gamma: float
+    """Discount factor"""
+    noise: float
+    """Probability of taking a random action instead of the chosen one"""
+
+
+def prefer_close_exit_following_the_cliff() -> Parameters:
+    # A strategy focusing on reaching the closest exit quickly, even if it means taking risks.
+    # A small negative reward_live to encourage speed, moderate gamma for balancing immediate and future rewards, and low noise for deliberate actions.
+    return Parameters(reward_live=-0.01, gamma=0.5, noise=0.1)
+
+
+def prefer_close_exit_avoiding_the_cliff() -> Parameters:
+    # A cautious strategy aiming for the nearest exit while avoiding risks.
+    # Less negative reward_live for a safer, longer route, higher gamma for long-term planning, and low noise to avoid risky random moves.
+    return Parameters(reward_live=-0.005, gamma=0.7, noise=0.05)
+
+
+def prefer_far_exit_following_the_cliff() -> Parameters:
+    # A strategy that targets a distant exit but might involve risk-taking.
+    # Small negative reward_live, high gamma for focusing on distant rewards, and moderate noise for some randomness in path selection.
+    return Parameters(reward_live=-0.01, gamma=0.8, noise=0.2)
+
+
+def prefer_far_exit_avoiding_the_cliff() -> Parameters:
+    # A strategy preferring a distant exit with an emphasis on safety and planning.
+    # Less negative reward_live for longer routes, high gamma for future-oriented planning, and low noise for consistent decision-making.
+    return Parameters(reward_live=-0.005, gamma=0.9, noise=0.05)
+
+
+def never_end_the_game() -> Parameters:
+    # A unique strategy to avoid reaching terminal states and keep the game ongoing.
+    # Zero or slightly positive reward_live to encourage continual play, low gamma to de-emphasize distant futures (like exits), and high noise for unpredictability.
+    return Parameters(reward_live=0.01, gamma=0.3, noise=0.5)
+
+
+if __name__ == "__main__":
+    print("Testing analysis.py")
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\analysis.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\mdp.py -----
+from typing import TypeVar, Generic
+from abc import abstractmethod, ABC
+
+
+A = TypeVar("A")
+S = TypeVar("S")
+
+
+class MDP(ABC, Generic[S, A]):
+    """Adversarial Markov Decision Process"""
+
+    @abstractmethod
+    def is_final(self, state: S) -> bool:
+        """Returns true 
+        if the given state is final (i.e. the game is over)."""
+
+    @abstractmethod
+    def available_actions(self, state: S) -> list[A]:
+        """Returns the list of available actions for the current agent from the given state."""
+
+    @abstractmethod
+    def transitions(self, state: S, action: A) -> list[tuple[S, float]]:
+        """Returns the list of next states with the probability of reaching it by performing the given action."""
+
+    @abstractmethod
+    def states(self) -> list[S]:
+        """Returns the list of all states."""
+
+    @abstractmethod
+    def reward(self, state: S, action: A, new_state) -> float:
+        """Reward function"""
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\mdp.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----
+from rlenv import RLEnv, Observation
+import numpy as np
+import numpy.typing as npt
+
+import sys
+
+print(sys.path)
+
+
+class QLearning:
+    """Tabular QLearning"""
+
+    def __init__(self, learning_rate: float, discount_factor: float, epsilon: float):
+        # Initialize parameters
+        self.learning_rate = learning_rate
+        self.discount_factor = discount_factor
+        self.epsilon = epsilon
+        # Initialize Q-table
+        self.q_table = {}
+
+    def choose_action(self, state):
+        # Implement action selection using epsilon-greedy strategy
+        pass
+
+    def update(self, state, action, reward, next_state):
+        # Implement Q-table update
+        pass
+
+if __name__ == "__main__":
+    print("Hello World")
+    print(sys.path)
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----
+from mdp import MDP, S, A
+from typing import Generic
+
+
+class ValueIteration(Generic[S, A]):
+    def __init__(self, 
+                 mdp: MDP[S, A], 
+                 gamma: float # discount factor 
+                 ):
+        # senf.values est nécessaire pour fonctionner avec utils.show_values
+        self.values = dict[S, float]()
+        self.mdp = mdp
+        self.gamma = gamma
+
+
+    def value(self, state: S) -> float:
+        """Returns the value of the given state."""
+        return self.values[state]
+
+    def policy(self, state: S) -> A:
+        """Returns the action 
+        that maximizes the Q-value of the given state."""
+        return max(self.mdp.available_actions(state), key=lambda action: self.qvalue(state, action))
+
+    def qvalue(self, state: S, action: A) -> float:
+        """Returns the Q-value 
+        of the given state-action pair based on the state values."""
+        # return sum(prob * (reward + self.gamma * self.value(next_state)) for next_state, prob in self.mdp.transitions(state, action))
+        return sum(prob * (self.gamma * self.value(next_state)) for next_state, prob in self.mdp.transitions(state, action))
+
+    def _compute_value_from_qvalues(self, state: S) -> float:
+        """
+        Returns the value of the given state based on the Q-values.
+
+        This is a private method, meant to be used by the value_iteration method.
+        """
+        return max(self.qvalue(state, action) for action in self.mdp.available_actions(state))
+
+    def value_iteration(self, n: int):
+        for _ in range(n):
+            new_values = dict[S, float]()
+            for state in self.mdp.states():
+                if self.mdp.is_final(state):
+                    new_values[state] = 0
+                else:
+                    new_values[state] = max(self.qvalue(state, action) for action in self.mdp.available_actions(state))
+            self.values = new_values
+
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graph_mdp.py -----
+import json
+from dataclasses import dataclass
+from mdp import MDP
+
+Action = str
+State = str
+
+
+@dataclass
+class Transition:
+    source: State
+    action: Action
+    destination: State
+    reward: float
+    probability: float
+
+
+class GraphMDP(MDP[str, str]):
+    @staticmethod
+    def from_json(filename: str) -> "GraphMDP":
+        with open(filename, "r") as f:
+            data = json.load(f)
+            start_states = data["start_state"]
+            end_states = data["end_states"]
+            transitions = {}
+            for source, actions in data["transitions"].items():
+                transitions[source] = {}
+                for action, destinations in actions.items():
+                    transitions[source][action] = []
+                    for dest in destinations:
+                        transitions[source][action].append(
+                            Transition(
+                                source,
+                                action,
+                                dest["to"],
+                                dest["reward"],
+                                dest["probability"],
+                            )
+                        )
+            return GraphMDP(start_states, end_states, transitions)
+
+    def __init__(
+        self,
+        start_states: list[State],
+        end_states: list[State],
+        transitions: dict[State, dict[Action, list[Transition]]],
+    ):
+        self.start_states = set(start_states)
+        self.end_states = set(end_states)
+        self._transitions = transitions
+        self._all_states = self.start_states.union(self.end_states).union(
+            set(transitions.keys())
+        )
+
+    def is_final(self, state: State) -> bool:
+        return state in self.end_states
+
+    def transitions(self, state: State, action: Action) -> list[tuple[State, float]]:
+        return [
+            (t.destination, t.probability) for t in self._transitions[state][action]
+        ]
+
+    def available_actions(self, state: str):
+        return self._transitions[state].keys()
+
+    def reward(self, state: str, action: str, new_state) -> float:
+        transitions = self._transitions[state][action]
+        for t in transitions:
+            if t.destination == new_state:
+                return t.reward
+        raise ValueError(
+            f"Invalid transition from {state} to {new_state} with action {action}"
+        )
+
+    def states(self):
+        return self._all_states
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graph_mdp.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\modified_reward_world.py -----
+from .world_mdp import WorldMDP
+from lle import Action, World, WorldState
+
+
+class ModifiedRewardWorld(WorldMDP):
+    def __init__(self, reward_live: float):
+        super().__init__(World.from_file("tests/graphs/cliff"))
+        self.world.reset()
+        self.reward_live = reward_live
+
+    def reward(
+        self, state: WorldState, action: list[Action], new_state: WorldState
+    ) -> float:
+        reward = super().reward(state, action, new_state)
+        # The agent has died
+        if reward < 0:
+            return -10.0
+        # The agent has collected a gem
+        # The agent has reached the exit
+        if reward > 0:
+            # Close exit
+            if new_state.agents_positions[0] == (2, 2):
+                return 1.0
+            # Far exit
+            return 10.0
+        # The agent just lives (reward should be 0)
+        return self.reward_live
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\modified_reward_world.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\random_wrapper.py -----
+from mdp import MDP, S, A
+
+
+class RandomWrapper(MDP[S, A]):
+    """Wrapper around an MDP such that the action taken can be random with probability p.
+    It only changes the `transitions` method. The other methods are unchanged."""
+
+    def __init__(self, mdp: MDP[S, A], p: float):
+        super().__init__()
+        self.mdp = mdp
+        self.p = p
+        """The probability of the agent to perform a random action"""
+
+    def is_final(self, state: S) -> bool:
+        return self.mdp.is_final(state)
+
+    def available_actions(self, state: S) -> list[A]:
+        return self.mdp.available_actions(state)
+
+    def transitions(self, state: S, action: A) -> list[tuple[S, float]]:
+        if self.p == 0:
+            return self.mdp.transitions(state, action)
+        # Create the dictionary of "normal" destinations
+        destination_probs = dict(self.mdp.transitions(state, action))
+        # The probabilities must be multiplied by (1 - p) because of the wrapper
+        for s, prob in destination_probs.items():
+            destination_probs[s] = prob * (1 - self.p)
+        # Add the random destinations
+        available_actions = list(self.available_actions(state))
+        n_actions = len(available_actions)
+        for action in available_actions:
+            for s, prob in self.mdp.transitions(state, action):
+                # The probability of taking this action must be multiplied by (p / n_actions)
+                prob = (prob * self.p) / n_actions
+                destination_probs[s] = destination_probs.get(s, 0.0) + prob
+        return list(destination_probs.items())
+
+    def states(self) -> list[S]:
+        return self.mdp.states()
+
+    def reward(self, state: S, action: A, new_state) -> float:
+        return self.mdp.reward(state, action, new_state)
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\random_wrapper.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_analysis.py -----
+from analysis import (
+    prefer_close_exit_avoiding_the_cliff,
+    prefer_close_exit_following_the_cliff,
+    prefer_far_exit_avoiding_the_cliff,
+    prefer_far_exit_following_the_cliff,
+    never_end_the_game,
+    Parameters,
+)
+from mdp import MDP
+from value_iteration import ValueIteration
+from .random_wrapper import RandomWrapper
+from .modified_reward_world import ModifiedRewardWorld
+
+
+def setup_mdp_and_get_path(param: Parameters):
+    mdp = ModifiedRewardWorld(param.reward_live)
+    start_state = mdp.world.get_state()
+    noisy_mdp = RandomWrapper(mdp, param.noise)
+    algo = ValueIteration(noisy_mdp, param.gamma)
+    algo.value_iteration(100)
+    return apply_policy(start_state, mdp, algo)
+
+
+def apply_policy(state, mdp: MDP, algo: ValueIteration):
+    """Apply the policy until the end of the game or a loop is detected. Returns the path taken."""
+    path = []
+    while not mdp.is_final(state) and state not in path:
+        path.append(state)
+        action = algo.policy(state)
+        transitions = mdp.transitions(state, action)
+        assert len(transitions) == 1
+        state, _ = transitions[0]
+    path.append(state)
+    return path
+
+
+def test_close_exit_following_the_cliff():
+    params = prefer_close_exit_following_the_cliff()
+    path = setup_mdp_and_get_path(params)
+    expected = [(3, 0), (3, 1), (3, 2), (2, 2)]
+    assert len(path) == len(expected)
+    for exp, state in zip(expected, path):
+        assert state.agents_positions[0] == exp
+
+
+def test_close_exit_avoiding_the_cliff():
+    params = prefer_close_exit_avoiding_the_cliff()
+    path = setup_mdp_and_get_path(params)
+    expected = [(3, 0), (2, 0), (1, 0), (0, 0), (0, 1), (0, 2), (1, 2), (2, 2)]
+    assert len(path) == len(expected)
+    for exp, state in zip(expected, path):
+        assert state.agents_positions[0] == exp
+
+
+def test_far_exit_following_the_cliff():
+    params = prefer_far_exit_following_the_cliff()
+    path = setup_mdp_and_get_path(params)
+    expected = [(3, 0), (3, 1), (3, 2), (3, 3), (3, 4), (2, 4)]
+    assert len(path) == len(expected)
+    for exp, state in zip(expected, path):
+        assert state.agents_positions[0] == exp
+
+
+def test_far_exit_avoiding_the_cliff():
+    params = prefer_far_exit_avoiding_the_cliff()
+    path = setup_mdp_and_get_path(params)
+    assert len(path) == 10
+    # This is only the start of the path because the second half could vary
+    expected = [(3, 0), (2, 0), (1, 0), (0, 0), (0, 1), (0, 2)]
+    for exp, state in zip(expected, path):
+        assert state.agents_positions[0] == exp
+
+
+def test_never_end():
+    params = never_end_the_game()
+    path = setup_mdp_and_get_path(params)
+    # Check that there is a loop in the path
+    assert path[-1] in path[:-1]
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_analysis.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_value_iteration.py -----
+from value_iteration import ValueIteration
+from lle import World, WorldState, Action, REWARD_AGENT_JUST_ARRIVED, REWARD_END_GAME
+from tests.world_mdp import WorldMDP
+from .graph_mdp import GraphMDP
+
+
+def almost_equal(a, b):
+    return abs(a - b) < 1e-6
+
+
+def test_value_0():
+    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(0)
+    for s in mdp.states():
+        assert algo.value(s) == 0.0
+
+
+def test_value_end_states():
+    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(100)
+    for s in mdp.states():
+        if mdp.is_final(s):
+            assert algo.value(s) == 0.0
+
+
+def test_qvalues_0():
+    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(0)
+    assert almost_equal(algo.qvalue("a", "left"), 0.6)
+    assert algo.qvalue("a", "right") == 0.5
+
+
+def test_max_action_0():
+    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(0)
+    assert algo.policy("a") == "left"
+
+
+def test_value_1():
+    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    gamma = 0.9
+    algo = ValueIteration(mdp, gamma)
+    algo.value_iteration(1)
+    assert almost_equal(algo.qvalue("a", "left"), 0.6)
+    expected = 0.5 + 0.5 * gamma * 0.6
+    assert almost_equal(algo.qvalue("a", "right"), expected)
+
+
+def test_value_100():
+    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    gamma = 0.9
+    algo = ValueIteration(mdp, gamma)
+    algo.value_iteration(100)
+    assert almost_equal(algo.qvalue("a", "left"), 0.6)
+    assert almost_equal(algo.qvalue("a", "right"), 0.90909090909)
+
+
+def test_value_world_0():
+    mdp = WorldMDP(
+        World(
+            """
+    .  . . X
+    .  @ . V
+    S0 . . ."""
+        )
+    )
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(0)
+    for s in mdp.states():
+        assert algo.value(s) == 0.0
+
+
+def test_qvalues_world():
+    mdp = WorldMDP(
+        World(
+            """
+    .  . . X
+    .  @ . V
+    S0 . . ."""
+        )
+    )
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(0)
+    state = WorldState([(0, 2)], [])
+    assert (
+        algo.qvalue(state, [Action.EAST]) == REWARD_END_GAME + REWARD_AGENT_JUST_ARRIVED
+    )
+
+
+def test_value_world_100():
+    mdp = WorldMDP(
+        World(
+            """
+    .  . . X
+    .  @ . V
+    S0 . . ."""
+        )
+    )
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(100)
+    expected = [
+        [1.62, 1.80, 2.0, 0.0],
+        [1.458, 0.0, 1.80, 0.0],
+        [1.3122, 1.458, 1.62, 1.458],
+    ]
+    for i in range(mdp.world.height):
+        for j in range(mdp.world.width):
+            state = WorldState([(i, j)], [])
+            assert almost_equal(algo.value(state), expected[i][j])
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_value_iteration.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\world_mdp.py -----
+from itertools import product
+from typing import Iterable
+from lle import World, WorldState, Action
+from mdp import MDP
+
+
+class WorldMDP(MDP[WorldState, list[Action]]):
+    def __init__(self, world: World):
+        self.world = world
+
+    def available_actions(self, state: WorldState):
+        self.world.set_state(state)
+        available = self.world.available_actions()
+        return list(product(*available))
+
+    def transitions(
+        self, state: WorldState, action: list[Action]
+    ) -> list[tuple[WorldState, float]]:
+        self.world.set_state(state)
+        self.world.step(action)
+        return [(self.world.get_state(), 1.0)]
+
+    def is_final(self, state: WorldState) -> bool:
+        self.world.set_state(state)
+        return self.world.done
+
+    def reward(
+        self,
+        state: WorldState,
+        action: list[Action],
+        new_state: WorldState,
+    ) -> float:
+        # Step the world and check if the new state is the same as the given one
+        # If if is not the same, then test all the other available actions.
+        self.world.set_state(state)
+        actions = [action] + [[a] for a in self.world.available_actions()[0]]
+        for a in actions:
+            r = self.world.step(a)
+            if self.world.get_state() == new_state:
+                return r
+            self.world.set_state(state)
+        raise ValueError("The new state is not reachable from the given state")
+
+    def states(self) -> Iterable[WorldState]:
+        all_positions = set(product(range(self.world.height), range(self.world.width)))
+        all_positions = all_positions.difference(set(self.world.wall_pos))
+        agents_positions = list(product(all_positions, repeat=self.world.n_agents))
+        collection_status = list(product([True, False], repeat=self.world.n_gems))
+
+        for pos, collected in product(agents_positions, collection_status):
+            s = WorldState(list(pos), list(collected))
+            yield s
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\world_mdp.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\__init__.py -----
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\__init__.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graphs\cliff -----
+.  . . . .
+.  @ . . .
+.  @ X @ X
+S0 . . . .
+V  V V V V
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graphs\cliff -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graphs\cliff.json -----
+{
+    "states": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5"
+    ],
+    "start_state": "A2",
+    "end_states": [
+        "A1",
+        "B1",
+        "C1",
+        "D1",
+        "E1"
+    ]
+}
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graphs\cliff.json -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graphs\graph1.json -----
+{
+    "states": [
+        "a",
+        "b",
+        "c"
+    ],
+    "start_state": "a",
+    "end_states": [
+        "b",
+        "c"
+    ],
+    "actions": [
+        "left",
+        "right"
+    ],
+    "transitions": {
+        "a": {
+            "left": [
+                {
+                    "to": "b",
+                    "probability": 0.8,
+                    "reward": 1
+                },
+                {
+                    "to": "c",
+                    "probability": 0.2,
+                    "reward": -1
+                }
+            ],
+            "right": [
+                {
+                    "to": "a",
+                    "probability": 0.5,
+                    "reward": 0
+                },
+                {
+                    "to": "b",
+                    "probability": 0.5,
+                    "reward": 1
+                }
+            ]
+        }
+    }
+}
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graphs\graph1.json -----
+

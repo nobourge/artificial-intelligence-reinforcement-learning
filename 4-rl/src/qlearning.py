@@ -2,6 +2,10 @@ from rlenv import RLEnv, Observation
 import numpy as np
 import numpy.typing as npt
 
+import sys
+
+print(sys.path)
+
 
 class QLearning:
     """Tabular QLearning"""
@@ -21,3 +25,7 @@ class QLearning:
     def update(self, state, action, reward, next_state):
         # Implement Q-table update
         pass
+
+if __name__ == "__main__":
+    print("Hello World")
+    print(sys.path)

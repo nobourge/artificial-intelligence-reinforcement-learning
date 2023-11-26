@@ -11,7 +11,8 @@ class MDP(ABC, Generic[S, A]):
 
     @abstractmethod
     def is_final(self, state: S) -> bool:
-        """Returns true if the given state is final (i.e. the game is over)."""
+        """Returns true 
+        if the given state is final (i.e. the game is over)."""
 
     @abstractmethod
     def available_actions(self, state: S) -> list[A]:
