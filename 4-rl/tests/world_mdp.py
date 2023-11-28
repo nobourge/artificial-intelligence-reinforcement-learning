@@ -1,7 +1,7 @@
 from itertools import product
 from typing import Iterable
 from lle import World, WorldState, Action
-from mdp import MDP
+from src.mdp import MDP
 
 
 class WorldMDP(MDP[WorldState, list[Action]]):

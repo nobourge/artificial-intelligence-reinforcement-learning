@@ -1,4 +1,4 @@
-from mdp import MDP, S, A
+from .mdp import MDP, S, A
 from typing import Generic
 
 

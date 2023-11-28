@@ -1,7 +1,6 @@
 {
-    "python.analysis.extraPaths": [
-        "./4-rl/src"
-    ],
-    "python.analysis.autoImportCompletions": true,
-    "python.analysis.typeCheckingMode": "basic"
+    // "python.analysis.autoImportCompletions": true,
+    // "python.analysis.extraPaths": [
+    //     "./4-rl/src"    ]
+    "python.terminal.executeInFileDir": true
 }

@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass
-from mdp import MDP
+from src.mdp import MDP
 
 Action = str
 State = str

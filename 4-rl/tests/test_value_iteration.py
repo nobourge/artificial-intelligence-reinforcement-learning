@@ -1,15 +1,19 @@
-from value_iteration import ValueIteration
+from src.value_iteration import ValueIteration
 from lle import World, WorldState, Action, REWARD_AGENT_JUST_ARRIVED, REWARD_END_GAME
 from tests.world_mdp import WorldMDP
 from .graph_mdp import GraphMDP
+from matplotlib import pyplot as plt
 
 
 def almost_equal(a, b):
     return abs(a - b) < 1e-6
 
 
+graph_file_name = "graphs/graph1.json"
+
+# 4-rl\tests\graphs\graph1.json
 def test_value_0():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(0)
     for s in mdp.states():
@@ -17,7 +21,7 @@ def test_value_0():
 
 
 def test_value_end_states():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(100)
     for s in mdp.states():
@@ -26,7 +30,7 @@ def test_value_end_states():
 
 
 def test_qvalues_0():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(0)
     assert almost_equal(algo.qvalue("a", "left"), 0.6)
@@ -34,14 +38,14 @@ def test_qvalues_0():
 
 
 def test_max_action_0():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(0)
     assert algo.policy("a") == "left"
 
 
 def test_value_1():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     gamma = 0.9
     algo = ValueIteration(mdp, gamma)
     algo.value_iteration(1)
@@ -51,7 +55,7 @@ def test_value_1():
 
 
 def test_value_100():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     gamma = 0.9
     algo = ValueIteration(mdp, gamma)
     algo.value_iteration(100)
@@ -111,3 +115,17 @@ def test_value_world_100():
         for j in range(mdp.world.width):
             state = WorldState([(i, j)], [])
             assert almost_equal(algo.value(state), expected[i][j])
+
+
+if __name__ == "__main__":
+    print("hello world")
+    test_value_0()
+    test_value_end_states()
+    test_qvalues_0()
+    test_max_action_0()
+    test_value_1()
+    test_value_100()
+    test_value_world_0()
+    test_qvalues_world()
+    test_value_world_100()
+    print("ok")

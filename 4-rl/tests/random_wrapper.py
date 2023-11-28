@@ -1,4 +1,4 @@
-from mdp import MDP, S, A
+from src.mdp import MDP, S, A
 
 
 class RandomWrapper(MDP[S, A]):

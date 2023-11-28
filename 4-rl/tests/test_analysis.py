@@ -1,4 +1,4 @@
-from analysis import (
+from src.analysis import (
     prefer_close_exit_avoiding_the_cliff,
     prefer_close_exit_following_the_cliff,
     prefer_far_exit_avoiding_the_cliff,
@@ -6,8 +6,8 @@ from analysis import (
     never_end_the_game,
     Parameters,
 )
-from mdp import MDP
-from value_iteration import ValueIteration
+from src.mdp import MDP
+from src.value_iteration import ValueIteration
 from .random_wrapper import RandomWrapper
 from .modified_reward_world import ModifiedRewardWorld
 
