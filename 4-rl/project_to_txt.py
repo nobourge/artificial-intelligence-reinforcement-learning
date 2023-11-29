@@ -18,7 +18,8 @@ class Watcher:
             "__pycache__",
             # poetry lock file
             "poetry.lock",
-            "project_to_txt.py"
+            "project_to_txt.py",
+            "combined.txt",
         ]
         self.EXCLUDE_PATHS = [
             # pytest cache
@@ -62,13 +63,18 @@ class Handler(FileSystemEventHandler):
         self.exclude_paths = watcher.EXCLUDE_PATHS
 
     def on_any_event(self, event):
+        # Check if the event is for combined.txt and return early if it is
+        if "combined.txt" in event.src_path:
+            return None
+        # Check if the event is for a file or directory to exclude and return early if it is
         if event.is_directory:
             for exclude_path in self.exclude_paths:
                 if event.src_path.startswith(exclude_path):
                     return None
+        # Check if the event is for a file or directory to exclude and return early if it is
         elif any(exclude_path in event.src_path for exclude_path in self.exclude_paths):
             return None
-
+        # Print the event
         elif event.event_type == "modified":
             # Action when a file is modified
             print(f"File {event.src_path} has been modified")

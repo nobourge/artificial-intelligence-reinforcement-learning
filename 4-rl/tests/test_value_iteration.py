@@ -9,7 +9,7 @@ def almost_equal(a, b):
     return abs(a - b) < 1e-6
 
 
-graph_file_name = "graphs/graph1.json"
+graph_file_name = "tests/graphs/graph1.json"
 
 # 4-rl\tests\graphs\graph1.json
 def test_value_0():

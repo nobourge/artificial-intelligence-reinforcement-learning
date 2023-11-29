@@ -1,6 +1,7 @@
 from dataclasses import (
     dataclass,
-)  # dataclass is a decorator that allows you to create a class with a minimal amount of code (see https://docs.python.org/3/library/dataclasses.html)
+)  # dataclass is a decorator that allows you to create a class with a minimal amount of code 
+# (see https://docs.python.org/3/library/dataclasses.html)
 
 
 @dataclass

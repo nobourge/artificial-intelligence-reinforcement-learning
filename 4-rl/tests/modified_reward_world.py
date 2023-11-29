@@ -3,13 +3,18 @@ from lle import Action, World, WorldState
 
 
 class ModifiedRewardWorld(WorldMDP):
-    def __init__(self, reward_live: float):
+    def __init__(self, 
+                 reward_live: float # Reward for living at each time step
+                 ):
         super().__init__(World.from_file("tests/graphs/cliff"))
-        self.world.reset()
+        self.world.reset() # Reset the world to its initial state
         self.reward_live = reward_live
 
     def reward(
-        self, state: WorldState, action: list[Action], new_state: WorldState
+        self, 
+        state: WorldState, 
+        action: list[Action], 
+        new_state: WorldState
     ) -> float:
         reward = super().reward(state, action, new_state)
         # The agent has died
@@ -24,4 +29,5 @@ class ModifiedRewardWorld(WorldMDP):
             # Far exit
             return 10.0
         # The agent just lives (reward should be 0)
+        
         return self.reward_live

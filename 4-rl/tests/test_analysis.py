@@ -15,22 +15,30 @@ from .modified_reward_world import ModifiedRewardWorld
 def setup_mdp_and_get_path(param: Parameters):
     mdp = ModifiedRewardWorld(param.reward_live)
     start_state = mdp.world.get_state()
-    noisy_mdp = RandomWrapper(mdp, param.noise)
-    algo = ValueIteration(noisy_mdp, param.gamma)
+    noisy_mdp = RandomWrapper(mdp, param.noise) # Add noise to the MDP
+    algo = ValueIteration(noisy_mdp, param.gamma) # Create the algorithm 
     algo.value_iteration(100)
     return apply_policy(start_state, mdp, algo)
 
 
-def apply_policy(state, mdp: MDP, algo: ValueIteration):
-    """Apply the policy until the end of the game or a loop is detected. Returns the path taken."""
+def apply_policy(state, 
+                 mdp: MDP, 
+                 algo: ValueIteration
+                 ):
+    """Apply the policy 
+    until the end of the game 
+    or a loop is detected. 
+    Returns the path taken."""
     path = []
-    while not mdp.is_final(state) and state not in path:
+    while not mdp.is_final(state) and state not in path: # While the game is not over and the state is not in the path
         path.append(state)
         action = algo.policy(state)
-        transitions = mdp.transitions(state, action)
-        assert len(transitions) == 1
+        print(action)
+        transitions = mdp.transitions(state, action) # Get the possible transitions
+        assert len(transitions) == 1 # There is only one possible transition
         state, _ = transitions[0]
     path.append(state)
+    print(path)
     return path
 
 
@@ -75,4 +83,4 @@ def test_never_end():
     params = never_end_the_game()
     path = setup_mdp_and_get_path(params)
     # Check that there is a loop in the path
-    assert path[-1] in path[:-1]
+    assert path[-1] in path[:-1] # The last state is in the path before the last state

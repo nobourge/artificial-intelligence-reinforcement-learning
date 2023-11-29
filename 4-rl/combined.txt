@@ -15,6 +15,12 @@ gymnasium = "^0.29.1"
 laser-learning-environment = "0.1.8"
 opencv-python = "^4.8.1.78"
 rlenv = { git = "https://github.com/yamoling/rlenv", tag = "v0.4.4" }
+numpy = "^1.21.2"
+pandas = "^1.3.3"
+scipy = "^1.7.1"
+scikit-learn = "^1.0"
+loguru = "^0.7.2"
+watchdog = "^3.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -40,7 +46,8 @@ line-length = 140
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\analysis.py -----
 from dataclasses import (
     dataclass,
-)  # dataclass is a decorator that allows you to create a class with a minimal amount of code (see https://docs.python.org/3/library/dataclasses.html)
+)  # dataclass is a decorator that allows you to create a class with a minimal amount of code 
+# (see https://docs.python.org/3/library/dataclasses.html)
 
 
 @dataclass
@@ -162,7 +169,7 @@ if __name__ == "__main__":
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----
-from mdp import MDP, S, A
+from .mdp import MDP, S, A
 from typing import Generic
 
 
@@ -172,25 +179,34 @@ class ValueIteration(Generic[S, A]):
                  gamma: float # discount factor 
                  ):
         # senf.values est nécessaire pour fonctionner avec utils.show_values
-        self.values = dict[S, float]()
         self.mdp = mdp
         self.gamma = gamma
+        # self.values = dict[S, float]()
+        self.values = {state: 0.0 for state in mdp.states()}  # Initialize all states with a default value
+
 
 
     def value(self, state: S) -> float:
         """Returns the value of the given state."""
-        return self.values[state]
+        # return self.values[state]
+        return self.values.get(state, 0.0)  # Default value if state not found
+
 
     def policy(self, state: S) -> A:
         """Returns the action 
         that maximizes the Q-value of the given state."""
-        return max(self.mdp.available_actions(state), key=lambda action: self.qvalue(state, action))
+        available_actions = self.mdp.available_actions(state)
+        if not available_actions:
+            print("No available actions for state", state)
+            return None  # Or some default action if appropriate
+        return max(available_actions, key=lambda action: self.qvalue(state, action))
 
     def qvalue(self, state: S, action: A) -> float:
-        """Returns the Q-value 
+        """Returns the Q-value
         of the given state-action pair based on the state values."""
-        # return sum(prob * (reward + self.gamma * self.value(next_state)) for next_state, prob in self.mdp.transitions(state, action))
-        return sum(prob * (self.gamma * self.value(next_state)) for next_state, prob in self.mdp.transitions(state, action))
+        new_state = max(self.mdp.transitions(state, action), key=lambda transition: transition[1])[0] # Most probable next state
+        reward = self.mdp.reward(state, action, new_state)
+        return sum(prob * (reward + self.gamma * self.value(next_state)) for next_state, prob in self.mdp.transitions(state, action))
 
     def _compute_value_from_qvalues(self, state: S) -> float:
         """
@@ -200,24 +216,43 @@ class ValueIteration(Generic[S, A]):
         """
         return max(self.qvalue(state, action) for action in self.mdp.available_actions(state))
 
-    def value_iteration(self, n: int):
+    def value_iteration(self, 
+                        n: int # number of iterations
+                        ):
+        
+        """Performs value iteration for the given number of iterations."""
+        states = self.mdp.states()
+
         for _ in range(n):
             new_values = dict[S, float]()
+            # print states and their values
+            print("Iteration", _, "States and their values:")
+            for state in states:
+                print(state, self.value(state))
             for state in self.mdp.states():
                 if self.mdp.is_final(state):
                     new_values[state] = 0
                 else:
                     new_values[state] = max(self.qvalue(state, action) for action in self.mdp.available_actions(state))
             self.values = new_values
+        # print states and their values
+        print("States and their values:")
+        for state in states:
+            print(state, self.value(state))
 
 
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----
 
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\__init__.py -----
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\__init__.py -----
+
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graph_mdp.py -----
 import json
 from dataclasses import dataclass
-from mdp import MDP
+from src.mdp import MDP
 
 Action = str
 State = str
@@ -301,13 +336,18 @@ from lle import Action, World, WorldState
 
 
 class ModifiedRewardWorld(WorldMDP):
-    def __init__(self, reward_live: float):
+    def __init__(self, 
+                 reward_live: float # Reward for living at each time step
+                 ):
         super().__init__(World.from_file("tests/graphs/cliff"))
-        self.world.reset()
+        self.world.reset() # Reset the world to its initial state
         self.reward_live = reward_live
 
     def reward(
-        self, state: WorldState, action: list[Action], new_state: WorldState
+        self, 
+        state: WorldState, 
+        action: list[Action], 
+        new_state: WorldState
     ) -> float:
         reward = super().reward(state, action, new_state)
         # The agent has died
@@ -322,13 +362,14 @@ class ModifiedRewardWorld(WorldMDP):
             # Far exit
             return 10.0
         # The agent just lives (reward should be 0)
+        
         return self.reward_live
 
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\modified_reward_world.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\random_wrapper.py -----
-from mdp import MDP, S, A
+from src.mdp import MDP, S, A
 
 
 class RandomWrapper(MDP[S, A]):
@@ -375,7 +416,7 @@ class RandomWrapper(MDP[S, A]):
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\random_wrapper.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_analysis.py -----
-from analysis import (
+from src.analysis import (
     prefer_close_exit_avoiding_the_cliff,
     prefer_close_exit_following_the_cliff,
     prefer_far_exit_avoiding_the_cliff,
@@ -383,8 +424,8 @@ from analysis import (
     never_end_the_game,
     Parameters,
 )
-from mdp import MDP
-from value_iteration import ValueIteration
+from src.mdp import MDP
+from src.value_iteration import ValueIteration
 from .random_wrapper import RandomWrapper
 from .modified_reward_world import ModifiedRewardWorld
 
@@ -392,22 +433,30 @@ from .modified_reward_world import ModifiedRewardWorld
 def setup_mdp_and_get_path(param: Parameters):
     mdp = ModifiedRewardWorld(param.reward_live)
     start_state = mdp.world.get_state()
-    noisy_mdp = RandomWrapper(mdp, param.noise)
-    algo = ValueIteration(noisy_mdp, param.gamma)
+    noisy_mdp = RandomWrapper(mdp, param.noise) # Add noise to the MDP
+    algo = ValueIteration(noisy_mdp, param.gamma) # Create the algorithm 
     algo.value_iteration(100)
     return apply_policy(start_state, mdp, algo)
 
 
-def apply_policy(state, mdp: MDP, algo: ValueIteration):
-    """Apply the policy until the end of the game or a loop is detected. Returns the path taken."""
+def apply_policy(state, 
+                 mdp: MDP, 
+                 algo: ValueIteration
+                 ):
+    """Apply the policy 
+    until the end of the game 
+    or a loop is detected. 
+    Returns the path taken."""
     path = []
-    while not mdp.is_final(state) and state not in path:
+    while not mdp.is_final(state) and state not in path: # While the game is not over and the state is not in the path
         path.append(state)
         action = algo.policy(state)
-        transitions = mdp.transitions(state, action)
-        assert len(transitions) == 1
+        print(action)
+        transitions = mdp.transitions(state, action) # Get the possible transitions
+        assert len(transitions) == 1 # There is only one possible transition
         state, _ = transitions[0]
     path.append(state)
+    print(path)
     return path
 
 
@@ -452,24 +501,28 @@ def test_never_end():
     params = never_end_the_game()
     path = setup_mdp_and_get_path(params)
     # Check that there is a loop in the path
-    assert path[-1] in path[:-1]
+    assert path[-1] in path[:-1] # The last state is in the path before the last state
 
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_analysis.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_value_iteration.py -----
-from value_iteration import ValueIteration
+from src.value_iteration import ValueIteration
 from lle import World, WorldState, Action, REWARD_AGENT_JUST_ARRIVED, REWARD_END_GAME
 from tests.world_mdp import WorldMDP
 from .graph_mdp import GraphMDP
+from matplotlib import pyplot as plt
 
 
 def almost_equal(a, b):
     return abs(a - b) < 1e-6
 
 
+graph_file_name = "tests/graphs/graph1.json"
+
+# 4-rl\tests\graphs\graph1.json
 def test_value_0():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(0)
     for s in mdp.states():
@@ -477,7 +530,7 @@ def test_value_0():
 
 
 def test_value_end_states():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(100)
     for s in mdp.states():
@@ -486,7 +539,7 @@ def test_value_end_states():
 
 
 def test_qvalues_0():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(0)
     assert almost_equal(algo.qvalue("a", "left"), 0.6)
@@ -494,14 +547,14 @@ def test_qvalues_0():
 
 
 def test_max_action_0():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(0)
     assert algo.policy("a") == "left"
 
 
 def test_value_1():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     gamma = 0.9
     algo = ValueIteration(mdp, gamma)
     algo.value_iteration(1)
@@ -511,7 +564,7 @@ def test_value_1():
 
 
 def test_value_100():
-    mdp = GraphMDP.from_json("tests/graphs/graph1.json")
+    mdp = GraphMDP.from_json(graph_file_name)
     gamma = 0.9
     algo = ValueIteration(mdp, gamma)
     algo.value_iteration(100)
@@ -573,13 +626,27 @@ def test_value_world_100():
             assert almost_equal(algo.value(state), expected[i][j])
 
 
+if __name__ == "__main__":
+    print("hello world")
+    test_value_0()
+    test_value_end_states()
+    test_qvalues_0()
+    test_max_action_0()
+    test_value_1()
+    test_value_100()
+    test_value_world_0()
+    test_qvalues_world()
+    test_value_world_100()
+    print("ok")
+
+
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_value_iteration.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\world_mdp.py -----
 from itertools import product
 from typing import Iterable
 from lle import World, WorldState, Action
-from mdp import MDP
+from src.mdp import MDP
 
 
 class WorldMDP(MDP[WorldState, list[Action]]):
