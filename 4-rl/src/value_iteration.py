@@ -51,9 +51,9 @@ class ValueIteration(Generic[S, A]):
 
         This is a private method, meant to be used by the value_iteration method.
         """
-        # todo use
         return max(
-            self.qvalue(state, action) for action in self.mdp.available_actions(state)
+            self.qvalue(state, action) 
+            for action in self.mdp.available_actions(state)
         )
 
     def show_iteration_values(self, iteration: int, states: list[S]):
@@ -61,12 +61,12 @@ class ValueIteration(Generic[S, A]):
         print("image placeholder")
 
     def print_iteration_values(
-        self, iteration: int, states: list[S], values: list[float]
-    ):
+        self, 
+        iteration: int):
         """Prints the states and their values."""
         print("Iteration", iteration, "States and their values:")
-        for state, value in zip(states, values):
-            print(state, value)
+        for state in self.mdp.states():
+            print(state, self.value(state))
 
     def value_iteration(self, n: int):  # number of iterations
         """Performs value iteration for the given number of iterations."""
@@ -78,10 +78,6 @@ class ValueIteration(Generic[S, A]):
                 if self.mdp.is_final(state):
                     new_values[state] = 0
                 else:
-                    new_values[state] = max(
-                        self.qvalue(state, action)
-                        for action in self.mdp.available_actions(state)
-                    )
+                    new_values[state] = self._compute_value_from_qvalues(state)
             self.values = new_values
-        # print_iteration_values(_, states, self.values)
-        self.print_iteration_values(_, states, self.values)
+        self.print_iteration_values(n)
