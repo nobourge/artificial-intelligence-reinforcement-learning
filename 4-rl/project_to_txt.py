@@ -1,7 +1,28 @@
+from contextlib import contextmanager
+from io import StringIO
+import sys
 import time
 import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
+
+# Context manager to capture output
+@contextmanager
+def capture_output():
+    # StringIO objects are used to capture terminal output and errors
+    new_out, new_err = StringIO(), StringIO()  # Create StringIO objects
+    old_out, old_err = sys.stdout, sys.stderr
+    try:
+        sys.stdout, sys.stderr = (
+            new_out,
+            new_err,
+        )  # Replace stdout and stderr with the StringIO objects
+        # now sys.stdout and sys.stderr will be captured
+        yield sys.stdout, sys.stderr  # Let the caller run the code
+        print("Terminal Output:", new_out.getvalue())
+    finally:  # Restore stdout and stderr
+        sys.stdout, sys.stderr = old_out, old_err
 
 
 class Watcher:
@@ -63,21 +84,26 @@ class Handler(FileSystemEventHandler):
         self.exclude_paths = watcher.EXCLUDE_PATHS
 
     def on_any_event(self, event):
-        # Check if the event is for combined.txt and return early if it is
-        if "combined.txt" in event.src_path:
+        event_src_path_file_name = os.path.basename(event.src_path)
+     
+        # Check if the event is for any of the exclude paths or exclude names
+        if any(
+            exclude_path in event.src_path 
+            for exclude_path in self.exclude_paths
+        ) or any(
+            exclude_name in event_src_path_file_name
+            for exclude_name in self.watcher.EXCLUDE_NAMES
+        ):
+            #  and return early if it is
             return None
-        # Check if the event is for a file or directory to exclude and return early if it is
-        if event.is_directory:
-            for exclude_path in self.exclude_paths:
-                if event.src_path.startswith(exclude_path):
-                    return None
-        # Check if the event is for a file or directory to exclude and return early if it is
-        elif any(exclude_path in event.src_path for exclude_path in self.exclude_paths):
-            return None
-        # Print the event
+       
         elif event.event_type == "modified":
             # Action when a file is modified
             print(f"File {event.src_path} has been modified")
+            combine_files(self.watcher)
+        elif event.event_type == "created":
+            # Action when a file is created
+            print(f"File {event.src_path} has been created")
             combine_files(self.watcher)
 
 
@@ -114,6 +140,13 @@ def combine_files(watcher):
                             outfile.write(f"----- End of {filepath} -----\n\n")
                     except Exception as e:
                         print(f"Could not read file {filepath}: {e}")
+        with capture_output() as (out, err):
+            # Append captured terminal output and errors
+            outfile.write("\n----- Terminal Output -----\n")
+            outfile.write(out.getvalue())
+            outfile.write("\n----- Terminal Errors -----\n")
+            outfile.write(err.getvalue())
+
     print(f"All files have been combined into {output_file}")
 
 
