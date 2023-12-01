@@ -8,11 +8,11 @@ S = TypeVar("S")
 
 class MDP(ABC, Generic[S, A]):
     """Adversarial Markov Decision Process"""
-
     @abstractmethod
     def is_final(self, state: S) -> bool:
         """Returns true 
         if the given state is final (i.e. the game is over)."""
+
 
     @abstractmethod
     def available_actions(self, state: S) -> list[A]:
@@ -29,3 +29,4 @@ class MDP(ABC, Generic[S, A]):
     @abstractmethod
     def reward(self, state: S, action: A, new_state) -> float:
         """Reward function"""
+        

@@ -84,8 +84,18 @@ class Handler(FileSystemEventHandler):
         self.exclude_paths = watcher.EXCLUDE_PATHS
 
     def on_any_event(self, event):
+        event_src_path = event.src_path
+        print("Event:", event.event_type, event_src_path)
         event_src_path_file_name = os.path.basename(event.src_path)
      
+        # if event_src_path contains any of the exclude names, return early
+        for exclude_name in self.watcher.EXCLUDE_NAMES:
+            if exclude_name in event_src_path:
+                print("Event for excluded name:", 
+                      exclude_name,
+                        "in path:",
+                    event_src_path)
+                return None
         # Check if the event is for any of the exclude paths or exclude names
         if any(
             exclude_path in event.src_path 
@@ -94,6 +104,7 @@ class Handler(FileSystemEventHandler):
             exclude_name in event_src_path_file_name
             for exclude_name in self.watcher.EXCLUDE_NAMES
         ):
+            print("Event for excluded path or name:", event.src_path)
             #  and return early if it is
             return None
        

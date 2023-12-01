@@ -26,30 +26,37 @@ class ValueIteration(Generic[S, A]):
             return None  # Or some default action if appropriate
         return max(available_actions, key=lambda action: self.qvalue(state, action))
 
-    def bellman(self, state: S) -> float:
-        """Returns the Bellman equation
-        of the given state based on the state values."""
-        return max(
-            self.qvalue(state, action) for action in self.mdp.available_actions(state)
-        ) # todo? compare with _compute_value_from_qvalues
-    
     def qvalue(self, state: S, action: A) -> float:
-        """Returns the Q-value
-        of the given state-action pair based on the state values."""
-        new_state = max(
-            self.mdp.transitions(state, action), 
-            key=lambda transition: transition[1])[0]  # Most probable next state
-        reward = self.mdp.reward(state, action, new_state)
-        return sum(
-            prob * (reward + self.gamma * self.value(next_state))
-            for next_state, prob in self.mdp.transitions(state, action)
-        )
+        """
+        Returns the Q-value
+        of the given state-action pair 
+        based on the state values.
+        from Bellman equation:
+        Q(s,a) = Sum(P(s,a,s') * (R(s,a,s') + gamma * V(s')))
+        """
+        # new_state = max(
+        #     self.mdp.transitions(state, action), key=lambda transition: transition[1]
+        # )[
+        #     0
+        # ]  # Most probable next state
+        qvalue = 0.0
+        # reward = self.mdp.reward(state, action, new_state)
+        for next_state, prob in self.mdp.transitions(state, action):
+            reward = self.mdp.reward(state, action, next_state)
+            print("P(", state, action, next_state, "):", prob)
+            print("R(", state, action, next_state, "):", reward)
+            qvalue += prob * (reward + self.gamma * self.value(next_state))
+        print("Q-value of", state, action, ":", qvalue)
+        return qvalue
 
     def _compute_value_from_qvalues(self, state: S) -> float:
         """
         Returns the value of the given state based on the Q-values.
+        from Bellman equation: 
+        V(s) = max_a Sum(P(s,a,s') * (R(s,a,s') + gamma * V(s')))
 
-        This is a private method, meant to be used by the value_iteration method.
+        This is a private method, 
+        meant to be used by the value_iteration method.
         """
         return max(
             self.qvalue(state, action) 
@@ -60,9 +67,7 @@ class ValueIteration(Generic[S, A]):
         """Prints the map with each tile actions values."""
         print("image placeholder")
 
-    def print_iteration_values(
-        self, 
-        iteration: int):
+    def print_iteration_values(self, iteration: int):
         """Prints the states and their values."""
         print("Iteration", iteration, "States and their values:")
         for state in self.mdp.states():
@@ -74,8 +79,10 @@ class ValueIteration(Generic[S, A]):
 
         for _ in range(n):
             new_values = dict[S, float]()
+            self.values = {state: 0.0 for state in self.mdp.states()}
             for state in states:
                 if self.mdp.is_final(state):
+                    print("Final state", state)
                     new_values[state] = 0
                 else:
                     new_values[state] = self._compute_value_from_qvalues(state)
