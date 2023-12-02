@@ -50,7 +50,7 @@ def test_value_1():
     algo = ValueIteration(mdp, gamma)
     algo.value_iteration(1)
     assert almost_equal(algo.qvalue("a", "left"), 0.6)
-    expected = 0.5 + 0.5 * gamma * 0.6
+    expected = 0.5 + 0.5 * gamma * 0.6 # 0.77
     assert almost_equal(algo.qvalue("a", "right"), expected)
 
 
@@ -79,6 +79,9 @@ def test_value_world_0():
 
 
 def test_qvalues_world():
+    """
+    test qvalues for the world mdp after 0 iterations
+    """
     mdp = WorldMDP(
         World(
             """
