@@ -1,0 +1,33 @@
+--- 
++++ 
+@@ -199,3 +199,30 @@
+ emple avec Overleaf) pour rédiger votre rapport.
+ Ce travail est individuel et doit être rendu sur l’Université Virtuelle pour le 10/12/2023 à 23:59.
+ 6
++FACULTÉ DES SCIENCES
++DÉPARTEMENT D’INFORMATIQUE
++7 Annexes
++7.1 Précisions sur lle.LLE
++La classe lle.LLE est directement dédiée au RL multi-agents (MARL) coopératif. Par soucis de général-
++ité, LLE utilise le vocabulaire des observations plutôt que des états afin de différencier ce que les agents
++voient de l’état de l’environnement.
++Dans LLE, une observation peut se représenter couche par couche, comme montré dans la Figure 2.
++Figure 2: Représentation d’une observation correspondant à la situation de l’imade de droite dans la
++Table 1. Les cases noires représentent des 1, les cases grises des −1 et les cases blanches des 0. Par
++soucis de concision, certaines couches (agent 2, agent 3, laser 2, laser 3) ont été ommise.
++Le type d’observation indiqué dans la Figure 2 peut être utilisé en utilisant ObservationType.LAYERED.
++Dans ce cas, chaque agent reçoit une observation (x, height, width) où x dépend du nombre d’a-
++gents.
++from lle import LLE, ObservationType
++env = LLE.level(6, ObservationType.LAYERED)
++print(env.observation_shape) # (12, 12, 13)
++Cependant, par défaut (et pour pouvoir être utilisées dans des réseaux de neurones linéaires), LLE utilise
++le type d’observation ObservationType.FLATTENED, qui encodent exactement les mêmes informations
++que ObservationType.LAYERED, mais applaties sur une seule dimension.
++from lle import LLE, ObservationType
++env = LLE.level(6, ObservationType.FLATTENED) # On peut ommettre le second paramètre
++print(env.observation_shape) # Affiche (1872,), càd 12 * 12 * 13
++Notez que chaque observation possède aussi des informations sur l’état du World dans
++observation.state, à la différence que le WorldState auquel vous êtes habitués a lui aussi été trans-
++formé en tableau numpy pour être utilisable dans le contexte du deep MARL.
++7

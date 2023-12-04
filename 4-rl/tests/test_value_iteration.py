@@ -21,6 +21,9 @@ def test_value_0():
 
 
 def test_value_end_states():
+    """
+    tests that the value of end states is 0 after 100 iterations
+    """
     mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(100)
@@ -30,6 +33,9 @@ def test_value_end_states():
 
 
 def test_qvalues_0():
+    """
+    test qvalues for the graph mdp after 0 iterations
+    """
     mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(0)
@@ -38,6 +44,9 @@ def test_qvalues_0():
 
 
 def test_max_action_0():
+    """
+    test policy max_action for the graph mdp after 0 iterations
+    """
     mdp = GraphMDP.from_json(graph_file_name)
     algo = ValueIteration(mdp, 0.9)
     algo.value_iteration(0)
@@ -45,25 +54,34 @@ def test_max_action_0():
 
 
 def test_value_1():
+    """
+    test value of states after 1 iteration
+    """
     mdp = GraphMDP.from_json(graph_file_name)
     gamma = 0.9
     algo = ValueIteration(mdp, gamma)
     algo.value_iteration(1)
-    assert almost_equal(algo.qvalue("a", "left"), 0.6)
-    expected = 0.5 + 0.5 * gamma * 0.6 # 0.77
-    assert almost_equal(algo.qvalue("a", "right"), expected)
+    assert almost_equal(algo.qvalue("a", "left"), 0.6) # no change from iteration 0
+    expected = 0.5 + 0.5 * gamma * 0.6 # 0.77 # = 0.5 + 0.5 * 0.9 * 0.6
+    assert almost_equal(algo.qvalue("a", "right"), expected) # more than iteration 0
 
 
 def test_value_100():
+    """
+    test value of states after 100 iterations
+    """
     mdp = GraphMDP.from_json(graph_file_name)
     gamma = 0.9
     algo = ValueIteration(mdp, gamma)
     algo.value_iteration(100)
-    assert almost_equal(algo.qvalue("a", "left"), 0.6)
-    assert almost_equal(algo.qvalue("a", "right"), 0.90909090909)
+    assert almost_equal(algo.qvalue("a", "left"), 0.6) # no change from iteration 0
+    assert almost_equal(algo.qvalue("a", "right"), 0.90909090909) # more than iteration 0 & 1
 
 
 def test_value_world_0():
+    """
+    test value of world states after 0 iterations
+    """
     mdp = WorldMDP(
         World(
             """
@@ -99,6 +117,9 @@ def test_qvalues_world():
 
 
 def test_value_world_100():
+    """
+    test value of world states after 100 iterations
+    """
     mdp = WorldMDP(
         World(
             """
