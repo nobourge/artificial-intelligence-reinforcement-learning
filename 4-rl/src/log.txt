@@ -1,0 +1,1214 @@
+P( a left b ): 0.8
+R( a left b ): 1
+P( a left c ): 0.2
+R( a left c ): -1
+Q-value of a left : 0.6000000000000001
+P( a right a ): 0.5
+R( a right a ): 0
+P( a right b ): 0.5
+R( a right b ): 1
+Q-value of a right : 0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  P(     a     left     b     ):     0.8
+  R(     a     left     b     ):     1
+  P(     a     left     c     ):     0.2
+  R(     a     left     c     ):     -1
+  Q-value of     a     left     :     0.6000000000000001
+  P(     a     right     a     ):     0.5
+  R(     a     right     a     ):     0
+  P(     a     right     b     ):     0.5
+  R(     a     right     b     ):     1
+  Q-value of     a     right     :     0.5
+Final state b
+Final state c
+  Iteration     100     States and their values:
+  a     0.6000000000000001
+  b     0
+  c     0
+P( a left b ): 0.8
+R( a left b ): 1
+P( a left c ): 0.2
+R( a left c ): -1
+Q-value of a left : 0.6000000000000001
+P( a right a ): 0.5
+R( a right a ): 0
+P( a right b ): 0.5
+R( a right b ): 1
+Q-value of a right : 0.77

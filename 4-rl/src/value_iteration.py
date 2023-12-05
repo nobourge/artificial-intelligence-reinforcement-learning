@@ -1,5 +1,12 @@
-from .mdp import MDP, S, A
+import sys
+from almost_equal import almost_equal
+from graph_mdp import GraphMDP
+from mdp import MDP, S, A
 from typing import Generic
+
+from auto_indent import AutoIndent
+
+sys.stdout = AutoIndent(sys.stdout)
 
 
 class ValueIteration(Generic[S, A]):
@@ -29,7 +36,7 @@ class ValueIteration(Generic[S, A]):
     def qvalue(self, state: S, action: A) -> float:
         """
         Returns the Q-value
-        of the given state-action pair 
+        of the given state-action pair
         based on the state values.
         from Bellman equation:
         Q(s,a) = Sum(P(s,a,s') * (R(s,a,s') + gamma * V(s')))
@@ -52,15 +59,14 @@ class ValueIteration(Generic[S, A]):
     def _compute_value_from_qvalues(self, state: S) -> float:
         """
         Returns the value of the given state based on the Q-values.
-        from Bellman equation: 
+        from Bellman equation:
         V(s) = max_a Sum(P(s,a,s') * (R(s,a,s') + gamma * V(s')))
 
-        This is a private method, 
+        This is a private method,
         meant to be used by the value_iteration method.
         """
         return max(
-            self.qvalue(state, action) 
-            for action in self.mdp.available_actions(state)
+            self.qvalue(state, action) for action in self.mdp.available_actions(state)
         )
 
     def show_iteration_values(self, iteration: int, states: list[S]):
@@ -88,3 +94,18 @@ class ValueIteration(Generic[S, A]):
                     new_values[state] = self._compute_value_from_qvalues(state)
             self.values = new_values
         self.print_iteration_values(n)
+
+
+if __name__ == "__main__":
+    # graph
+    # b - +1 - a - -1 - c
+    graph_file_name = "tests/graphs/graph1.json"
+
+    mdp = GraphMDP.from_json(graph_file_name)
+    gamma = 0.9
+    algo = ValueIteration(mdp, gamma)
+    algo.value_iteration(100)
+    assert almost_equal(algo.qvalue("a", "left"), 0.6)  # no change from iteration 0
+    assert almost_equal(
+        algo.qvalue("a", "right"), 0.90909090909
+    )  # more than iteration 0 & 1

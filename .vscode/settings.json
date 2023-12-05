@@ -2,5 +2,8 @@
     // "python.analysis.autoImportCompletions": true,
     // "python.analysis.extraPaths": [
     //     "./4-rl/src"    ]
-    "python.terminal.executeInFileDir": true // This is the key setting to make sure the terminal is in the right directory 
+    "python.terminal.executeInFileDir": true,
+    "python.analysis.extraPaths": [
+        "./4-rl/tests"
+    ] // This is the key setting to make sure the terminal is in the right directory 
 }
