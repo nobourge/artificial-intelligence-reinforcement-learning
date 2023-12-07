@@ -18,8 +18,6 @@ class Solution:
     def n_steps(self) -> int:
         return len(self.actions)
 
-    ...
-
 def is_empty(data_structure) -> bool:
     """Returns True if data_structure is empty, False otherwise"""
     if isinstance(data_structure, list):
@@ -39,7 +37,6 @@ def check_goal_state(problem: SearchProblem
         current_state_is_goal_state = problem.is_goal_state(current_state, objectives_reached)
     else:
         current_state_is_goal_state = problem.is_goal_state(current_state)
-        
     if current_state_is_goal_state:
         # print("Solution found!")
         print("nodes expanded: ", problem.nodes_expanded)
@@ -89,7 +86,6 @@ def tree_search(problem: SearchProblem, mode: str) -> Optional[Solution]:
         data_structure = [(initial_state
                            , actions)]  #  to keep track of states
     visited = set()  # Set to keep track of visited states
-
     while not is_empty(data_structure):
         # Pop the top state from the data_structure
         if mode == "bfs":
@@ -99,7 +95,6 @@ def tree_search(problem: SearchProblem, mode: str) -> Optional[Solution]:
                 current_state, actions, objectives_reached = data_structure.pop()
             else:
                 current_state, actions = data_structure.pop()
-
         # Check if the current state is in the visited set
         if was(current_state
                , objectives_reached
@@ -136,7 +131,6 @@ def tree_search(problem: SearchProblem, mode: str) -> Optional[Solution]:
                 objectives_reached = None
             new_actions = actions + [successor_actions]
             if mode == "astar":
-                
                 if isinstance(problem, CornerSearchProblem) or isinstance(problem, GemSearchProblem):
                     successor_cost = problem.heuristic(successor, objectives_reached)
                     total_cost = cost + successor_cost
@@ -167,55 +161,7 @@ def astar(problem: SearchProblem) -> Optional[Solution]:
     return tree_search(problem, "astar")
 
 if __name__ == "__main__":
-
-    # world = World.from_file("cartes/1_agent/simplest")
-    # world = World.from_file("cartes/1_agent/impossible_simplest")
-    # world = World.from_file("cartes/2_agents/impossible")
-    # world = World.from_file("cartes/1_agent/zigzag")
-    # world = World.from_file("cartes/2_agents/zigzag")
-    # world = World.from_file("cartes/2_agents/zigzag_simpler")
-    # world = World.from_file("cartes/corners_simplest")
-
-    # world = World.from_file("level3")
-    # world.reset()
-
-    # problem = SimpleSearchProblem(world)
-    # solution = dfs(problem)
-    # solution = astar(problem)
-    # print("solution: ", solution)
-
-    # world = World.from_file("cartes/gems_simplest")
-    # world = World.from_file("cartes/2_agents/zigzag")
-    # world = World.from_file("cartes/2_agents/zigzag_gems")
-    # world = World.from_file("cartes/gems")
-    # problem = GemSearchProblem(world)
-    # solution = astar(problem)
-    # print("solution: ", solution)
-    # check_world_done(problem, solution)
-    # if world.n_gems != world.gems_collected:
-    #     raise AssertionError("Your is_goal_state method is likely erroneous beacuse some gems have not been collected")
-
-
-
-    
-    # world = World(
-    #         """
-    #         S0 . X
-    #         . . ."""
-    #     )
-    # problem = SimpleSearchProblem(world)
-    # successors = list(problem.get_successors(problem.initial_state))
-    # assert len(successors) == 3
-    # world.reset()
-    # available = world.available_actions()[0]
-    # agent_pos = ((0, 0), (0, 1), (1, 0))
-    # for state, action, cost in successors:
-    #     assert action[0] in available
-    #     assert state.agents_positions[0] in agent_pos
-
-
     world = World.from_file("cartes/corners")
-    # world = World.from_file("cartes/corners5x5")
     problem = CornerSearchProblem(world)
     solution = astar(problem)
     world.reset()

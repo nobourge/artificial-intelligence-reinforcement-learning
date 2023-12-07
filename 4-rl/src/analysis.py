@@ -14,7 +14,6 @@ class Parameters:
     noise: float
     """Probability of taking a random action instead of the chosen one"""
 
-
 def prefer_close_exit_following_the_cliff() -> Parameters:
     # A strategy focusing on reaching the closest exit quickly, even if it means taking risks.
     # A small negative reward_live to encourage speed, moderate gamma for balancing immediate and future rewards, and low noise for deliberate actions.

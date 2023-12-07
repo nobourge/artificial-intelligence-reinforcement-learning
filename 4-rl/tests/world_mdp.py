@@ -14,7 +14,9 @@ class WorldMDP(MDP[WorldState, list[Action]]):
         return list(product(*available))
 
     def transitions(
-        self, state: WorldState, action: list[Action]
+        self, 
+        state: WorldState, 
+        action: list[Action]
     ) -> list[tuple[WorldState, float]]:
         self.world.set_state(state)
         self.world.step(action)

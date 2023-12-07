@@ -4,8 +4,6 @@ from lle import World
 from problem import SimpleSearchProblem, GemSearchProblem, CornerSearchProblem
 from search import bfs, dfs, astar, Solution
 
-
-
 def compare_adversarial_search_algorithms():
     """on respective test maps, compare the size of the paths found for the three search algorithms"""
 
@@ -16,8 +14,6 @@ def compare_adversarial_search_algorithms():
 def compare_search_algorithms_on_level3():
     world = World.from_file("level3")
     world.reset()
-
-
     problem = SimpleSearchProblem(world)
     solution = dfs(problem)
     dfs_path_size = len(solution.actions)
@@ -81,9 +77,7 @@ def compare_gem_and_corner_search_algorithms_on_level3():
 
     print("gem_path_size= ", gem_path_size)
     print("corner_path_size= ", corner_path_size)
-
     print("gem_nodes_expanded= ", gem_nodes_expanded)
     print("corner_nodes_expanded= ", corner_nodes_expanded)
 
-# compare_gem_and_corner_search()
 compare_gem_and_corner_search_algorithms_on_level3()

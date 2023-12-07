@@ -1,90 +1,3 @@
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\2023-2024 projet RL-1.pdf_vs_2023-2024 projet RL-v2.pdf_diff.txt -----
---- 
-+++ 
-@@ -199,3 +199,30 @@
- emple avec Overleaf) pour rédiger votre rapport.
- Ce travail est individuel et doit être rendu sur l’Université Virtuelle pour le 10/12/2023 à 23:59.
- 6
-+FACULTÉ DES SCIENCES
-+DÉPARTEMENT D’INFORMATIQUE
-+7 Annexes
-+7.1 Précisions sur lle.LLE
-+La classe lle.LLE est directement dédiée au RL multi-agents (MARL) coopératif. Par soucis de général-
-+ité, LLE utilise le vocabulaire des observations plutôt que des états afin de différencier ce que les agents
-+voient de l’état de l’environnement.
-+Dans LLE, une observation peut se représenter couche par couche, comme montré dans la Figure 2.
-+Figure 2: Représentation d’une observation correspondant à la situation de l’imade de droite dans la
-+Table 1. Les cases noires représentent des 1, les cases grises des −1 et les cases blanches des 0. Par
-+soucis de concision, certaines couches (agent 2, agent 3, laser 2, laser 3) ont été ommise.
-+Le type d’observation indiqué dans la Figure 2 peut être utilisé en utilisant ObservationType.LAYERED.
-+Dans ce cas, chaque agent reçoit une observation (x, height, width) où x dépend du nombre d’a-
-+gents.
-+from lle import LLE, ObservationType
-+env = LLE.level(6, ObservationType.LAYERED)
-+print(env.observation_shape) # (12, 12, 13)
-+Cependant, par défaut (et pour pouvoir être utilisées dans des réseaux de neurones linéaires), LLE utilise
-+le type d’observation ObservationType.FLATTENED, qui encodent exactement les mêmes informations
-+que ObservationType.LAYERED, mais applaties sur une seule dimension.
-+from lle import LLE, ObservationType
-+env = LLE.level(6, ObservationType.FLATTENED) # On peut ommettre le second paramètre
-+print(env.observation_shape) # Affiche (1872,), càd 12 * 12 * 13
-+Notez que chaque observation possède aussi des informations sur l’état du World dans
-+observation.state, à la différence que le WorldState auquel vous êtes habitués a lui aussi été trans-
-+formé en tableau numpy pour être utilisable dans le contexte du deep MARL.
-+7
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\2023-2024 projet RL-1.pdf_vs_2023-2024 projet RL-v2.pdf_diff.txt -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\output.txt -----
-2
-
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\output.txt -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\pdfs_compare.py -----
-import os
-import pdfplumber
-from difflib import unified_diff
-
-
-def extract_text_from_pdf(pdf_path):
-    text = ""
-    with pdfplumber.open(pdf_path) as pdf:
-        for page in pdf.pages:
-            text += page.extract_text() + "\n"
-    return text
-
-
-def compare_pdfs(pdf1_path, pdf2_path):
-    pdf1_text = extract_text_from_pdf(pdf1_path)
-    pdf2_text = extract_text_from_pdf(pdf2_path)
-
-    pdf1_lines = pdf1_text.splitlines()
-    pdf2_lines = pdf2_text.splitlines()
-
-    diff = list(unified_diff(pdf1_lines, pdf2_lines, lineterm=""))
-
-    return "\n".join(diff)
-
-
-DIRECTORY_TO_WATCH = os.path.dirname(os.path.abspath(__file__))
-
-print("DIRECTORY_TO_WATCH:", DIRECTORY_TO_WATCH)
-# Replace with your PDF file paths
-pdf1_path = r"doc\in\2023-2024 projet RL-1.pdf"
-pdf2_path = r"doc\in\2023-2024 projet RL-v2.pdf"
-differences = compare_pdfs(pdf1_path, pdf2_path)
-print(differences)
-
-pdf1_name = os.path.basename(pdf1_path)
-pdf2_name = os.path.basename(pdf2_path)
-diff_filename = f"{pdf1_name}_vs_{pdf2_name}_diff.txt"
-diff_path = os.path.join(DIRECTORY_TO_WATCH, diff_filename)
-with open(diff_path, "w", encoding="utf-8") as diff_file:
-    diff_file.write(differences)
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\pdfs_compare.py -----
-
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\pyproject.toml -----
 [tool.poetry]
 name = "4-rl"
@@ -131,29 +44,10 @@ line-length = 140
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\pyproject.toml -----
 
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\test.py -----
-import sys
-from io import StringIO
-
-print("Hello World")
-# Temporarily redirect standard output to capture the print statement
-old_stdout = sys.stdout
-sys.stdout = StringIO()
-
-# The print statement you want to capture
-print(1 + 1)
-
-# Get the output and revert stdout to its original setting
-output = sys.stdout.getvalue()
-sys.stdout = old_stdout
-
-# Write the output to a file
-with open("output.txt", "a") as file:
-    print(output)
-    file.write(output)
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\__init__.py -----
 
 
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\test.py -----
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\__init__.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\pyproject.toml -----
 [tool.poetry]
@@ -199,591 +93,6 @@ line-length = 140
 
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\pyproject.toml -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\doc\out\instructions for gpt -----
-of 3
-FACULTÉ DES SCIENCES
-DÉPARTEMENT D’INFORMATIQUE
-INFO-F-311: Intelligence Artiﬁcielle
-Projet 2: Recherche adversariale
-Yannick Molinghen Pascal Tribel Tom Lenaerts
-1. Préambule
-Dans ce projet, vous allez implémenter des techniques d’intelligence articiﬁelle basées sur de la
-recherche dans des graphes en considérant un ou plusieurs adversaires. On vous fournit des ﬁchiers
-de base pour le projet que vous pouvez les télécharger sur l’université virtuelle.
-1.1. Rust
-L’environnement dans lequel vous allez travailler est implémenté en Rust. Pour pouvoir compiler le
-projet, vous aurez besoin d’installer le compilateur adapté avec la commande ci-dessous issue du site
-oﬃciel.
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-Si vous utilisez Windows, vous pouvez utiliser Windows Subsystem for Linux (WSL) ou vous référer
-à la procédure décrite dans la documentation.
-1.2. Poetry
-Le projet nécessite Python ≥ 3.10 et utilise Poetry pour gérer les dépendances Python et les environ-
-nements virtuels. Ouvrez un terminal dans le répertoire du projet, installez Poetry puis installez les
-mises dépendances du projet:
-poetry shell
-poetry install
-Ces commandes vont automatiquement créer un environnement virtuel puis installer les dépendances
-du projet.
-1.3. Tests automatiques
-Vous pouvez tester vos méthodes avec la commande pytest. Pour lancer uniquement les tests d’un
-ﬁchier en particulier, vous pouvez le donner en paramètre:
-pytest tests/tests_bfs.py
-Il y a un ﬁchier de test pour chacune des tâches que vous devez remplir.
-1.4. Fichiers existants
-On vous donne les ﬁchiers mdp.py, adversarial_search.py et world_mdp.py, mais vous ne devrez tra-
-vailler que dans les deux derniers. mdp.py contient la déclaration de l’interface d’un Markov Decision
-Process, adversarial_search.py contient les algorithmes de recherche que vous allez implémenter
-tandis que world_mdp.py contient l’adaptation du lle.World en MDP dans lequel chaque agent agit
-chacun à son tour.
-Important: Vous pouvez modiﬁer TOUT ce que vous voulez dans le code qui vous est donné à
-l’exception des tests unitaires. Ce code vous est uniquement donné comme guide.
-1
-FACULTÉ DES SCIENCES
-DÉPARTEMENT D’INFORMATIQUE
-1.5. Laser Learning Environment
-Comme lors du premier projet, vous allez utiliser la librairie lle illustrée dans la Figure 1 pour ce
-projet. Il existe un jupyter notebook sur le git de du projet qui vous montre les fonctionnalités de l’en-
-vironnement et qui vous permet de vous familiariser à son utilisation.
-Figure 1: Rendu de l'environnement
-Rapport de bugs: L’environnement LLE est encore récent, et quelques bugs pourraient subsister.
-Dans le cas où vous pensez en avoir trouvé un, n’hésitez pas à le signaler par email à l’adresse
-yannick.molinghen@ulb.be en joignant le code minimal nécessaire à le reproduire. Chaque pre-
-mière personne à rapporter un bug (et qui est conﬁrmé) donnera lieu à un point supplémentaire
-avec un maximum de 2 points sur le projet.
-2. Adaptation du World en MDP
-Comme LLE est initialement un environnement cooperatif, vous allez adapter l’environnement de
-sorte qu’il fonctionne comme un MDP compétitif dans lequel un agent agit à la fois. Votre but est
-de maximiser le nombre de gemmes collectées par l’agent 0, les autres agents étant considérés
-comme des adversaires. Pour ce faire, implémentez les classes WorldMDP et WorldState dans le ﬁchier
-world_mdp.py.
-WorldState
-Comme il s’agit d’un MDP à plusieurs agents et à tour par tour, chaque état doit retenir à quel agent
-c’est le tour d’eﬀectuer une action.
-WorldMDP
-• Après avoir fait reset(), c’est à l’agent 0 d’eﬀectuer une action. Ainsi,
-world.trasition(Action.NORTH) fera uniquement bouger l’agent 0 vers le nord tandis que tous les
-autres resteront sur place. Ensuite, c’est à l’agent 1 de bouger et ainsi de suite.
-• La méthode world.available_actions(state) renvoie les actions accessibles à l’agent courant.
-• La valeur d’un état correspond à la somme des rewards obtenues par les actions de l’agent 0 (c’est-
-à-dire les gemmes collectées + arriver sur une case de ﬁn).
-• Si l’agent 0 meurt lors d’une transition, la valeur de l’état tombe à la valeur lle.REWARD_AGENT_DIED
-(-1) immédiatement, sans prendre en compte les gemmes déjà collectées.
-2MDP = marqueur decisional proces, c'est une transition d'étatChaque joueur joue l'un après l'autre, il faut implémenter ce comportement, nous on joue l'agent0 (donc on doit maximiser son score à lui). gem = 1 pt arrivée sur exit = 1 pt
-FACULTÉ DES SCIENCES
-DÉPARTEMENT D’INFORMATIQUE
-3. Algorithmes de recherche
-3.1. Minimax
-Dans le ﬁchier adversarial_search.py implémentez l’algorithme du minimax dans la fonction
-minimax qui renvoie l’action à eﬀectuer par l’agent 0 dans l’état donné. Cette fonction n’accepte que
-des états pour lesquels c’est à l’agent 0 de jouer et lève une ValueError dans le cas contraire. On vous
-suggère de diviser cet algorithme en une fonction _min et une fonction _max. N’oubliez pas qu’il peut
-y avoir plus d’un adversaire.
-3.2. Alpha-beta pruning
-De manière similaire à la tâche précédente, implémentez l’algorithme 𝛼𝛽-pruning dans la fonction
-alpha_beta. Cette fonction renvoie l’action à eﬀectuer pour l’agent 0 dans l’état donné.
-3.3. Expectimax
-Dans minimax et 𝛼𝛽-pruning, nous avons supposé que l’adversaire agissait de manière optimale.
-Cependant, ce n’est pas toujours le cas pour des humains. L’algorithme « expectimax » permet de
-modéliser le comportement probabiliste d’humains qui pourraient prendre des choix sous-optimaux.
-La nature d’expectimax demande que nous connaissions la probabilité que l’adversaire prenne chaque
-action. Nous allons ici supposer que les autres agents prennent des actions uniformément aléatoires.
-3.4. Meilleure évaluation
-Comme dernier exercice, on vous demande d’implémenter une sous-classe de WorldMDP dans laquelle
-la valeur d’un état est calculée de manière plus intelligente que simplement en considérant le score de
-l’agent 0. Ecrivez cette sous-classe et vériﬁez que pour une même carte, le nombre de noeuds étendus
-est en eﬀet plus bas qu’avec la fonction d’évaluation de base. Il n’y a pas de test pour cet exercice.
-4. Rapport
-On vous demande d’écrire un court rapport (environ 2 pages) sur deux sujets:
-• Expliquez l’idée derrière votre fonction d’évaluation utilisée en Section 3.4
-• Comparez le nombre d’états étendus dans diﬀérents algorithmes pour un même niveau. Pour ce faire,
-inventez trois cartes (documenation dans le jupyter notebook et sur le wiki du git) que vous illustrez
-dans le rapport. Pour chacune des cartes, reportez graphiquement le nombre d’états étendus dans la
-recherche d’action pour
-• minimax,
-• minimax avec votre meilleure fonction d’évaluation,
-• alpha_beta,
-• alpha_beta avec la meilleure fonction d’évaluation.
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\doc\out\instructions for gpt -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\doc\out\notes_for_report_ -----
-no need to blame stay as it blamed by adversarial
-
-map:  
-S2  X   @  
-X   X   S0 
-@   L0N G  
-X   X   S1 
-
-minimax:  35
-alpha_beta:  25
-alpha_beta with better value function:  15
-expectimax:  11
-
-map:  
-X   X   X   G   @  
-S2  S3  S1  L0E X  
-
-minimax:  18
-alpha_beta:  18
-alpha_beta with better value function:  13
-expectimax:  6
-
-map:  
-X   S1  .   .  
-.   @   S0  L0E
-L1N @   X   L2W
-
-minimax:  8
-alpha_beta:  7
-alpha_beta with better value function:  6
-expectimax:  8
-
-map:  L0N .   G   .   X  
-.   .   S1  G   G  
-X   X   .   S0  G  
-G   .   S2  .   .  
-
-depth:  4.0
-minimax:  7321
-alpha_beta:  1358
-alpha_beta with better value function:  1026
-expectimax:  437
-
-map:  X  .  .  .  @ 
-.  G  .  G  S1
-.  @  @  X  . 
-.  .  S0 .  . 
-.  .  .  .  G 
-.  .  .  @  . 
-
-depth:  4
-minimax:  271
-alpha_beta:  74
-alpha_beta with better value function:  57
-expectimax:  271
-action_minimax:  East
-action_alpha_beta:  East
-action_alpha_beta_better_value_function:  East
-action_expectimax:  East
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\doc\out\notes_for_report_ -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\doc\out\report.tex -----
-\documentclass{article}
-\usepackage{hyperref}
-\usepackage{graphicx}
-\usepackage{listings}
-
-\title{INFO-F-311: Artificial Intelligence - Project 2: Recherche adversariale}
-\author{Bourgeois Noé}
-\date{2023 October 29}
-
-\begin{document}
-
-\maketitle
-
-\tableofcontents
-
-\newpage
-\section{Introduction}
-This report outlines the application of adversarial search techniques in graph search problems. 
-For references, please refer to the project instructions and the project 1.
-
-\section{Better evaluation function}
-% \section{Differences in \texttt{BetterValueFunction} Compared to \texttt{WorldMDP}}
-
-\subsection{\texttt{get\_available\_actions\_ordered}}
-\begin{center}
-    \begin{tabular}{|c|c|}
-    \hline
-    Algorithm & Time Complexity \\
-    \hline
-    Minimax & \( O(b^m) \) \\
-    \hline
-    Alpha-Beta & \( O(b^{m/2}) \) to \( O(b^m) \) \\
-    \hline
-    Alpha-Beta with Perfect Ordering & \( O(bm/2) \) \\
-    \hline
-    \end{tabular}
-    \end{center}
-    
-    \vspace{1em} % Add some space after the table
-    
-
-In the \texttt{BetterValueFunction} class, this method orders the available actions based on certain conditions:
-
-\begin{itemize}
-    \item Moves the action \texttt{STAY} to the end of the list.
-    \item If not all gems are collected, it prioritizes actions that lead to a gem.
-    \item If the agent's path intersects with dangerous lasers, it de-prioritizes such actions.
-\end{itemize}
-
-\subsection{Method: \texttt{transition}}
-In this method, the value of a state is changed based on multiple factors:
-\begin{itemize}
-    \item The distance of agents to gems and exit points.
-    \item Whether all gems are collected or not.
-\end{itemize}
-
-\newpage
-\section{Results}
-\subsection{Fewer Nodes with Better Evaluation}
-\subsubsection{First Map}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.3\textwidth]{media/map/map2023_10_29_13_48_15.png}
-    \caption{Map 1}
-    \label{fig:image1}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{media/map2023_10_29_13_48_15.png}
-    \caption{Map 1 results}
-    \label{fig:image1}
-\end{figure}
-\vspace{1em}
-
-
-    
-\paragraph{}
-Here we can see that, compared to \texttt{alpha\_beta}, 
-the number of nodes is reduced by 6. 
-Additionally, compared to \texttt{minimax}, 
-the number of nodes is reduced by 11. 
-This is what we expected, because we have a better evaluation function.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{media/20231029-134819.png}
-    \caption{First map's Better Evaluation Markov Decisional Process Tree}
-    \label{fig:image1tree}
-\end{figure}
-\vspace{1em}
-
-
-\newpage
-\newpage
-\subsubsection{Second Map}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.3\textwidth]{media/map/map2023_10_29_13_56_42.png}
-    \caption{Map 2}
-    \label{fig:image2}
-\end{figure}
-    
-
-    
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{media/map2023_10_29_13_56_42.png}
-    \caption{Map 2 results}
-    \label{fig:image2}
-\end{figure}
-\vspace{1em}
-
-\paragraph{}
-Again, we can see that, compared to \texttt{alpha\_beta},
-the number of nodes is reduced and compared to \texttt{minimax},
-the number of nodes is reduced by factor 2.
-
-
-\newpage
-\subsubsection{Third Map}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{media/map/map2023_10_29_13_53_25.png}
-    \caption{Map 3}
-    \label{fig:image3}
-\end{figure}
-    
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{media/map2023_10_29_13_53_25.png}
-    \caption{Map 3 results}
-    \label{fig:image3}
-\end{figure}
-\vspace{1em}
-
-\paragraph{}
-Here again, with 
-a slightly bigger map and whith 
-a much bigger difference with factors of 2 and 7.
-
-\newpage
-\subsection{Fourth Map}
-
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.4\textwidth]{media/map/map2023_10_29_13_49_35.png}
-    \caption{Map 4}
-    \label{fig:image4}
-\end{figure}
-\vspace{1em}
-% Fourth Image
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{media/map2023_10_29_13_49_35.png}
-    \caption{Map 4 results}
-    \label{fig:image4}
-\end{figure}
-\vspace{1em}
-
-\paragraph{}
-This case shows that better evaluation function 
-does not always mean fewer nodes.
-
-\newpage
-\subsection{Fifth Map}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{media/map/map2023_10_29_13_55_47.png}
-    \caption{Map 5}
-    \label{fig:image5}
-\end{figure}
-% Fifth Image
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{media/map2023_10_29_13_55_47.png}
-    \caption{Map 5 results}
-    \label{fig:image5}
-\end{figure}
-\vspace{1em}
-
-\paragraph{}
-Again, better evaluation function is not the best.
-
-\newpage
-\section{Discussion}
-\subsection{Limitations of High-Level Heuristics}
-While the use of high-level heuristics in action ordering 
-generally improves performance, 
-it is not always fine enough for every case.
-As a result, in some cases, the \texttt{BetterValueFunction} 
-may not actually result in fewer nodes being expanded 
-compared to basic evaluation functions.
-
-
-\subsection{Future Work}
- Recent advancements in adversarial search algorithms have
- started to incorporate machine learning techniques to dynamically 
- adapt the heuristics used for action selection. 
- This represents a potential avenue for further improving 
- the performance of our algorithms.
- 
-\section{ChatGPT Usage}
-The project was made with ChatGPT.
-\end{document}
-
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\doc\out\report.tex -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\data.py -----
-import numpy as np
-from typing import List, Tuple
-from lle import World
-from problem import SimpleSearchProblem, GemSearchProblem, CornerSearchProblem
-from search import bfs, dfs, astar, Solution
-
-
-
-def compare_adversarial_search_algorithms():
-    """on respective test maps, compare the size of the paths found for the three search algorithms"""
-
-# execute the 3 search algorithms on the level 3
-# , and compare the size of the paths found for the three search algorithms on the level 3
-# , and compare the number of nodes extended during the search for BFS, DSF and A∗ when searching
-# use a annoted graph to show the size of the paths found for the three search algorithms on the level 3.
-def compare_search_algorithms_on_level3():
-    world = World.from_file("level3")
-    world.reset()
-
-
-    problem = SimpleSearchProblem(world)
-    solution = dfs(problem)
-    dfs_path_size = len(solution.actions)
-    dfs_nodes_expanded = problem.nodes_expanded
-
-    problem = SimpleSearchProblem(world)
-    solution = bfs(problem)
-    bfs_path_size = len(solution.actions)
-    bfs_nodes_expanded = problem.nodes_expanded
-
-    problem = SimpleSearchProblem(world)
-    solution = astar(problem)
-    astar_path_size = len(solution.actions)
-    astar_nodes_expanded = problem.nodes_expanded
-
-    print("dfs_path_size= ", dfs_path_size)
-    print("bfs_path_size= ", bfs_path_size)
-    print("astar_path_size= ", astar_path_size)
-
-    print("dfs_nodes_expanded= ", dfs_nodes_expanded)
-    print("bfs_nodes_expanded= ", bfs_nodes_expanded)
-    print("astar_nodes_expanded= ", astar_nodes_expanded)
-
-def compare_gem_and_corner_search():
-    """on respective test maps, compare the size of the paths found for the gem search and corner search algorithms"""
-    world = World.from_file("cartes/gems")
-    world.reset()
-
-    problem = GemSearchProblem(world)
-    solution = astar(problem)
-    gem_path_size = len(solution.actions)
-    gem_nodes_expanded = problem.nodes_expanded
-
-    world = World.from_file("cartes/corners")
-    world.reset()
-    problem = CornerSearchProblem(world)
-    solution = astar(problem)
-    corner_path_size = len(solution.actions)
-    corner_nodes_expanded = problem.nodes_expanded
-
-    print("gem_path_size= ", gem_path_size)
-    print("corner_path_size= ", corner_path_size)
-
-    print("gem_nodes_expanded= ", gem_nodes_expanded)
-    print("corner_nodes_expanded= ", corner_nodes_expanded)
-
-def compare_gem_and_corner_search_algorithms_on_level3():
-    """on level 3, compare the size of the paths found for the gem search and corner search algorithms"""
-    world = World.from_file("level3")
-    world.reset()
-
-    problem = GemSearchProblem(world)
-    solution = astar(problem)
-    gem_path_size = len(solution.actions)
-    gem_nodes_expanded = problem.nodes_expanded
-
-    problem = CornerSearchProblem(world)
-    solution = astar(problem)
-    corner_path_size = len(solution.actions)
-    corner_nodes_expanded = problem.nodes_expanded
-
-    print("gem_path_size= ", gem_path_size)
-    print("corner_path_size= ", corner_path_size)
-
-    print("gem_nodes_expanded= ", gem_nodes_expanded)
-    print("corner_nodes_expanded= ", corner_nodes_expanded)
-
-# compare_gem_and_corner_search()
-compare_gem_and_corner_search_algorithms_on_level3()
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\data.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\graphs.py -----
-# this file does the following:
-
-# • report and compare the size of the paths found for the three search algorithms on the
-# level 3.
-# • compare the number of nodes extended during the search for BFS, DSF and A∗ when searching
-# level 3 resolution and discuss the reasons for these differences.
-
-
-
-import numpy as np
-from typing import List, Tuple
-from lle import World
-from problem import SimpleSearchProblem, GemSearchProblem, CornerSearchProblem
-from search import bfs, dfs, astar, Solution
-from utils import print_items
-import time
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from matplotlib.ticker import LinearLocator
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import colors
-
-dfs_path_size=  8096
-bfs_path_size=  10
-astar_path_size=  10
-dfs_nodes_expanded=  10259
-bfs_nodes_expanded=  11016
-astar_nodes_expanded=  10   
-
-# create a bar graph to show the size of the paths found for the three search algorithms on the level 3
-# create a bar graph to show the number of nodes expanded for the three search algorithms on the level 3
-
-# data to plot
-n_groups = 3
-path_sizes = (dfs_path_size, bfs_path_size, astar_path_size)
-nodes_expanded = (dfs_nodes_expanded, bfs_nodes_expanded, astar_nodes_expanded)
-
-# # create plot
-# fig, ax = plt.subplots()
-# index = np.arange(n_groups)
-# bar_width = 0.35
-# opacity = 1
-
-# rects1 = plt.bar(index, path_sizes, bar_width,
-# alpha=opacity,
-# color='b',
-# label='Path Size')
-
-# rects2 = plt.bar(index + bar_width, nodes_expanded, bar_width,
-# alpha=opacity, 
-# color='g',
-# label='Nodes Expanded')
-
-# plt.xlabel('Search Algorithm')
-# plt.ylabel('Number of Nodes')
-# plt.title('Comparison of Search Algorithms')
-# plt.xticks(index + bar_width, ('DFS', 'BFS', 'A*'))
-# plt.legend()
-
-# plt.tight_layout()
-# plt.show()
-
-
-
-
-# Create subplots
-fig, axs = plt.subplots(1, 2, figsize=(12, 6))
-
-# Data to plot
-n_groups = 3
-index = np.arange(n_groups)
-bar_width = 0.4
-opacity = 0.8
-
-# Plot Path Sizes
-axs[0].bar(index, path_sizes, bar_width, alpha=opacity, color='b', label='Path Size')
-axs[0].set_xlabel('Search Algorithm')
-axs[0].set_ylabel('Path Size')
-axs[0].set_title('Path Sizes of Different Search Algorithms')
-axs[0].set_xticks(index)
-axs[0].set_xticklabels(('DFS', 'BFS', 'A*'))
-
-# Annotate each bar with the actual value
-for i, value in enumerate(path_sizes):
-    axs[0].text(i, value, str(value), ha='center', va='bottom')
-
-# Plot Nodes Expanded
-axs[1].bar(index, nodes_expanded, bar_width, alpha=opacity, color='g', label='Nodes Expanded')
-axs[1].set_xlabel('Search Algorithm')
-axs[1].set_ylabel('Nodes Expanded')
-axs[1].set_title('Nodes Expanded in Different Search Algorithms')
-axs[1].set_xticks(index)
-axs[1].set_xticklabels(('DFS', 'BFS', 'A*'))
-
-# Annotate each bar with the actual value
-for i, value in enumerate(nodes_expanded):
-    axs[1].text(i, value, str(value), ha='center', va='bottom')
-
-# Show plots
-plt.tight_layout()
-plt.show()
-
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\graphs.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\priority_queue.py -----
 import heapq
@@ -1363,8 +672,6 @@ class Solution:
     def n_steps(self) -> int:
         return len(self.actions)
 
-    ...
-
 def is_empty(data_structure) -> bool:
     """Returns True if data_structure is empty, False otherwise"""
     if isinstance(data_structure, list):
@@ -1384,7 +691,6 @@ def check_goal_state(problem: SearchProblem
         current_state_is_goal_state = problem.is_goal_state(current_state, objectives_reached)
     else:
         current_state_is_goal_state = problem.is_goal_state(current_state)
-        
     if current_state_is_goal_state:
         # print("Solution found!")
         print("nodes expanded: ", problem.nodes_expanded)
@@ -1434,7 +740,6 @@ def tree_search(problem: SearchProblem, mode: str) -> Optional[Solution]:
         data_structure = [(initial_state
                            , actions)]  #  to keep track of states
     visited = set()  # Set to keep track of visited states
-
     while not is_empty(data_structure):
         # Pop the top state from the data_structure
         if mode == "bfs":
@@ -1444,7 +749,6 @@ def tree_search(problem: SearchProblem, mode: str) -> Optional[Solution]:
                 current_state, actions, objectives_reached = data_structure.pop()
             else:
                 current_state, actions = data_structure.pop()
-
         # Check if the current state is in the visited set
         if was(current_state
                , objectives_reached
@@ -1481,7 +785,6 @@ def tree_search(problem: SearchProblem, mode: str) -> Optional[Solution]:
                 objectives_reached = None
             new_actions = actions + [successor_actions]
             if mode == "astar":
-                
                 if isinstance(problem, CornerSearchProblem) or isinstance(problem, GemSearchProblem):
                     successor_cost = problem.heuristic(successor, objectives_reached)
                     total_cost = cost + successor_cost
@@ -1512,55 +815,7 @@ def astar(problem: SearchProblem) -> Optional[Solution]:
     return tree_search(problem, "astar")
 
 if __name__ == "__main__":
-
-    # world = World.from_file("cartes/1_agent/simplest")
-    # world = World.from_file("cartes/1_agent/impossible_simplest")
-    # world = World.from_file("cartes/2_agents/impossible")
-    # world = World.from_file("cartes/1_agent/zigzag")
-    # world = World.from_file("cartes/2_agents/zigzag")
-    # world = World.from_file("cartes/2_agents/zigzag_simpler")
-    # world = World.from_file("cartes/corners_simplest")
-
-    # world = World.from_file("level3")
-    # world.reset()
-
-    # problem = SimpleSearchProblem(world)
-    # solution = dfs(problem)
-    # solution = astar(problem)
-    # print("solution: ", solution)
-
-    # world = World.from_file("cartes/gems_simplest")
-    # world = World.from_file("cartes/2_agents/zigzag")
-    # world = World.from_file("cartes/2_agents/zigzag_gems")
-    # world = World.from_file("cartes/gems")
-    # problem = GemSearchProblem(world)
-    # solution = astar(problem)
-    # print("solution: ", solution)
-    # check_world_done(problem, solution)
-    # if world.n_gems != world.gems_collected:
-    #     raise AssertionError("Your is_goal_state method is likely erroneous beacuse some gems have not been collected")
-
-
-
-    
-    # world = World(
-    #         """
-    #         S0 . X
-    #         . . ."""
-    #     )
-    # problem = SimpleSearchProblem(world)
-    # successors = list(problem.get_successors(problem.initial_state))
-    # assert len(successors) == 3
-    # world.reset()
-    # available = world.available_actions()[0]
-    # agent_pos = ((0, 0), (0, 1), (1, 0))
-    # for state, action, cost in successors:
-    #     assert action[0] in available
-    #     assert state.agents_positions[0] in agent_pos
-
-
     world = World.from_file("cartes/corners")
-    # world = World.from_file("cartes/corners5x5")
     problem = CornerSearchProblem(world)
     solution = astar(problem)
     world.reset()
@@ -1921,503 +1176,6 @@ def expectimax(mdp: MDP[A, S],
 
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\adversarial_search.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\auto_indent.py -----
-import sys
-import inspect
-
-
-class AutoIndent(object):
-    def __init__(self, stream):
-        self.stream = stream
-        self.offset = 0
-        self.frame_cache = {}
-
-    def flush(self):
-        pass
-
-    def indent_level(self):
-        i = 0
-        base = sys._getframe(2)
-        f = base.f_back
-        while f:
-            if id(f) in self.frame_cache:
-                i += 1
-            f = f.f_back
-        if i == 0:
-            # clear out the frame cache
-            self.frame_cache = {id(base): True}
-        else:
-            self.frame_cache[id(base)] = True
-        return i
-
-    def write(self, stuff):
-        # sys.stdout.reconfigure(encoding='utf-8')
-        stuff = stuff.encode('utf-8', errors='replace').decode('utf-8')
-
-        indentation = "  " * self.indent_level()
-
-        def indent(l):
-            if l:
-                return indentation + l
-            else:
-                return l
-
-        stuff = "\n".join([indent(line) for line in stuff.split("\n")])
-        self.stream.write(stuff)
-        # write stuff in file ./src/log.txt
-        with open("./src/log.txt", "a") as f:
-            # flush log.txt
-            f.seek(0)
-            f.write(stuff)
-
-
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\auto_indent.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\data.py -----
-from cmath import log
-from math import sqrt
-from lle import World
-from adversarial_search import minimax, alpha_beta, expectimax
-from utils import print_items
-from world_mdp import BetterValueFunction, WorldMDP
-import datetime
-from map_generator import MapGenerator
-
-
-def print_in_file(*args):
-    """Prints in file"""
-    with open("output.txt", "a") as file:
-        print(*args, file=file)
-
-# map on which minimax and alpha_beta differ the least
-map1 = """
-        S0 X
-        """
-map2 = """
-        S0 G  .  X
-        .  .  .  .
-        X L1N S1 .
-        """
-# map on which minimax and alpha_beta differ the most
-map3 = """
-        S0 G  X  .  .  .  .
-        X L1N S1 .  .  .  .
-        .  .  .  .  .  .  .
-        """        
-
-map4 = """
-        S0 G  S1
-        G  @  X
-        G  G  X
-        """
-
-map5 = """
-        S0 X  .
-        G  @  .
-        X  .  .
-        """
-
-map2023_10_29_13_48_15 = """.   G   S1 
-L0E S0  .  
-X   @   X  
-"""
-# results2023_10_29_13_48_15 = {
-# "depth":  3 ,
-# "minimax":  27 ,
-# "minimax_with_better_value_function":  27 ,
-# "alpha_beta":  22 ,
-# "alpha_beta_with_better_value_function":  16 ,
-# "expectimax":  27 ,
-# "action_minimax":  " North " ,
-# "action_minimax_with_better_value_function":  " North " ,
-# "action_alpha_beta":  " North " ,
-# "action_alpha_beta_with_better_value_function":  " North " ,
-# "action_expectimax":  " North " ,
-# }
-
-map2023_10_29_13_49_35 = """.  S0 S2 X 
-.  .  G  . 
-.  @  .  G 
-.  .  S1 . 
-.  .  X  X 
-"""
-# results2023_10_29_13_49_35 = {
-# "depth":  4 ,
-# "minimax":  2706 ,
-# "minimax_with_better_value_function":  2706 ,
-# "alpha_beta":  312 ,
-# "alpha_beta_with_better_value_function":  366 ,
-# "expectimax":  253 ,
-# "action_minimax":  " Stay " ,
-# "action_minimax_with_better_value_function":  " Stay " ,
-# "action_alpha_beta":  " Stay " ,
-# "action_alpha_beta_with_better_value_function":  " South " ,
-# "action_expectimax":  " South " ,
-# }
-
-map2023_10_29_13_53_25 = """G  .  .  .  .  G 
-X  .  G  S2 S0 G 
-.  .  G  X  S1 X 
-.  .  G  .  .  . 
-"""
-# results2023_10_29_13_53_25 = {
-# "depth":  4 ,
-# "minimax":  3160 ,
-# "minimax_with_better_value_function":  3160 ,
-# "alpha_beta":  929 ,
-# "alpha_beta_with_better_value_function":  436 ,
-# "expectimax":  303 ,
-# "action_minimax":  " East " ,
-# "action_minimax_with_better_value_function":  " East " ,
-# "action_alpha_beta":  " East " ,
-# "action_alpha_beta_with_better_value_function":  " East " ,
-# "action_expectimax":  " East " ,
-# }
-
-map2023_10_29_13_55_47 = """.   .   L0S .   .   S2 
-X   L1S .   S1  .   .  
-X   .   .   @   S0  X  
-"""
-# results2023_10_29_13_55_47 = {
-# "depth":  4 ,
-# "minimax":  701 ,
-# "minimax_with_better_value_function":  701 ,
-# "alpha_beta":  297 ,
-# "alpha_beta_with_better_value_function":  385 ,
-# "expectimax":  94 ,
-# "action_minimax":  " Stay " ,
-# "action_minimax_with_better_value_function":  " Stay " ,
-# "action_alpha_beta":  " Stay " ,
-# "action_alpha_beta_with_better_value_function":  " North " ,
-# "action_expectimax":  " East " ,
-# }
-
-map2023_10_29_13_56_42 = """.  X  G 
-@  @  S0
-.  .  . 
-.  .  . 
-.  X  S1
-"""
-# results2023_10_29_13_56_42 = {
-# "depth":  3 ,
-# "minimax":  41 ,
-# "minimax_with_better_value_function":  41 ,
-# "alpha_beta":  30 ,
-# "alpha_beta_with_better_value_function":  20 ,
-# "expectimax":  41 ,
-# "action_minimax":  " North " ,
-# "action_minimax_with_better_value_function":  " North " ,
-# "action_alpha_beta":  " North " ,
-# "action_alpha_beta_with_better_value_function":  " North " ,
-# "action_expectimax":  " North " ,
-# }
-# execute the 3 adversarial search algorithms on the 3 maps, 
-# , and for each map, compare the number of nodes extended during the search for 
-# minimax
-# , minimax with better value function
-#  alpha_beta 
-# alpha_beta with better value function
-# and expectimax     
-
-    
-def compare_adversarial_search_algorithms(maps: list[str]):
-    """
-    # execute the 3 adversarial search algorithms on the 3 maps, 
-        # , and for each map, compare the number of nodes extended during the search for 
-        # minimax
-        # , minimax with better value function
-        #  alpha_beta 
-        # alpha_beta with better value function
-        # and expectimax """
-
-
-
-    # date time
-    now = datetime.datetime.now()
-    print_in_file("date time: ", now.strftime("%Y-%m-%d %H:%M:%S"))
-
-    generator = MapGenerator()
-
-    for map in maps:
-                # , generator.generate_map_str()
-                # ]:
-        now = datetime.datetime.now()
-        date_time = now.strftime("%Y_%m_%d_%H_%M_%S")
-        world = World(map)
-        # print("map: \n", map)
-        print("map: \n")
-        print(map)
-        print_in_file("map"+ date_time + " = "+ "\"\"\""+map+"\"\"\"")
-        depth = 1+ int(sqrt(world.width + world.height))
-        # depth = 1+ log(world.width + world.height)
-        # depth = (world.width + world.height)//3
-        print_in_file("results"+ date_time + " = {")
-        print("depth: ", depth)
-        print_in_file("\"depth\": ", depth,",")
-
-        world.reset()
-        mdp = WorldMDP(world)
-        action_minimax = minimax(mdp, mdp.reset(), depth)
-        print("minimax: ", mdp.n_expanded_states)
-        print_in_file("\"minimax\": ", mdp.n_expanded_states,",")
-        world.reset()
-        mdp = BetterValueFunction(world)
-        action_minimax_with_better_value_function = minimax(mdp, mdp.reset(), depth)
-        print("minimax_with_better_value_function: ", mdp.n_expanded_states)
-        print_in_file("\"minimax_with_better_value_function\": ", mdp.n_expanded_states,",")
-        world.reset()
-        mdp = WorldMDP(world)
-        action_alpha_beta = alpha_beta(mdp, mdp.reset(), depth)  
-        print("alpha_beta: ", mdp.n_expanded_states)
-        print_in_file("\"alpha_beta\": ", mdp.n_expanded_states,",")
-        world.reset()
-        mdp = BetterValueFunction(world)
-        action_alpha_beta_better_value_function = alpha_beta(mdp, mdp.reset(), depth)
-        print("alpha_beta with better value function: ", mdp.n_expanded_states)
-        print_in_file("\"alpha_beta_with_better_value_function\": ", mdp.n_expanded_states,",")
-        world.reset()
-        mdp = WorldMDP(world)
-        action_expectimax = expectimax(mdp, mdp.reset(), depth)
-        print("expectimax: ", mdp.n_expanded_states)
-        print_in_file("\"expectimax\": ", mdp.n_expanded_states,",")
-        print("action_minimax: ", action_minimax)
-        print_in_file("\"action_minimax\": ", "\"",str(action_minimax),"\"",",")
-        print("action_minimax_with_better_value_function: ", action_minimax_with_better_value_function)
-        print_in_file("\"action_minimax_with_better_value_function\": ", "\"",str(action_minimax_with_better_value_function),"\"",",")
-        print("action_alpha_beta: ", action_alpha_beta)
-        print_in_file("\"action_alpha_beta\": ", "\"",str(action_alpha_beta),"\"",",")
-        print("action_alpha_beta_better_value_function: ", action_alpha_beta_better_value_function)
-        print_in_file("\"action_alpha_beta_better_value_function\": ", "\"",str(action_alpha_beta_better_value_function),"\"",",")
-        print("action_expectimax: ", action_expectimax)
-        print_in_file("\"action_expectimax\": ", "\"",str(action_expectimax),"\"",",")
-        print_in_file("}")
-
-compare_adversarial_search_algorithms([map2023_10_29_13_48_15
-                                        , map2023_10_29_13_49_35
-                                        , map2023_10_29_13_53_25
-                                        , map2023_10_29_13_55_47
-                                        , map2023_10_29_13_56_42
-                                        ])
-
-
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\data.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\graphs.py -----
-# this file does the following:
-
-
-# compare the number of nodes extended during the search for 
-    # • minimax,
-    # • minimax avec votre meilleure fonction d’évaluation,
-    # • alpha_beta,
-    # • alpha_beta avec la meilleure fonction d’évaluation.
-    # • expectimax
-# when searching
-# on different maps,
-
-
-
-import os
-import numpy as np
-from typing import List, Tuple
-from lle import World
-import time
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from matplotlib.ticker import LinearLocator
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import colors
-
-plt.rcParams['text.usetex'] = True
-plt.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
-
-
-map2023_10_29_13_48_15 = """.   G   S1 
-L0E S0  .  
-X   @   X  
-"""
-results2023_10_29_13_48_15 = {
-"depth":  3 ,
-"minimax":  27 ,
-"minimax_with_better_value_function":  27 ,
-"alpha_beta":  22 ,
-"alpha_beta_with_better_value_function":  16 ,
-"expectimax":  27 ,
-"action_minimax":  " North " ,
-"action_minimax_with_better_value_function":  " North " ,
-"action_alpha_beta":  " North " ,
-"action_alpha_beta_with_better_value_function":  " North " ,
-"action_expectimax":  " North " ,
-}
-
-map2023_10_29_13_49_35 = """.  S0 S2 X 
-.  .  G  . 
-.  @  .  G 
-.  .  S1 . 
-.  .  X  X 
-"""
-results2023_10_29_13_49_35 = {
-"depth":  4 ,
-"minimax":  2706 ,
-"minimax_with_better_value_function":  2706 ,
-"alpha_beta":  312 ,
-"alpha_beta_with_better_value_function":  366 ,
-"expectimax":  2706 ,
-"action_minimax":  " Stay " ,
-"action_minimax_with_better_value_function":  " Stay " ,
-"action_alpha_beta":  " Stay " ,
-"action_alpha_beta_with_better_value_function":  " South " ,
-"action_expectimax":  " South " ,
-}
-
-map2023_10_29_13_53_25 = """G  .  .  .  .  G 
-X  .  G  S2 S0 G 
-.  .  G  X  S1 X 
-.  .  G  .  .  . 
-"""
-results2023_10_29_13_53_25 = {
-"depth":  4 ,
-"minimax":  3160 ,
-"minimax_with_better_value_function":  3160 ,
-"alpha_beta":  929 ,
-"alpha_beta_with_better_value_function":  436 ,
-"expectimax":  3160 ,
-"action_minimax":  " East " ,
-"action_minimax_with_better_value_function":  " East " ,
-"action_alpha_beta":  " East " ,
-"action_alpha_beta_with_better_value_function":  " East " ,
-"action_expectimax":  " East " ,
-}
-
-map2023_10_29_13_55_47 = """.   .   L0S .   .   S2 
-X   L1S .   S1  .   .  
-X   .   .   @   S0  X  
-"""
-results2023_10_29_13_55_47 = {
-"depth":  4 ,
-"minimax":  701 ,
-"minimax_with_better_value_function":  701 ,
-"alpha_beta":  297 ,
-"alpha_beta_with_better_value_function":  385 ,
-"expectimax":  701 ,
-"action_minimax":  " Stay " ,
-"action_minimax_with_better_value_function":  " North " ,
-"action_alpha_beta":  " Stay " ,
-"action_alpha_beta_with_better_value_function":  " North " ,
-"action_expectimax":  " Stay " ,
-}
-
-map2023_10_29_13_56_42 = """.  X  G 
-@  @  S0
-.  .  . 
-.  .  . 
-.  X  S1
-"""
-results2023_10_29_13_56_42 = {
-"depth":  3 ,
-"minimax":  41 ,
-"minimax_with_better_value_function":  41 ,
-"alpha_beta":  30 ,
-"alpha_beta_with_better_value_function":  20 ,
-"expectimax":  41 ,
-"action_minimax":  " North " ,
-"action_minimax_with_better_value_function":  " North " ,
-"action_alpha_beta":  " North " ,
-"action_alpha_beta_with_better_value_function":  " North " ,
-"action_expectimax":  " North " ,
-}
-
-
-def find_var_name(var):
-    for name, value in globals().items():
-        if var is value:
-            return name
-
-# for each map, create a bar graph to compare the number of nodes expanded and action by each algorithm
-
-def transcript_to_tex(map):
-    """Transcribes map_name to its LaTeX equivalent for use in matplotlib titles."""
-    # Dictionary mapping special characters to their LaTeX-safe versions
-    special_chars = {
-        ' ': r'\;',  # Space
-        '.': r'\textperiodcentered',  # Period
-        'G': r'G',  # G doesn't need escaping
-        'S': r'S',  # S doesn't need escaping
-        '1': r'1',  # 1 doesn't need escaping
-        'L': r'L',  # L doesn't need escaping
-        '0': r'0',  # 0 doesn't need escaping
-        'E': r'E',  # E doesn't need escaping
-        'X': r'X',  # X doesn't need escaping
-        '@': r'\textcircled{a}',  # @ symbol
-    }
-    
-    # Replace each character in map_name with its LaTeX-safe version
-    map_name_title = ''.join(special_chars.get(c, c) for c in map)
-    
-    return map_name_title
-
-
-def create_bar_graph(map_name, results):
-    # Extract only the node expansion counts for each algorithm
-    node_expanded_keys = ['minimax', 'minimax_with_better_value_function', 'alpha_beta', 'alpha_beta_with_better_value_function', 'expectimax']
-    node_expansions = {k: results[k] for k in ['minimax', 'minimax_with_better_value_function', 'alpha_beta', 'alpha_beta_with_better_value_function', 'expectimax']}
-    
-    labels = ['minimax', 'minimax \n with_better_value_function', 'alpha_beta', 'alpha_beta \n with_better_value_function', 'expectimax']
-    values = list(node_expansions.values())
-    
-    # Create the bar graph
-    fig, ax = plt.subplots()
-    bars = ax.bar(labels, values, color=['red', 'green', 'blue', 'yellow', 'purple'])
-    
-    # Annotate the bars with the corresponding action
-    for bar, label in zip(bars, node_expanded_keys):
-        ax.text(bar.get_x() + bar.get_width() / 2 - 0.1, bar.get_height() - 0.1, str(results[label]) + "\n" + results[f'action_{label.lower()}'], va='center', ha='center')
-    
-    ax.set_ylabel('Nodes Expanded with depth = ' + str(results["depth"]))
-    ax.set_xlabel('Algorithms')
-    print("map_name: ", map_name)
-    map_name_title = transcript_to_tex(map_name)
-
-    print("map_name_title: ", map_name_title)
-    # plt.title(r'$\text{' + map_name_title + '}$', usetex=True)
-    # plt.title(r'{map_name_title}', usetex=True)
-    plt.title(map_name_title, usetex=True)
-
-    plt.tight_layout()
-    # plt.show()
-    if not os.path.exists('graphs'):
-        os.makedirs('graphs')
-
-    map_name_variable_name = find_var_name(map_name)
-    plt.savefig(f'graphs/{map_name_variable_name}.png')
-
-for map, results in zip([map2023_10_29_13_48_15
-                        , map2023_10_29_13_49_35
-                        , map2023_10_29_13_53_25
-                        , map2023_10_29_13_55_47
-                        , map2023_10_29_13_56_42
-                        ]
-                        , [results2023_10_29_13_48_15
-                        , results2023_10_29_13_49_35
-                        , results2023_10_29_13_53_25
-                        , results2023_10_29_13_55_47
-                        , results2023_10_29_13_56_42
-                        ]):
-    create_bar_graph(map, results)
-
-# create_bar_graph(map2023_10_29_13_48_15, results2023_10_29_13_48_15)
-
-
-a = 1
-# print(find_var_name(a))  # Output: "a"
-# print(find_var_name(1))  # Output: "a"
-
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\graphs.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\latextest.py -----
 import matplotlib.pyplot as plt
@@ -3373,6 +2131,13 @@ class BetterValueFunction(WorldMDP):
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\world_mdp.py -----
 
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\almost_equal.py -----
+def almost_equal(a, b):
+    return abs(a - b) < 1e-6
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\almost_equal.py -----
+
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\analysis.py -----
 from dataclasses import (
     dataclass,
@@ -3389,7 +2154,6 @@ class Parameters:
     """Discount factor"""
     noise: float
     """Probability of taking a random action instead of the chosen one"""
-
 
 def prefer_close_exit_following_the_cliff() -> Parameters:
     # A strategy focusing on reaching the closest exit quickly, even if it means taking risks.
@@ -3427,6 +2191,140 @@ if __name__ == "__main__":
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\analysis.py -----
 
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\auto_indent.py -----
+import sys
+import inspect
+
+
+class AutoIndent(object):
+    def __init__(self, stream):
+        self.stream = stream
+        self.offset = 0
+        self.frame_cache = {}
+
+    def flush(self):
+        pass
+
+    def indent_level(self):
+        i = 0
+        base = sys._getframe(2)
+        f = base.f_back
+        while f:
+            if id(f) in self.frame_cache:
+                i += 1
+            f = f.f_back
+        if i == 0:
+            # clear out the frame cache
+            self.frame_cache = {id(base): True}
+        else:
+            self.frame_cache[id(base)] = True
+        return i
+
+    def write(self, stuff):
+        # sys.stdout.reconfigure(encoding='utf-8')
+        stuff = stuff.encode('utf-8', errors='replace').decode('utf-8')
+
+        indentation = "  " * self.indent_level()
+
+        def indent(l):
+            if l:
+                return indentation + l
+            else:
+                return l
+
+        stuff = "\n".join([indent(line) for line in stuff.split("\n")])
+        self.stream.write(stuff)
+        # write stuff in file ./src/log.txt
+        with open("./src/log.txt", "a") as f:
+            # flush log.txt
+            f.seek(0)
+            f.write(stuff)
+
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\auto_indent.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\graph_mdp.py -----
+import json
+from dataclasses import dataclass
+from mdp import MDP
+
+Action = str
+State = str
+
+
+@dataclass
+class Transition:
+    source: State
+    action: Action
+    destination: State
+    reward: float
+    probability: float
+
+
+class GraphMDP(MDP[str, str]):
+    @staticmethod
+    def from_json(filename: str) -> "GraphMDP":
+        with open(filename, "r") as f:
+            data = json.load(f)
+            start_states = data["start_state"]
+            end_states = data["end_states"]
+            transitions = {}
+            for source, actions in data["transitions"].items():
+                transitions[source] = {}
+                for action, destinations in actions.items():
+                    transitions[source][action] = []
+                    for dest in destinations:
+                        transitions[source][action].append(
+                            Transition(
+                                source,
+                                action,
+                                dest["to"],
+                                dest["reward"],
+                                dest["probability"],
+                            )
+                        )
+            return GraphMDP(start_states, end_states, transitions)
+
+    def __init__(
+        self,
+        start_states: list[State],
+        end_states: list[State],
+        transitions: dict[State, dict[Action, list[Transition]]],
+    ):
+        self.start_states = set(start_states)
+        self.end_states = set(end_states)
+        self._transitions = transitions
+        self._all_states = self.start_states.union(self.end_states).union(
+            set(transitions.keys())
+        )
+
+    def is_final(self, state: State) -> bool:
+        return state in self.end_states
+
+    def transitions(self, state: State, action: Action) -> list[tuple[State, float]]:
+        return [
+            (t.destination, t.probability) for t in self._transitions[state][action]
+        ]
+
+    def available_actions(self, state: str):
+        return self._transitions[state].keys()
+
+    def reward(self, state: str, action: str, new_state) -> float:
+        transitions = self._transitions[state][action]
+        for t in transitions:
+            if t.destination == new_state:
+                return t.reward
+        raise ValueError(
+            f"Invalid transition from {state} to {new_state} with action {action}"
+        )
+
+    def states(self):
+        return self._all_states
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\graph_mdp.py -----
+
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\mdp.py -----
 from typing import TypeVar, Generic
 from abc import abstractmethod, ABC
@@ -3438,6 +2336,8 @@ S = TypeVar("S")
 
 class MDP(ABC, Generic[S, A]):
     """Adversarial Markov Decision Process"""
+
+    # gems_quantity = S.
     @abstractmethod
     def is_final(self, state: S) -> bool:
         """Returns true 
@@ -3500,12 +2400,26 @@ if __name__ == "__main__":
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----
-from .mdp import MDP, S, A
+import copy
+import sys
+
+from lle import World, WorldState
+from almost_equal import almost_equal
+from graph_mdp import GraphMDP
+from mdp import MDP, S, A
 from typing import Generic
+
+from auto_indent import AutoIndent
+from world_mdp import WorldMDP
+import utils
+
+sys.stdout = AutoIndent(sys.stdout)
 
 
 class ValueIteration(Generic[S, A]):
-    def __init__(self, mdp: MDP[S, A], gamma: float):  # discount factor
+    def __init__(self, 
+                 mdp: MDP[S, A], 
+                 gamma: float):  # discount factor
         # senf.values est nécessaire pour fonctionner avec utils.show_values
         self.mdp = mdp
         self.gamma = gamma
@@ -3513,6 +2427,7 @@ class ValueIteration(Generic[S, A]):
         self.values = {
             state: 0.0 for state in mdp.states()
         }  # Initialize all states with a default value
+        utils.show_values(self.values)
 
     def value(self, state: S) -> float:
         """Returns the value of the given state."""
@@ -3531,43 +2446,69 @@ class ValueIteration(Generic[S, A]):
     def qvalue(self, state: S, action: A) -> float:
         """
         Returns the Q-value
-        of the given state-action pair 
+        of the given state-action pair
         based on the state values.
         from Bellman equation:
         Q(s,a) = Sum(P(s,a,s') * (R(s,a,s') + gamma * V(s')))
         """
-        # new_state = max(
-        #     self.mdp.transitions(state, action), key=lambda transition: transition[1]
-        # )[
-        #     0
-        # ]  # Most probable next state
         qvalue = 0.0
-        # reward = self.mdp.reward(state, action, new_state)
-        for next_state, prob in self.mdp.transitions(state, action):
+        next_states_and_probs = self.mdp.transitions(state, action)
+        print("next_states_and_probs: \n", next_states_and_probs, "\n")
+        for next_state, prob in next_states_and_probs:
             reward = self.mdp.reward(state, action, next_state)
             print("P(", state, action, next_state, "):", prob)
             print("R(", state, action, next_state, "):", reward)
             qvalue += prob * (reward + self.gamma * self.value(next_state))
         print("Q-value of", state, action, ":", qvalue)
+        print()
         return qvalue
 
     def _compute_value_from_qvalues(self, state: S) -> float:
         """
         Returns the value of the given state based on the Q-values.
-        from Bellman equation: 
+        from Bellman equation:
         V(s) = max_a Sum(P(s,a,s') * (R(s,a,s') + gamma * V(s')))
 
-        This is a private method, 
+        This is a private method,
         meant to be used by the value_iteration method.
         """
         return max(
-            self.qvalue(state, action) 
-            for action in self.mdp.available_actions(state)
+            self.qvalue(state, action) for action in self.mdp.available_actions(state)
         )
 
-    def show_iteration_values(self, iteration: int, states: list[S]):
-        """Prints the map with each tile actions values."""
-        print("image placeholder")
+    def get_values_at_position(self, i: int, j: int) -> list[float]:
+        """Returns the values of the states at the given position."""
+        # world_gems_quantity = self.mdp.
+        states_at_position = [
+            state
+            for state in self.mdp.states()
+            if state.agents_positions[0] == (i, j)
+        ]
+        values_at_position = [self.value(state) for state in states_at_position]
+        increasing_values = sorted(values_at_position)
+
+        return increasing_values
+
+    def print_values_table(self):
+        """In a map's representation table, 
+        each tile contains the possible values at that position."""
+        if not isinstance(self.mdp, WorldMDP):
+            print("Cannot print values table for non-world MDP")
+            return None
+        max_len = 0
+        for i in range(self.mdp.world.height):
+            for j in range(self.mdp.world.width):
+                values = self.get_values_at_position(i, j)
+                # Convert the list of values to a string and find the maximum length
+                values_str = str(values)
+                max_len = max(max_len, len(values_str))
+
+        for i in range(self.mdp.world.height):
+            for j in range(self.mdp.world.width):
+                values = self.get_values_at_position(i, j)
+                # Format each string to have the same width
+                print(f"{str(values):<{max_len}}", end=" ")
+            print()
 
     def print_iteration_values(self, iteration: int):
         """Prints the states and their values."""
@@ -3580,19 +2521,113 @@ class ValueIteration(Generic[S, A]):
         states = self.mdp.states()
 
         for _ in range(n):
-            new_values = dict[S, float]()
-            self.values = {state: 0.0 for state in self.mdp.states()}
+            new_values = copy.deepcopy(self.values)
             for state in states:
                 if self.mdp.is_final(state):
                     print("Final state", state)
-                    new_values[state] = 0
+                    new_values[state] = 0.0
                 else:
                     new_values[state] = self._compute_value_from_qvalues(state)
             self.values = new_values
+            # self.print_iteration_values(_)
         self.print_iteration_values(n)
+        self.print_values_table()
+
+
+if __name__ == "__main__":
+    # graph
+    # b - +1 - a - -1 - c
+    # graph_file_name = "tests/graphs/graph1.json"
+    # mdp = GraphMDP.from_json(graph_file_name)
+    # gamma = 0.9
+    # algo = ValueIteration(mdp, gamma)
+    # # algo.value_iteration(10)
+    # algo.value_iteration(100)
+    # assert almost_equal(algo.qvalue("a", "left"), 0.6)  # no change from iteration 0
+    # assert almost_equal(
+    #     algo.qvalue("a", "right"), 0.90909090909
+    # )  # more than iteration 0 & 1
+
+    mdp = WorldMDP(
+        World(
+            """
+    .  . . X
+    .  @ . V
+    S0 . . ."""
+        )
+    )
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(10)
+    # algo.value_iteration(100)
+    # expected = [
+    #     [1.62, 1.80, 2.0, 0.0],
+    #     [1.458, 0.0, 1.80, 0.0],
+    #     [1.3122, 1.458, 1.62, 1.458],
+    # ]
+    # for i in range(mdp.world.height):
+    #     for j in range(mdp.world.width):
+    #         state = WorldState([(i, j)], [])
+    #         assert almost_equal(algo.value(state), expected[i][j])
 
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\world_mdp.py -----
+from itertools import product
+from typing import Iterable
+from lle import World, WorldState, Action
+from mdp import MDP
+
+
+class WorldMDP(MDP[WorldState, list[Action]]):
+    def __init__(self, world: World):
+        self.world = world
+
+    def available_actions(self, state: WorldState):
+        self.world.set_state(state)
+        available = self.world.available_actions()
+        return list(product(*available))
+
+    def transitions(
+        self, state: WorldState, action: list[Action]
+    ) -> list[tuple[WorldState, float]]:
+        self.world.set_state(state)
+        self.world.step(action)
+        return [(self.world.get_state(), 1.0)]
+
+    def is_final(self, state: WorldState) -> bool:
+        self.world.set_state(state)
+        return self.world.done
+
+    def reward(
+        self,
+        state: WorldState,
+        action: list[Action],
+        new_state: WorldState,
+    ) -> float:
+        # Step the world and check if the new state is the same as the given one
+        # If if is not the same, then test all the other available actions.
+        self.world.set_state(state)
+        actions = [action] + [[a] for a in self.world.available_actions()[0]]
+        for a in actions:
+            r = self.world.step(a)
+            if self.world.get_state() == new_state:
+                return r
+            self.world.set_state(state)
+        raise ValueError("The new state is not reachable from the given state")
+
+    def states(self) -> Iterable[WorldState]:
+        all_positions = set(product(range(self.world.height), range(self.world.width)))
+        all_positions = all_positions.difference(set(self.world.wall_pos))
+        agents_positions = list(product(all_positions, repeat=self.world.n_agents))
+        collection_status = list(product([True, False], repeat=self.world.n_gems))
+
+        for pos, collected in product(agents_positions, collection_status):
+            s = WorldState(list(pos), list(collected))
+            yield s
+
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\world_mdp.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\__init__.py -----
 
@@ -4033,7 +3068,9 @@ class WorldMDP(MDP[WorldState, list[Action]]):
         return list(product(*available))
 
     def transitions(
-        self, state: WorldState, action: list[Action]
+        self, 
+        state: WorldState, 
+        action: list[Action]
     ) -> list[tuple[WorldState, float]]:
         self.world.set_state(state)
         self.world.step(action)
@@ -4176,7 +3213,3 @@ V  V V V V
 
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graphs\graph1.json -----
 
-
------ Terminal Output -----
-
------ Terminal Errors -----

@@ -8,6 +8,8 @@ S = TypeVar("S")
 
 class MDP(ABC, Generic[S, A]):
     """Adversarial Markov Decision Process"""
+
+    # gems_quantity = S.
     @abstractmethod
     def is_final(self, state: S) -> bool:
         """Returns true 

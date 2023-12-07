@@ -31,6 +31,7 @@ class Watcher:
         self.DIRECTORY_TO_WATCH = os.path.dirname(os.path.abspath(__file__))
         # List of directories- or files- names to exclude
         self.EXCLUDE_NAMES = [
+            "project_to_txt.py",
             # pytest cache
             ".pytest_cache",
             # venv
@@ -39,8 +40,13 @@ class Watcher:
             "__pycache__",
             # poetry lock file
             "poetry.lock",
-            "project_to_txt.py",
             "combined.txt",
+            "log.txt",
+            "pdfs_compare.py",
+            "character_quantifier.py",
+            "report.tex",
+            "graphs.py",
+            "data.py"
         ]
         self.EXCLUDE_PATHS = [
             # pytest cache
@@ -87,19 +93,18 @@ class Handler(FileSystemEventHandler):
         event_src_path = event.src_path
         print("Event:", event.event_type, event_src_path)
         event_src_path_file_name = os.path.basename(event.src_path)
-     
+
         # if event_src_path contains any of the exclude names, return early
         for exclude_name in self.watcher.EXCLUDE_NAMES:
             if exclude_name in event_src_path:
-                #print("Event for excluded name:", 
+                # print("Event for excluded name:",
                 #      exclude_name,
                 #        "in path:",
                 #    event_src_path)
                 return None
         # Check if the event is for any of the exclude paths or exclude names
         if any(
-            exclude_path in event.src_path 
-            for exclude_path in self.exclude_paths
+            exclude_path in event.src_path for exclude_path in self.exclude_paths
         ) or any(
             exclude_name in event_src_path_file_name
             for exclude_name in self.watcher.EXCLUDE_NAMES
@@ -107,7 +112,7 @@ class Handler(FileSystemEventHandler):
             print("Event for excluded path or name:", event.src_path)
             #  and return early if it is
             return None
-       
+
         elif event.event_type == "modified":
             # Action when a file is modified
             print(f"File {event.src_path} has been modified")
@@ -129,7 +134,12 @@ def is_readable_text(filepath):
         print(f"Error checking if file is text: {e}")
         return False
 
-
+def get_characters_quantity(file_path: str) -> int:
+    """Returns the quantity of characters in combined.txt"""
+    print("file_path: ", file_path)
+    with open(file_path, "r", encoding="utf-8") as file:
+        return len(file.read())
+    
 def combine_files(watcher):
     root_directory = watcher.DIRECTORY_TO_WATCH  # "/path/to/your/files"
     exclude_names = watcher.EXCLUDE_NAMES
@@ -153,12 +163,23 @@ def combine_files(watcher):
                         print(f"Could not read file {filepath}: {e}")
         with capture_output() as (out, err):
             # Append captured terminal output and errors
-            outfile.write("\n----- Terminal Output -----\n")
-            outfile.write(out.getvalue())
-            outfile.write("\n----- Terminal Errors -----\n")
-            outfile.write(err.getvalue())
+            if out.getvalue():
+                outfile.write("\n----- Terminal Output -----\n")
+                outfile.write(out.getvalue())
+            if err.getvalue():
+                outfile.write("\n----- Terminal Errors -----\n")
+                outfile.write(err.getvalue())
 
     print(f"All files have been combined into {output_file}")
+    # if characters quantity is greater than 100000, print a warning that chatGPT may not work
+    characters_quantity = get_characters_quantity(output_file) 
+    limit = 130000
+    if characters_quantity> limit:
+        print("Warning: the combined file has",
+                characters_quantity,
+                "characters, which is more than ",
+                limit,
+                "characters, chatGPT may not work")
 
 
 if __name__ == "__main__":
