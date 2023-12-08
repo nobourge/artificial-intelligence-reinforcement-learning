@@ -96,7 +96,7 @@ class ValueIteration(Generic[S, A]):
         """In a map's representation table,
         each tile contains the possible values at that position."""
         if not isinstance(self.mdp, WorldMDP):
-            print("Cannot print values table for non-world MDP")
+            # print("Cannot print values table for non-world MDP")
             return None
         print("Iteration", n, "Values table: ")
         max_len = 0
@@ -134,7 +134,7 @@ class ValueIteration(Generic[S, A]):
                     new_values[state] = self._compute_value_from_qvalues(state)
             self.values = new_values
             self.print_values_table(_)
-        self.print_iteration_values(n)
+        # self.print_iteration_values(n)
 
 
 if __name__ == "__main__":
