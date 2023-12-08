@@ -160,7 +160,6 @@ if __name__ == "__main__":
         )
     )
     algo = ValueIteration(mdp, 0.9)
-    # algo.value_iteration(10)
     algo.value_iteration(100)
     expected = [
         [1.62, 1.80, 2.0, 0.0],

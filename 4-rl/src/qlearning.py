@@ -4,9 +4,6 @@ import numpy.typing as npt
 
 import sys
 
-print(sys.path)
-
-
 class QLearning:
     """Tabular QLearning"""
 

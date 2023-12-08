@@ -2,14 +2,7 @@ import os
 import pdfplumber
 from difflib import unified_diff
 
-
-def extract_text_from_pdf(pdf_path):
-    text = ""
-    with pdfplumber.open(pdf_path) as pdf:
-        for page in pdf.pages:
-            text += page.extract_text() + "\n"
-    return text
-
+from extract_pdf_txt import extract_text_from_pdf
 
 def compare_pdfs(pdf1_path, pdf2_path):
     pdf1_text = extract_text_from_pdf(pdf1_path)

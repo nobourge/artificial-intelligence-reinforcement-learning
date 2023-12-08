@@ -6,6 +6,8 @@ import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+from extract_pdf_txt import extract_text_from_pdf
+
 
 # Context manager to capture output
 @contextmanager
@@ -46,7 +48,7 @@ class Watcher:
             "character_quantifier.py",
             "report.tex",
             "graphs.py",
-            "data.py"
+            "data.py",
         ]
         self.EXCLUDE_PATHS = [
             # pytest cache
@@ -134,12 +136,14 @@ def is_readable_text(filepath):
         print(f"Error checking if file is text: {e}")
         return False
 
+
 def get_characters_quantity(file_path: str) -> int:
     """Returns the quantity of characters in combined.txt"""
     print("file_path: ", file_path)
     with open(file_path, "r", encoding="utf-8") as file:
         return len(file.read())
-    
+
+
 def combine_files(watcher):
     root_directory = watcher.DIRECTORY_TO_WATCH  # "/path/to/your/files"
     exclude_names = watcher.EXCLUDE_NAMES
@@ -153,14 +157,22 @@ def combine_files(watcher):
                 if filename in exclude_names:
                     continue
                 filepath = os.path.join(subdir, filename)
-                if is_readable_text(filepath):
+                # if file is pdf, extract text from pdf
+                if filepath.endswith(".pdf"):
+                    try:
+                        content = extract_text_from_pdf(filepath)
+                    except Exception as e:
+                        print(f"Could not read pdf {filepath}: {e}")
+                elif is_readable_text(filepath):
                     try:
                         with open(filepath, "r", encoding="utf-8") as infile:
-                            outfile.write(f"----- Start of {filepath} -----\n")
-                            outfile.write(infile.read() + "\n\n")
-                            outfile.write(f"----- End of {filepath} -----\n\n")
+                            content = infile.read()
+
                     except Exception as e:
                         print(f"Could not read file {filepath}: {e}")
+                outfile.write(f"----- Start of {filepath} -----")
+                outfile.write(content)
+                outfile.write(f"----- End of {filepath} -----\n\n")
         with capture_output() as (out, err):
             # Append captured terminal output and errors
             if out.getvalue():
@@ -172,14 +184,16 @@ def combine_files(watcher):
 
     print(f"All files have been combined into {output_file}")
     # if characters quantity is greater than 100000, print a warning that chatGPT may not work
-    characters_quantity = get_characters_quantity(output_file) 
+    characters_quantity = get_characters_quantity(output_file)
     limit = 130000
-    if characters_quantity> limit:
-        print("Warning: the combined file has",
-                characters_quantity,
-                "characters, which is more than ",
-                limit,
-                "characters, chatGPT may not work")
+    if characters_quantity > limit:
+        print(
+            "Warning: the combined file has",
+            characters_quantity,
+            "characters, which is more than ",
+            limit,
+            "characters, chatGPT may not work",
+        )
 
 
 if __name__ == "__main__":
