@@ -40,7 +40,7 @@ class WorldMDP(MDP[WorldState, list[Action]]):
             r = self.world.step(a)
             if self.world.get_state() == new_state:
                 return r
-            self.world.set_state(state)
+            self.world.set_state(state) # Reset the world to the given state
         raise ValueError("The new state is not reachable from the given state")
 
     def states(self) -> Iterable[WorldState]:
