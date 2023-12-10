@@ -1,0 +1,87 @@
+# qlearning inheriting agent
+
+import numpy as np
+import random
+import sys
+import os
+import time
+from rlenv import Observation, RLEnv
+from typing import Dict, Tuple, List, Iterable, Generic, Optional, Callable, Set
+from mdp import MDP, S, A
+from auto_indent import AutoIndent
+from world_mdp import WorldMDP
+import utils
+from qlearning import QLearning
+from lle import LLE, Action, Agent, AgentId, WorldState
+from rlenv.wrappers import TimeLimit
+
+sys.stdout = AutoIndent(sys.stdout)
+
+
+class QAgent(QLearning):
+    def __init__(
+        self,
+        env: RLEnv,
+        learning_rate: float = 0.1,
+        discount_factor: float = 0.9,
+        epsilon: float = 0.1,
+        seed: int = None,
+    ):
+        # Initialize the MDP
+        self.mdp = WorldMDP(env.world)
+        # Initialize the agent
+        super().__init__(
+            self.mdp,
+            learning_rate=learning_rate,
+            discount_factor=discount_factor,
+            epsilon=epsilon,
+            actions=env.world.available_actions()[0],
+            seed=seed,
+        )
+        # Initialize the environment
+        self.env = env
+
+    def train(self, 
+              agents,
+              episodes_quantity: int):
+        env = TimeLimit(LLE.level(1), 80)  # Maximum 80 time steps
+        
+        observation = env.reset()
+        done = truncated = False
+        score = 0
+        while not (done or truncated):
+            actions = [a.choose_action(observation) for a in agents]
+            next_observation, reward, done, truncated, info = env.step(actions)
+            print("observation:", next_observation)
+            print("reward:", reward)
+            print("done:", done)
+            print("truncated:", truncated)
+            print("info:", info)
+
+            for a in agents:
+                a.update(...)
+            score += reward
+            print("score:", score)
+            ...
+
+    def observe(self, observation: Observation):
+        """Observe the given observation"""
+        # Lorsque vous récupérez une observation, vous pouvez accéder à son contenu avec observation.data
+        # qui contient un tableau numpy dont la forme est (n_agents, ...)
+
+        observation_data = observation.data
+        print("observation_data:", observation_data)
+
+
+if __name__ == "__main__":
+    # Create the environment
+    env = LLE.level(1)
+    # Create the agents
+    agent = QAgent(env)
+
+    # Train the agent
+    agent.train(env, episodes_quantity=100)
+    # Test the agent
+    agent.test(env, episodes_quantity=100)
+    # Save the agent
+    agent.save("qlearning_agent.pkl") # pkl = pickle = sérialisation de données en Python 

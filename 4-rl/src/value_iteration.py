@@ -150,7 +150,6 @@ if __name__ == "__main__":
     # assert almost_equal(
     #     algo.qvalue("a", "right"), 0.90909090909
     # )  # more than iteration 0 & 1
-
     mdp = WorldMDP(
         World(
             """

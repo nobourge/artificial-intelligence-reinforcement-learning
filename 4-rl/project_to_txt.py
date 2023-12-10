@@ -34,12 +34,15 @@ class Watcher:
         # List of directories- or files- names to exclude
         self.EXCLUDE_NAMES = [
             "project_to_txt.py",
+            "auto_indent.py",
+            "internet",
             # pytest cache
             ".pytest_cache",
             # venv
             ".venv",
             # Python cache
             "__pycache__",
+            "pyproject.toml",
             # poetry lock file
             "poetry.lock",
             "combined.txt",
@@ -49,6 +52,12 @@ class Watcher:
             "report.tex",
             "graphs.py",
             "data.py",
+            "extract_pdf_txt.py",
+            "2023-2024_projet_2.pdf",
+            "2023-2024 projet RL-1.pdf",
+            "2023-2024 projet RL-v2.pdf",
+            "2-adversarial\doc\out\\report.pdf",
+            "report.pdf"
         ]
         self.EXCLUDE_PATHS = [
             # pytest cache
@@ -144,6 +153,16 @@ def get_characters_quantity(file_path: str) -> int:
         return len(file.read())
 
 
+def get_characters_and_words_quantity(file_path: str) -> tuple[int, int]:
+    """Returns the quantity of characters and words in combined.txt"""
+    print("file_path: ", file_path)
+    with open(file_path, "r", encoding="utf-8") as file:
+        content = file.read()
+        characters_quantity = len(content)
+        words_quantity = len(content.split())
+        return characters_quantity, words_quantity
+
+
 def combine_files(watcher):
     root_directory = watcher.DIRECTORY_TO_WATCH  # "/path/to/your/files"
     exclude_names = watcher.EXCLUDE_NAMES
@@ -170,9 +189,13 @@ def combine_files(watcher):
 
                     except Exception as e:
                         print(f"Could not read file {filepath}: {e}")
+                if not content:
+                    continue
                 outfile.write(f"----- Start of {filepath} -----")
                 outfile.write(content)
                 outfile.write(f"----- End of {filepath} -----\n\n")
+                content = ""
+
         with capture_output() as (out, err):
             # Append captured terminal output and errors
             if out.getvalue():
@@ -184,15 +207,23 @@ def combine_files(watcher):
 
     print(f"All files have been combined into {output_file}")
     # if characters quantity is greater than 100000, print a warning that chatGPT may not work
-    characters_quantity = get_characters_quantity(output_file)
-    limit = 130000
-    if characters_quantity > limit:
+    # characters_quantity = get_characters_quantity(output_file)
+    characters_quantity, tokens_quantity = get_characters_and_words_quantity(
+        output_file
+    )
+    characters_limit = 130000
+    tokens_limit = 100000
+    if characters_quantity > characters_limit:
         print(
             "Warning: the combined file has",
             characters_quantity,
-            "characters, which is more than ",
-            limit,
-            "characters, chatGPT may not work",
+            "characters for",
+            tokens_quantity,
+            "tokens, which is more than ",
+            characters_limit,
+            "characters for",
+            tokens_limit,
+            "tokens, chatGPT may not work",
         )
 
 
