@@ -11,58 +11,36 @@ from mdp import MDP, S, A
 from auto_indent import AutoIndent
 from world_mdp import WorldMDP
 import utils
-from qlearning import QLearning
 from lle import LLE, Action, Agent, AgentId, WorldState
 from rlenv.wrappers import TimeLimit
+# import Action class :
+
 
 sys.stdout = AutoIndent(sys.stdout)
 
 
-class QAgent(QLearning):
+# class QAgent(QLearning):
+class QAgent:
     def __init__(
         self,
         env: RLEnv,
+        mdp: MDP[S, A],
         learning_rate: float = 0.1,
         discount_factor: float = 0.9,
         epsilon: float = 0.1,
         seed: int = None,
     ):
         # Initialize the MDP
-        self.mdp = WorldMDP(env.world)
-        # Initialize the agent
-        super().__init__(
-            self.mdp,
-            learning_rate=learning_rate,
-            discount_factor=discount_factor,
-            epsilon=epsilon,
-            actions=env.world.available_actions()[0],
-            seed=seed,
-        )
+        self.mdp = mdp
+
         # Initialize the environment
         self.env = env
 
-    def train(self, 
-              agents,
-              episodes_quantity: int):
-        env = TimeLimit(LLE.level(1), 80)  # Maximum 80 time steps
-        
-        observation = env.reset()
-        done = truncated = False
-        score = 0
-        while not (done or truncated):
-            actions = [a.choose_action(observation) for a in agents]
-            next_observation, reward, done, truncated, info = env.step(actions)
-            print("observation:", next_observation)
-            print("reward:", reward)
-            print("done:", done)
-            print("truncated:", truncated)
-            print("info:", info)
-
-            for a in agents:
-                a.update(...)
-            score += reward
-            print("score:", score)
-            ...
+        # Initialize Q-table as a dictionary                            
+        # Pour favoriser l’exploration, initialisez vos 𝑄(𝑠, 𝑎) à 1 et non à 0
+        self.q_table = {
+            state: {action: 1 for action in Action.ALL} for state in mdp.states()
+        }
 
     def observe(self, observation: Observation):
         """Observe the given observation"""
@@ -71,6 +49,20 @@ class QAgent(QLearning):
 
         observation_data = observation.data
         print("observation_data:", observation_data)
+
+    def choose_action(self, state):
+        """Choose an action using the epsilon-greedy policy"""
+        if self.rng.uniform(0, 1) < self.epsilon:
+            # Exploration: Random Action
+            action = self.rng.choice(self.actions)
+        else:
+            # Exploitation: Best known action
+            state_actions = self.q_table.get(state, {})
+            if state_actions:
+                action = max(state_actions, key=state_actions.get)
+            else:
+                action = self.rng.choice(self.actions)
+        return action
 
 
 if __name__ == "__main__":
@@ -84,4 +76,6 @@ if __name__ == "__main__":
     # Test the agent
     agent.test(env, episodes_quantity=100)
     # Save the agent
-    agent.save("qlearning_agent.pkl") # pkl = pickle = sérialisation de données en Python 
+    agent.save(
+        "qlearning_agent.pkl"
+    )  # pkl = pickle = sérialisation de données en Python
