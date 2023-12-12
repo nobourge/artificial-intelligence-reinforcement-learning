@@ -19,10 +19,9 @@ class ValueIteration(Generic[S, A]):
         # senf.values est nécessaire pour fonctionner avec utils.show_values
         self.mdp = mdp
         self.gamma = gamma
-        # self.values = dict[S, float]()
-        self.values = {
-            state: 0.0 for state in mdp.states()
-        }  # Initialize all states with a default value
+        # Initialize all states as dictionary keys
+        # with a default value of 0.0
+        self.values = {state: 0.0 for state in mdp.states()}
         # utils.show_values(self.values)
         # utils.
 

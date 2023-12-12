@@ -1,4 +1,4 @@
-from lle import Agent
+from lle import Agent, ObservationType
 from rlenv import RLEnv, Observation
 import numpy as np
 import numpy.typing as npt
@@ -29,10 +29,17 @@ class QLearning:
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
         self.epsilon = epsilon
-        
+        # Create the agents
+        self.agents = [QAgent(mdp, 
+                              learning_rate,
+                              discount_factor,
+                              epsilon,
+                              AgentId(i)
+                              ) 
+                        for i in range(env.world.n_agents)]
 
-        # Initialize a random number generator
-        self.rng = np.random.default_rng(seed)  # Random number generator instance
+    # # Initialize a random number generator
+    # self.rng = np.random.default_rng(seed)  # Random number generator instance
 
     def update(self, state, action, reward, next_state):
         """Update the Q-table using the Bellman equation"""
@@ -62,6 +69,7 @@ class QLearning:
         score = 0
         while not (done or truncated):
             actions = [a.choose_action(observation) for a in agents]
+            print("actions:", actions)
             next_observation, reward, done, truncated, info = env.step(actions)
             print("observation:", next_observation)
             print("reward:", reward)
@@ -70,11 +78,7 @@ class QLearning:
             print("info:", info)
 
             for a in agents:
-                a.update(observation, 
-                         actions[a.id], 
-                         reward, 
-                         next_observation
-                         )
+                a.update(observation, actions[a.id], reward, next_observation)
             score += reward
             print("score:", score)
             observation = next_observation
@@ -115,21 +119,12 @@ class QLearning:
 
 if __name__ == "__main__":
     # Create the environment
-    env = LLE.level(1)
+    env = LLE.level(1, ObservationType.LAYERED)
     mdp = WorldMDP(env.world)
-    # Create the agents
-    agents = [QAgent(mdp, 
-                     AgentId(i)) 
-                     for i in range(env.world.n_agents)]
+
     # Train the agent
-    agent = QLearning(mdp,
-                       0.1, 
-                       0.9, 
-                       0.1
-                       )
-    agent.train(agents, 
-                100
-                )
+    agent = QLearning(mdp, 0.1, 0.9, 0.1)
+    agent.train(agent.agents, episodes_quantity=100)
     # Test the agent
     # agent.test(env, episodes_quantity=100)
     # Save the agent
