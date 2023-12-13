@@ -30,58 +30,61 @@ class QLearning:
         self.discount_factor = discount_factor
         self.epsilon = epsilon
         # Create the agents
-        self.agents = [QAgent(mdp, 
-                              learning_rate,
-                              discount_factor,
-                              epsilon,
-                              id=AgentId(i)
-                              ) 
-                        for i in range(env.world.n_agents)]
+        self.agents = [
+            QAgent(mdp, learning_rate, discount_factor, epsilon, id=AgentId(i))
+            for i in range(env.world.n_agents)
+        ]
 
     # # Initialize a random number generator
     # self.rng = np.random.default_rng(seed)  # Random number generator instance
 
-    
-
     def train(self, agents, episodes_quantity: int):
         """Train the agent for the given number of episodes"""
-        env = TimeLimit(LLE.level(1), 80)  # Maximum 80 time steps
+        # from instructions:
+        env = TimeLimit(
+            LLE.level(1,
+                      ObservationType.LAYERED
+                      ), 
+            80
+        )  # Maximum 80 time steps         # from instructions
 
-        observation = env.reset()
+        observation = env.reset()  # from instructions
         observation_data = observation.data
         observation_hash = self.numpy_table_hash(observation_data)
         print("observation_data:", observation_data)
         print("observation_hash:", observation_hash)
 
-        done = truncated = False
-        score = 0
-        while not (done or truncated):
-            actions = [a.choose_action(observation) for a in agents]
+        done = truncated = False  # from instructions
+        score = 0  # from instructions
+        while not (done or truncated):  # from instructions
+            actions = [  # from instructions
+                a.choose_action(observation) for a in agents  # from instructions
+            ]  # from instructions
             print("actions:", actions)
             # get action[0] type:
             print("type(actions[0]):", type(actions[0]))
-           
+
             # south = Action(1)
             # print("south:", south)
             # north = Action(0)
             # print("north:", north)
-         
-            next_observation, reward, done, truncated, info = env.step(actions)
+
+            next_observation, reward, done, truncated, info = env.step(
+                actions
+            )  # from instructions
             print("observation:", next_observation)
             print("reward:", reward)
             print("done:", done)
             print("truncated:", truncated)
             print("info:", info)
 
-            for a in agents:
+            for a in agents:  # from instructions
                 print("a:", a)
                 print("a.id:", a.id)
-                a.update(observation, 
-                         actions[a.id], 
-                         reward, 
-                         next_observation
-                         )
-            score += reward
+                a.update(  # from instructions
+                    observation, actions[a.id], reward, next_observation
+                )
+            score += reward  # from instructions
             print("score:", score)
             observation = next_observation
 
@@ -123,6 +126,7 @@ if __name__ == "__main__":
     # Create the environment
     env = LLE.level(1, ObservationType.LAYERED)
     mdp = WorldMDP(env.world)
+    print("mdp.world :", mdp.world)
 
     # Train the agent
     agent = QLearning(mdp, 0.1, 0.9, 0.1)

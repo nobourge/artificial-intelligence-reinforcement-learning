@@ -1,5 +1,6 @@
 # qlearning inheriting agent
 
+from itertools import product
 import numpy as np
 import random
 import sys
@@ -11,7 +12,7 @@ from mdp import MDP, S, A
 from auto_indent import AutoIndent
 from world_mdp import WorldMDP
 import utils
-from lle import LLE, Action, Agent, AgentId, WorldState
+from lle import LLE, Action, Agent, AgentId, Position, WorldState
 from rlenv.wrappers import TimeLimit
 
 # import Action class :
@@ -75,21 +76,123 @@ class QAgent:
         """Get the observation for the given state"""
         return Observation(state)
 
-    def choose_action(
+    def get_position(self,
+                     matrix: np.ndarray
+                     ) -> np.ndarray:
+        """Get the position of the agent"""
+        # return np.where(matrix == 1)
+        return np.transpose(np.nonzero(matrix))
+
+    def get_valid_actions(
         self,
         observation: Observation,
+    ) -> List[Action]:
+        """Get the list of valid actions for the given observation"""
+        observation_data = observation.data
+        print("observation_data:", observation_data)
+        agent_position = self.get_position(observation_data[0][0])
+
+
+        return world.available_actions()
+    
+    def agent_position_after_action(self, agent_pos: Position, action: Action) -> Position:
+        """The position of an agent after applying the given action."""
+        # print("agent_position_after_action()")
+        # print("agent_pos", agent_pos)
+        # print("action", action)
+        # agent_pos_after_action = None
+        # # Apply the action to the agent's position
+        # if action == Action.NORTH:
+        #     agent_pos_after_action = (agent_pos[0] - 1, agent_pos[1])
+        # elif action == Action.SOUTH:
+        #     agent_pos_after_action = (agent_pos[0] + 1, agent_pos[1])
+        # elif action == Action.WEST:
+        #     agent_pos_after_action = (agent_pos[0], agent_pos[1] - 1)
+        # elif action == Action.EAST:
+        #     agent_pos_after_action = (agent_pos[0], agent_pos[1] + 1)
+        # elif action == Action.STAY:
+        #     agent_pos_after_action = (agent_pos[0], agent_pos[1])
+        # else:
+        try:
+            print("agent_pos", agent_pos)
+            print("action", action)
+            agent_pos_after_action = agent_pos + action.delta
+            print("agent_pos_after_action", agent_pos_after_action)
+        except ValueError:
+            raise ValueError("Invalid action")
+        return agent_pos_after_action
+
+    def are_valid_joint_actions(self, state: WorldState, joint_actions: Tuple[Action, ...]) -> bool:
+        """Whether the given joint actions are valid.
+        an action is valid if it is available for an agent 
+        and if it does not lead the agent to be on the same position as another agent"""
+        # print("are_valid_joint_actions()")
+        # print("state", state)
+        # print("joint_actions", joint_actions)
+        # print("state.agents_positions", state.agents_positions)
+        # # calculate agent positions after applying the joint action
+        agents_positions_after_joint_actions = []
+        for i, agent_pos in enumerate(state.agents_positions):
+            agent_pos_after_action = self.agent_position_after_action(agent_pos, joint_actions[i])
+            agents_positions_after_joint_actions.append(agent_pos_after_action)
+        return self.no_duplicate_in(agents_positions_after_joint_actions)
+
+    
+    def get_valid_joint_actions(self
+                                , state: WorldState
+                                , available_actions: Tuple[Tuple[Action, ...], ...]) -> Iterable[Tuple[Action, ...]]:
+        """Yield all possible joint actions that can be taken from the given state.
+        Hint: you can use `self.world.available_actions()` to get the available actions for each agent.
+        """
+        # print("available_actions", available_actions)
+        # cartesian product of the agents' actions
+        for joint_actions in product(*available_actions):
+            # print("joint_actions", joint_actions)
+           
+            if self.are_valid_joint_actions(state, joint_actions):
+                yield joint_actions
+                
+    def get_agents_positions(self, 
+                            #  state: np.ndarray
+                            observation: Observation
+                                ) -> List[Position]:
+        """Get the positions of all agents in the given observation.state"""
+        observation_data = observation.data
+        print("observation_data:", observation_data)
+        state = observation.state
+        print("state:", state)
+
+        agents_positions = []
+        for agent in env.world.agents:
+            agent_position = self.get_position(state[agent.id])
+            agents_positions.append(agent_position)
+
+
+        return agents_positions 
+    
+    def choose_action(
+        self,
+        observation: Observation, # from instructions
     ):
         """Choose an action using the epsilon-greedy policy"""
+        state = observation.state
+        #state type:
+        print("type(state):", type(state))
+        print("state:", state)
+
+        valid_actions = self.get_valid_joint_actions(
+        print("valid_actions:", valid_actions)
         if self.rng.uniform(0, 1) < self.epsilon:
             # Exploration: Random Action
-            action = self.rng.choice(Action.ALL).value
+            
+            action = self.rng.choice(valid_actions).value
         else:
             # Exploitation: Best known action
             state_actions = self.q_table.get(observation, {})
             if state_actions:
                 action = max(state_actions, key=state_actions.get)
             else:
-                action = self.rng.choice(Action.ALL).value
+                action = self.rng.choice(valid_actions).value
         return action
 
     def update(self, 
@@ -117,6 +220,7 @@ if __name__ == "__main__":
     env = LLE.level(1)
     # Create the MDP
     mdp = WorldMDP(env.world)
+    print(mdp.world)
 
     # Create the agents
     agent = QAgent(mdp, AgentId(1))
