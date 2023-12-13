@@ -30,7 +30,7 @@ class QAgent:
         discount_factor: float = 0.9,
         epsilon: float = 0.1,
         seed: int = None,
-        _agent_id: AgentId = None,
+        id: AgentId = None,
     ):
         # Initialize the MDP
         self.mdp = mdp
@@ -38,7 +38,8 @@ class QAgent:
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
         self.epsilon = epsilon
-        self._agent_id = _agent_id
+        self.id = id
+        print("self.id:", self.id)
 
         # Initialize the environment
         # self.env = env
@@ -46,13 +47,11 @@ class QAgent:
         # Initialize Q-table as a dictionary
         # Pour favoriser l’exploration, initialisez vos 𝑄(𝑠, 𝑎) à 1 et non à 0
         self.q_table = {
-            self.hash(state, 
-                      action): 1
-            # self.hash(self.get_state_observation(state),
-                    #    action): 1
+            state : {
+                action.value: 1
+                for action in Action.ALL
+            }
             for state in mdp.states()
-            # for observation in mdp.states()
-            for action in Action.ALL
         }  # dict of dicts
 
         # Initialize a random number generator
@@ -69,27 +68,48 @@ class QAgent:
         observation_data = observation.data
         print("observation_data:", observation_data)
 
-    def get_state_observation(self,
-                              state: WorldState,
-                                ) -> Observation:
+    def get_state_observation(
+        self,
+        state: WorldState,
+    ) -> Observation:
         """Get the observation for the given state"""
         return Observation(state)
-    
-    def choose_action(self, 
-                      observation: Observation,
-                      ):
+
+    def choose_action(
+        self,
+        observation: Observation,
+    ):
         """Choose an action using the epsilon-greedy policy"""
         if self.rng.uniform(0, 1) < self.epsilon:
             # Exploration: Random Action
-            action = self.rng.choice(Action.ALL)
+            action = self.rng.choice(Action.ALL).value
         else:
             # Exploitation: Best known action
             state_actions = self.q_table.get(observation, {})
             if state_actions:
                 action = max(state_actions, key=state_actions.get)
             else:
-                action = self.rng.choice(Action.ALL)
+                action = self.rng.choice(Action.ALL).value
         return action
+
+    def update(self, 
+               state, 
+               action, 
+               reward, 
+               next_state
+               ):
+        """Update the Q-table using the Bellman equation"""
+        # Get the current Q value
+        current_q = self.q_table.get(state, {}).get(action, 1) # 1 = default value
+        # Find the max Q value for the actions in the next state
+        next_state_actions = self.q_table.get(next_state, {})
+        max_next_q = max(next_state_actions.values(), default=0)
+        # Update the Q value using the Bellman equation
+        new_q = current_q + self.learning_rate * (
+            reward + self.discount_factor * max_next_q - current_q
+        )
+        # Update the Q-table
+        self.q_table.setdefault(state, {})[action] = new_q
 
 
 if __name__ == "__main__":

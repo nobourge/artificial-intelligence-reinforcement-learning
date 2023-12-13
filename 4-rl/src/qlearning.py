@@ -34,26 +34,14 @@ class QLearning:
                               learning_rate,
                               discount_factor,
                               epsilon,
-                              AgentId(i)
+                              id=AgentId(i)
                               ) 
                         for i in range(env.world.n_agents)]
 
     # # Initialize a random number generator
     # self.rng = np.random.default_rng(seed)  # Random number generator instance
 
-    def update(self, state, action, reward, next_state):
-        """Update the Q-table using the Bellman equation"""
-        # Get the current Q value
-        current_q = self.q_table.get(state, {}).get(action, 0)
-        # Find the max Q value for the actions in the next state
-        next_state_actions = self.q_table.get(next_state, {})
-        max_next_q = max(next_state_actions.values(), default=0)
-        # Update the Q value using the Bellman equation
-        new_q = current_q + self.learning_rate * (
-            reward + self.discount_factor * max_next_q - current_q
-        )
-        # Update the Q-table
-        self.q_table.setdefault(state, {})[action] = new_q
+    
 
     def train(self, agents, episodes_quantity: int):
         """Train the agent for the given number of episodes"""
@@ -70,6 +58,14 @@ class QLearning:
         while not (done or truncated):
             actions = [a.choose_action(observation) for a in agents]
             print("actions:", actions)
+            # get action[0] type:
+            print("type(actions[0]):", type(actions[0]))
+           
+            # south = Action(1)
+            # print("south:", south)
+            # north = Action(0)
+            # print("north:", north)
+         
             next_observation, reward, done, truncated, info = env.step(actions)
             print("observation:", next_observation)
             print("reward:", reward)
@@ -78,7 +74,13 @@ class QLearning:
             print("info:", info)
 
             for a in agents:
-                a.update(observation, actions[a.id], reward, next_observation)
+                print("a:", a)
+                print("a.id:", a.id)
+                a.update(observation, 
+                         actions[a.id], 
+                         reward, 
+                         next_observation
+                         )
             score += reward
             print("score:", score)
             observation = next_observation
