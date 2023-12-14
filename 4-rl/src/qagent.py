@@ -48,11 +48,7 @@ class QAgent:
         # Initialize Q-table as a dictionary
         # Pour favoriser l’exploration, initialisez vos 𝑄(𝑠, 𝑎) à 1 et non à 0
         self.q_table = {
-            state : {
-                action.value: 1
-                for action in Action.ALL
-            }
-            for state in mdp.states()
+            state: {action.value: 1 for action in Action.ALL} for state in mdp.states()
         }  # dict of dicts
 
         # Initialize a random number generator
@@ -76,11 +72,13 @@ class QAgent:
         """Get the observation for the given state"""
         return Observation(state)
 
-    def get_position(self,
-                     matrix: np.ndarray
-                     ) -> np.ndarray:
+    def get_position(self, matrix: np.ndarray) -> np.ndarray:
         """Get the position of the agent"""
         # return np.where(matrix == 1)
+
+        print("matrix:", matrix)
+        print("np.nonzero(matrix):", np.nonzero(matrix))
+        print("np.transpose(np.nonzero(matrix)):", np.transpose(np.nonzero(matrix)))
         return np.transpose(np.nonzero(matrix))
 
     def get_valid_actions(
@@ -92,27 +90,12 @@ class QAgent:
         print("observation_data:", observation_data)
         agent_position = self.get_position(observation_data[0][0])
 
-
         return world.available_actions()
-    
-    def agent_position_after_action(self, agent_pos: Position, action: Action) -> Position:
+
+    def agent_position_after_action(
+        self, agent_pos: Position, action: Action
+    ) -> Position:
         """The position of an agent after applying the given action."""
-        # print("agent_position_after_action()")
-        # print("agent_pos", agent_pos)
-        # print("action", action)
-        # agent_pos_after_action = None
-        # # Apply the action to the agent's position
-        # if action == Action.NORTH:
-        #     agent_pos_after_action = (agent_pos[0] - 1, agent_pos[1])
-        # elif action == Action.SOUTH:
-        #     agent_pos_after_action = (agent_pos[0] + 1, agent_pos[1])
-        # elif action == Action.WEST:
-        #     agent_pos_after_action = (agent_pos[0], agent_pos[1] - 1)
-        # elif action == Action.EAST:
-        #     agent_pos_after_action = (agent_pos[0], agent_pos[1] + 1)
-        # elif action == Action.STAY:
-        #     agent_pos_after_action = (agent_pos[0], agent_pos[1])
-        # else:
         try:
             print("agent_pos", agent_pos)
             print("action", action)
@@ -122,9 +105,11 @@ class QAgent:
             raise ValueError("Invalid action")
         return agent_pos_after_action
 
-    def are_valid_joint_actions(self, state: WorldState, joint_actions: Tuple[Action, ...]) -> bool:
+    def are_valid_joint_actions(
+        self, state: WorldState, joint_actions: Tuple[Action, ...]
+    ) -> bool:
         """Whether the given joint actions are valid.
-        an action is valid if it is available for an agent 
+        an action is valid if it is available for an agent
         and if it does not lead the agent to be on the same position as another agent"""
         # print("are_valid_joint_actions()")
         # print("state", state)
@@ -133,14 +118,15 @@ class QAgent:
         # # calculate agent positions after applying the joint action
         agents_positions_after_joint_actions = []
         for i, agent_pos in enumerate(state.agents_positions):
-            agent_pos_after_action = self.agent_position_after_action(agent_pos, joint_actions[i])
+            agent_pos_after_action = self.agent_position_after_action(
+                agent_pos, joint_actions[i]
+            )
             agents_positions_after_joint_actions.append(agent_pos_after_action)
         return self.no_duplicate_in(agents_positions_after_joint_actions)
 
-    
-    def get_valid_joint_actions(self
-                                , state: WorldState
-                                , available_actions: Tuple[Tuple[Action, ...], ...]) -> Iterable[Tuple[Action, ...]]:
+    def get_valid_joint_actions(
+        self, state: WorldState, available_actions: Tuple[Tuple[Action, ...], ...]
+    ) -> Iterable[Tuple[Action, ...]]:
         """Yield all possible joint actions that can be taken from the given state.
         Hint: you can use `self.world.available_actions()` to get the available actions for each agent.
         """
@@ -148,14 +134,15 @@ class QAgent:
         # cartesian product of the agents' actions
         for joint_actions in product(*available_actions):
             # print("joint_actions", joint_actions)
-           
+
             if self.are_valid_joint_actions(state, joint_actions):
                 yield joint_actions
-                
-    def get_agents_positions(self, 
-                            #  state: np.ndarray
-                            observation: Observation
-                                ) -> List[Position]:
+
+    def get_agents_positions(
+        self,
+        #  state: np.ndarray
+        observation: Observation,
+    ) -> List[Position]:
         """Get the positions of all agents in the given observation.state"""
         observation_data = observation.data
         print("observation_data:", observation_data)
@@ -163,47 +150,67 @@ class QAgent:
         print("state:", state)
 
         agents_positions = []
-        for agent in env.world.agents:
+        for agent in self.mdp.world.agents:
             agent_position = self.get_position(state[agent.id])
             agents_positions.append(agent_position)
 
+        return agents_positions
 
-        return agents_positions 
-    
+    def get_ones_indexes(
+        self,
+        array: np.ndarray,
+    ) -> List[int]:
+        """Get the indexes of all ones in the given array"""
+        ones_indexes = []
+        for i, value in enumerate(array):
+            if value == 1:
+                ones_indexes.append(i)
+     
+        print("ones_indexes:", ones_indexes)
+        return ones_indexes
+
     def choose_action(
         self,
-        observation: Observation, # from instructions
+        observation: Observation,  # from instructions
     ):
         """Choose an action using the epsilon-greedy policy"""
         state = observation.state
-        #state type:
-        print("type(state):", type(state))
-        print("state:", state)
+        # #state type:
+        # print("type(state):", type(state))
+        # print("state:", state)
+        # world = self.mdp.world
+        # print("world:", world)
 
-        valid_actions = self.get_valid_joint_actions(
+        # # valid_actions = self.get_valid_joint_actions(
+        # # world_available_actions = self.mdp.world.available_actions()
+        # world_available_actions = self.mdp.available_actions(observation.state)
+        # print("world_available_actions:", world_available_actions)
+        # valid_actions = self.mdp.world.available_actions()[self.id]
+        # print("valid_actions:", valid_actions)
+        # self.get_position(observation.data[0][0])
+        observation_available_actions = observation.available_actions
+        print("observation_available_actions:", observation_available_actions)
+        current_agent_available_actions = observation_available_actions[self.id]
+
+        valid_actions = self.get_ones_indexes(current_agent_available_actions)
         print("valid_actions:", valid_actions)
         if self.rng.uniform(0, 1) < self.epsilon:
             # Exploration: Random Action
-            
-            action = self.rng.choice(valid_actions).value
+
+            action = self.rng.choice(valid_actions)
         else:
             # Exploitation: Best known action
             state_actions = self.q_table.get(observation, {})
             if state_actions:
                 action = max(state_actions, key=state_actions.get)
             else:
-                action = self.rng.choice(valid_actions).value
+                action = self.rng.choice(valid_actions)
         return action
 
-    def update(self, 
-               state, 
-               action, 
-               reward, 
-               next_state
-               ):
+    def update(self, state, action, reward, next_state):
         """Update the Q-table using the Bellman equation"""
         # Get the current Q value
-        current_q = self.q_table.get(state, {}).get(action, 1) # 1 = default value
+        current_q = self.q_table.get(state, {}).get(action, 1)  # 1 = default value
         # Find the max Q value for the actions in the next state
         next_state_actions = self.q_table.get(next_state, {})
         max_next_q = max(next_state_actions.values(), default=0)

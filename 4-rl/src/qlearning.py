@@ -32,7 +32,8 @@ class QLearning:
         # Create the agents
         self.agents = [
             QAgent(mdp, learning_rate, discount_factor, epsilon, id=AgentId(i))
-            for i in range(env.world.n_agents)
+            # for i in range(env.world.n_agents)
+            for i in range(mdp.world.n_agents)
         ]
 
     # # Initialize a random number generator
