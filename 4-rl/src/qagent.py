@@ -206,6 +206,7 @@ class QAgent:
             else:
                 action = self.rng.choice(valid_actions)
         return action
+        # return Action(action)
 
     def update(self, state, action, reward, next_state):
         """Update the Q-table using the Bellman equation"""

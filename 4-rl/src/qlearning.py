@@ -8,6 +8,8 @@ from lle import LLE, Action, Agent, AgentId, WorldState
 from rlenv.wrappers import TimeLimit
 from qagent import QAgent
 from auto_indent import AutoIndent
+from solution import Solution
+from visualize import display_solution
 from world_mdp import WorldMDP
 
 sys.stdout = AutoIndent(sys.stdout)
@@ -43,10 +45,7 @@ class QLearning:
         """Train the agent for the given number of episodes"""
         # from instructions:
         env = TimeLimit(
-            LLE.level(1,
-                      ObservationType.LAYERED
-                      ), 
-            80
+            LLE.level(1, ObservationType.LAYERED), 80
         )  # Maximum 80 time steps         # from instructions
 
         observation = env.reset()  # from instructions
@@ -64,11 +63,10 @@ class QLearning:
             print("actions:", actions)
             # get action[0] type:
             print("type(actions[0]):", type(actions[0]))
-
-            # south = Action(1)
-            # print("south:", south)
             # north = Action(0)
             # print("north:", north)
+            # south = Action(1)
+            # print("south:", south)
 
             next_observation, reward, done, truncated, info = env.step(
                 actions
@@ -88,20 +86,35 @@ class QLearning:
             score += reward  # from instructions
             print("score:", score)
             observation = next_observation
+        return agents
 
-    def test(self, env: RLEnv, episodes_quantity: int):
+    def test(self, 
+             env: RLEnv, 
+             trained_agents, 
+             episodes_quantity: int, 
+             save: bool = False
+             ):
         """Test the agent for the given number of episodes"""
-        for _ in range(episodes_quantity):
+        for episode in range(episodes_quantity):
             # Reset the environment
-            state = env.reset()
+            observation = env.reset()
             done = False
+            actions_taken = []
             while not done:
-                # Choose an action
-                action = self.choose_action(state)
-                # Take the action
-                next_state, _, done = env.step(action)
-                # Update the state
-                state = next_state
+                actions = [a.choose_action(observation) for a in trained_agents]
+                actions_taken.append(actions)
+                next_observation, reward, done, truncated, info = env.step(actions)
+                observation = next_observation
+            # Print the result of the episode
+            if done:
+                print(f"Episode {episode + 1} finished. Actions taken: {actions_taken}")
+                if save:
+                    # Save the actions taken
+                    with open(f"actions_taken_{episode + 1}.txt", "w") as f:
+                        f.write(str(actions_taken))
+                return actions_taken
+            else:
+                print(f"Episode {episode + 1} did not finish.")
 
     def show(self):
         """Show the Q-table"""
@@ -126,12 +139,29 @@ class QLearning:
 if __name__ == "__main__":
     # Create the environment
     env = LLE.level(1, ObservationType.LAYERED)
-    mdp = WorldMDP(env.world)
+    env_world = env.world
+    mdp = WorldMDP(env_world)
     print("mdp.world :", mdp.world)
 
     # Train the agent
-    agent = QLearning(mdp, 0.1, 0.9, 0.1)
-    agent.train(agent.agents, episodes_quantity=100)
-    # Test the agent
-    # agent.test(env, episodes_quantity=100)
+    qlearning = QLearning(mdp, 0.1, 0.9, 0.1)
+    trained_agents = qlearning.train(qlearning.agents, episodes_quantity=100)
+
+    # terminal prompt to continue:
+    # input("Press Enter to continue...")
+    
+    # Test the agents
+    actions_taken = qlearning.test(env, trained_agents, episodes_quantity=1, save=True)
+
+    # display the solution:
+    solution = Solution(actions_taken)
+    print("solution:", solution)
+
+    # display the solution:
+    display_solution("solution", 
+                    #  env_world,
+                     env, 
+                     solution
+                     )
+
     # Save the agent

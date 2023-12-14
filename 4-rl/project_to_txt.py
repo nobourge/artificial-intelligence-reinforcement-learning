@@ -57,7 +57,9 @@ class Watcher:
             "2023-2024 projet RL-1.pdf",
             "2023-2024 projet RL-v2.pdf",
             "2-adversarial\doc\out\\report.pdf",
-            "report.pdf"
+            "report.pdf",
+            "2-adversarial",
+            "graph_mdp.py",
         ]
         self.EXCLUDE_PATHS = [
             # pytest cache

@@ -188,2007 +188,6 @@ observation.state, à la différence que le WorldState auquel vous êtes habitu�
 formé en tableau numpy pour être utilisable dans le contexte du deep MARL.
 7----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2023-2024 projet RL for chatGPT.txt -----
 
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\priority_queue.py -----import heapq
-import json
-from typing import Dict, Generic, TypeVar
-# from typing_extensions import deprecated
-
-T = TypeVar("T")
-
-
-class PriorityQueue(Generic[T]):
-    """
-    Implements a priority queue data structure. Each inserted item
-    has a priority associated with it and the client is usually interested
-    in quick retrieval of the lowest-priority item in the queue. This
-    data structure allows O(1) access to the lowest-priority item.
-
-    Credits: Berkley AI Pacman Project
-    """
-
-    def __init__(self):
-        self.heap: list[T] = []
-        self.count = 0
-
-    def push(self, item: T, priority: float):
-        entry = (priority, self.count, item)
-        heapq.heappush(self.heap, entry)
-        self.count += 1
-
-    def pop(self) -> T:
-        """pop the item with the minimum priority"""
-        (_, _, item) = heapq.heappop(self.heap)
-        return item
-    
-    def pop_maximum_priority(self) -> T:
-        """pop the item with the maximum priority"""
-        (_, _, item) = heapq.heappop(self.heap)
-        return item
-
-    # @deprecated
-    # def isEmpty(self):
-    #     return len(self.heap) == 0
-
-    def is_empty(self):
-        return len(self.heap) == 0
-
-    def update(self, item: T, priority: float):
-        # If item already in priority queue with higher priority, update its priority and rebuild the heap.
-        # If item already in priority queue with equal or lower priority, do nothing.
-        # If item not in priority queue, do the same thing as self.push.
-        for index, (p, c, i) in enumerate(self.heap):
-            if i == item:
-                if p <= priority:
-                    break
-                del self.heap[index]
-                self.heap.append((priority, c, item))
-                heapq.heapify(self.heap)
-                break
-        else:
-            self.push(item, priority)
-
-class PriorityQueueOptimized(Generic[T]): #todo: 2x slower than PriorityQueue at least
-    """heapq default minheap
-    
-    heapify to rebuild the heap, which is an 
-    O(n) operation optimized using a dictionary 
-    to keep track of the heap indices for each item, allowing to 
-    update the heap in 
-    O(logn) time."""
-    def __init__(self):
-        self.heap = []
-        # self.entry_finder: Dict[T, int] = {}  
-        self.entry_finder: Dict[str, int] = {}  # String keys for unhashable types
-        self.count = 0
-
-    # PriorityQueueOptimized iterable form
-    def __iter__(self):
-        return iter(self.heap)
-    
-    def _stringify(self, item: T) -> str:
-        # return json.dumps(item)
-        return str(id(item))
-    
-    def serialize(self, world_state: T) -> tuple:
-        return (tuple(world_state.agents_positions), tuple(world_state.gems_collected))
-
-    def push(self, item: T, priority: float):
-        # serialized_item = self.serialize(item)
-        # entry = (priority, self.count, serialized_item)
-        # self.entry_finder[serialized_item] = len(self.heap)  # Keep track of the index
-        entry = (priority, self.count, item)
-        key = self._stringify(item)
-        self.entry_finder[key] = len(self.heap)
-        heapq.heappush(self.heap, entry)
-        self.count += 1
-
-    def pop(self) -> T:
-        while self.heap:
-            _, _, item = heapq.heappop(self.heap)
-            key = self._stringify(item)
-            # key = self.serialize(item)
-            if key in self.entry_finder:
-                del self.entry_finder[key]
-                return item
-        raise KeyError('pop from an empty priority queue')
-
-    def is_empty(self):
-        return len(self.heap) == 0
-
-    def update(self, item: T, priority: float):
-        key = self._stringify(item)
-        # key = self.serialize(item)
-
-        if key in self.entry_finder:
-            index = self.entry_finder[key]
-            _, _, existing_item = self.heap[index]
-            # if existing_item is not key:
-            if existing_item is not item:
-                return
-            self.heap[index] = (priority, self.count, item)
-            heapq._siftup(self.heap, index)
-            heapq._siftdown(self.heap, 0, index)
-            self.count += 1
-        else:
-            self.push(item, priority)
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\priority_queue.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\problem.py -----from abc import ABC, abstractmethod
-import copy
-from itertools import product
-from scipy.optimize import linear_sum_assignment
-import numpy as np
-from typing import Tuple, Iterable, Generic, TypeVar
-from lle import Position, World, Action, WorldState
-
-T = TypeVar('T', bound=WorldState)  # Declare the generic type variable with a default bound
-
-def get_distance(coord1, coord2):
-    """Returns the distance between two coordinates"""
-    x1, y1 = coord1
-    x2, y2 = coord2
-    return abs(x1 - x2) + abs(y1 - y2)
-
-def min_distance_position(position : Tuple[int, int]
-                          , positions: list[Tuple[int, int]] 
-                            ) -> Tuple[Tuple[int, int], float]:
-    """Returns the position in positions that is closest to position"""
-    min_distance = float("inf")
-    min_position = None
-    for pos in positions:
-        distance = 0
-        distance = get_distance(position, pos)
-        if distance < min_distance:
-            min_distance = distance
-            min_position = pos
-    return min_position, min_distance
-
-def balanced_multi_salesmen_greedy_tsp(remaining_cities: list[Tuple[int, int]]
-                                       , num_salesmen: int
-                                       , start_cities: list[Tuple[int, int]]
-                                       , finish_cities: list[Tuple[int, int]]
-                                       ) -> Tuple[dict[str, list[Tuple[int, int]]], dict[str, float], float]: 
-    #todo: calculate the distance between the last city and the finish city one time at problem creation
-    """Given a list of cities coordinates, returns a list of cities visited by each agent
-    in the order that minimizes the total distance traveled.
-    """
-    routes = {f"agent_{i+1}": [start_cities[i]] for i in range(num_salesmen)}
-    distances = {f"agent_{i+1}": 0.0 for i in range(num_salesmen)}
-
-    while remaining_cities:
-        for agent in routes.keys():
-            if not remaining_cities:
-                break
-            current_city = routes[agent][-1]
-            nearest_city, nearest_distance = min_distance_position(routes[agent][-1], remaining_cities)
-            distances[agent] += nearest_distance
-            routes[agent].append(nearest_city)
-            remaining_cities.remove(nearest_city)
-
-    for agent in routes.keys():
-        current_city = routes[agent][-1]
-        finish_city, final_distance = min_distance_position(current_city, finish_cities)
-        distances[agent] += final_distance
-        routes[agent].append(finish_city)
-        
-    total_distance = sum(distances.values())
-    return routes, distances, total_distance
-
-def serialize(world_state: WorldState
-              ,objectives_reached: list[Position] = None
-              ) -> tuple:
-    """Serialize the given world state.
-    Args:
-        world_state: the world state to serialize.
-    Returns:
-        A tuple that represents the given world state.
-    """
-    if objectives_reached:
-        return (tuple(world_state.agents_positions), tuple(world_state.gems_collected), tuple(objectives_reached))
-    else:
-        return (tuple(world_state.agents_positions), tuple(world_state.gems_collected))
-
-def was(state: WorldState
-        , objectives_reached: list[Position]
-        , visited: set) -> bool:
-    return serialize(state, objectives_reached) in visited
-
-def min_distance_pairing(list_1
-                             , list_2):
-        # Create a cost matrix
-        cost_matrix = np.zeros((len(list_1), len(list_2)))
-        for i, point1 in enumerate(list_1):
-            for j, point2 in enumerate(list_2):
-                cost_matrix[i, j] = ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
-        # Hungarian algorithm:
-        # from cost_matrix, it does the pairing by minimizing the total distance
-        row_ind, col_ind = linear_sum_assignment(cost_matrix)
-        
-        # Extract the paired points, their distances, and the minimum total distance
-        paired_points = []
-        distances = []
-        min_total_distance = 0
-        for i, j in zip(row_ind, col_ind):
-            paired_points.append((list_1[i], list_2[j]))
-            distances.append(cost_matrix[i, j])
-            min_total_distance += cost_matrix[i, j]
-        print("paired_points", paired_points)
-        print("distances", distances)
-        
-        return paired_points, distances, min_total_distance
-
-class SearchProblem(ABC, Generic[T]):
-    """
-    A Search Problem is a problem that can be solved by a search algorithm.
-
-    The generic parameter T is the type of the problem state, 
-    which must inherit from WorldState.
-    """
-    def __init__(self, world: World):
-        self.world = world
-        world.reset()
-        self.initial_state = world.get_state()
-        self.objectives = []
-
-        self.path_size = 0
-        self.nodes_expanded = 0
-
-    @abstractmethod
-    def is_goal_state(self, problem_state: T) -> bool:
-        """Whether the given state is the goal state"""
-        
-    @abstractmethod
-    def get_successors(self, state: T) -> Iterable[Tuple[T, Tuple[Action, ...], float]]:
-        """
-        Yield all possible states that can be reached from the given world state.
-        Returns
-            - the new problem state
-            - the joint action that was taken to reach it
-            - the cost of taking the action
-        """
-
-    def heuristic(self, problem_state: T) -> float:
-        return 0.0
-class SimpleSearchProblem(SearchProblem[T], Generic[T]):  # Use Generic[T] to make the class generic
-
-    def no_duplicate_in(self, agents_positions: list[Position]) -> bool:
-        """Whether each agent is on a different position."""
-        agents_positions_set = set(agents_positions)  
-        # Check if the number of agents on exits is equal to the total number of agents
-        # and if each agent is on a different exit
-        result = len(agents_positions) == len(agents_positions_set)
-        return result
-    
-    def agents_each_on_different_exit_pos(self, state: WorldState) -> bool:
-        """Whether each agent is on a different exit position."""
-        agent_positions = set(state.agents_positions)  
-        exit_positions = set(self.world.exit_pos)  
-        # Intersect the sets to find agents that are on exit positions
-        agents_on_exits = agent_positions.intersection(exit_positions)
-        # Check if the number of agents on exits is equal to the total number of agents
-        # and if each agent is on a different exit
-        return len(agents_on_exits) == len(agent_positions) # and len(agents_on_exits) == len(exit_positions)
-
-    def is_goal_state(self, state: WorldState) -> bool:
-        """Whether the given 
-        SimpleStateProblem state is the 
-        SimpleSearchProblem goal state.
-        True if all agents are on exit tiles
-        """
-        return self.agents_each_on_different_exit_pos(state)
-    
-    def agent_position_after_action(self, agent_pos: Position, action: Action) -> Position:
-        """The position of an agent after applying the given action."""
-        # print("agent_position_after_action()")
-        # print("agent_pos", agent_pos)
-        # print("action", action)
-        agent_pos_after_action = None
-        # Apply the action to the agent's position
-        if action == Action.NORTH:
-            agent_pos_after_action = (agent_pos[0] - 1, agent_pos[1])
-        elif action == Action.SOUTH:
-            agent_pos_after_action = (agent_pos[0] + 1, agent_pos[1])
-        elif action == Action.WEST:
-            agent_pos_after_action = (agent_pos[0], agent_pos[1] - 1)
-        elif action == Action.EAST:
-            agent_pos_after_action = (agent_pos[0], agent_pos[1] + 1)
-        elif action == Action.STAY:
-            agent_pos_after_action = (agent_pos[0], agent_pos[1])
-        else:
-            raise ValueError("Invalid action")
-        return agent_pos_after_action
-
-    def are_valid_joint_actions(self, state: WorldState, joint_actions: Tuple[Action, ...]) -> bool:
-        """Whether the given joint actions are valid.
-        an action is valid if it is available for an agent 
-        and if it does not lead the agent to be on the same position as another agent"""
-        # print("are_valid_joint_actions()")
-        # print("state", state)
-        # print("joint_actions", joint_actions)
-        # print("state.agents_positions", state.agents_positions)
-        # # calculate agent positions after applying the joint action
-        agents_positions_after_joint_actions = []
-        for i, agent_pos in enumerate(state.agents_positions):
-            agent_pos_after_action = self.agent_position_after_action(agent_pos, joint_actions[i])
-            agents_positions_after_joint_actions.append(agent_pos_after_action)
-        return self.no_duplicate_in(agents_positions_after_joint_actions)
-
-    
-    def get_valid_joint_actions(self
-                                , state: WorldState
-                                , available_actions: Tuple[Tuple[Action, ...], ...]) -> Iterable[Tuple[Action, ...]]:
-        """Yield all possible joint actions that can be taken from the given state.
-        Hint: you can use `self.world.available_actions()` to get the available actions for each agent.
-        """
-        # print("available_actions", available_actions)
-        # cartesian product of the agents' actions
-        for joint_actions in product(*available_actions):
-            # print("joint_actions", joint_actions)
-           
-            if self.are_valid_joint_actions(state, joint_actions):
-                yield joint_actions
-    
-    def get_successor_state(self
-                            , state: WorldState
-                            , joint_actions: Tuple[Action, ...]) -> WorldState:
-        """The successor state of the given state after applying the given joint actions."""
-        self.world.set_state(state)
-        self.world.step(list(joint_actions))
-        successor_state = self.world.get_state()
-        # print("successor_state", successor_state)
-        return successor_state
-
-    def get_successors(self
-                       , state: WorldState
-                       , visited: set = None
-                       , objectives_reached_before_successor: list[Position] = None
-                       ):
-        # - N'oubliez pas de jeter un oeil aux méthodes de la classe World (set_state, done, step, available_actions, ...)
-        # - Vous aurez aussi peut-être besoin de `from itertools import product`
-        """Yield all possible states that can be reached from the given world state."""
-        if visited is None: # for tests
-            visited = set()
-        self.nodes_expanded += 1
-        real_state = self.world.get_state()
-        self.world.set_state(state)
-        # For each possible joint actions set (i.e. cartesian product of the agents' actions)
-        available_actions = self.world.available_actions()
-        valid_joint_actions = self.get_valid_joint_actions(state, available_actions)
-        i = 0
-        for joint_actions in valid_joint_actions:
-            i += 1
-            objectives_reached_by_successor = objectives_reached_before_successor
-            try:
-                successor_state = self.get_successor_state(state, joint_actions)
-            except ValueError:
-                # print("ValueError: World is done, cannot step anymore")
-                continue
-            if isinstance(self, CornerSearchProblem):
-                objectives_reached_by_successor = self.update_corners_reached(copy.deepcopy(objectives_reached_before_successor)
-                                                              , joint_actions
-                                                              , successor_state.agents_positions
-                                                              )
-            elif isinstance(self, GemSearchProblem):
-                objectives_reached_by_successor = self.update_gems_collected(copy.deepcopy(objectives_reached_before_successor)
-                                                              , joint_actions
-                                                              , successor_state.agents_positions
-                                                              )
-            if was(successor_state
-                    , objectives_reached_by_successor
-                   , visited):
-                continue
-            if isinstance(self, CornerSearchProblem):
-                # Compute the cost of the new state
-                cost = self.heuristic(successor_state, objectives_reached_by_successor)
-                yield successor_state, joint_actions, cost, objectives_reached_by_successor
-            elif isinstance(self, GemSearchProblem):
-                # Compute the cost of the new state
-                cost = self.heuristic(successor_state, objectives_reached_by_successor)
-                yield successor_state, joint_actions, cost, objectives_reached_by_successor
-            elif not isinstance(self, CornerSearchProblem) and not isinstance(self, GemSearchProblem):
-                # Compute the cost of the new state
-                cost = self.heuristic(successor_state)
-                yield successor_state, joint_actions, cost #todo must not change for test
-        self.world.set_state(real_state)
-
-    def manhattan_distance(self, pos1: Position, pos2: Position) -> float:
-        """The Manhattan distance between two positions"""
-        return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
-
-    def average_manhattan_distance_from_agents_to_exits(self, state: WorldState) -> float:
-        """The average Manhattan distance from each agent to each exit
-        divided by the number of agents"""
-        agents_positions = state.agents_positions
-        exit_positions = self.world.exit_pos
-        # For each agent, compute its Manhattan distance to each exit
-        total_distance = 0
-        for agent_pos in agents_positions:
-            for exit_pos in exit_positions:
-                total_distance += self.manhattan_distance(agent_pos, exit_pos)
-        # Divide the total distance by the number of agents
-        average_distance = total_distance / len(agents_positions)
-        return average_distance
-    
-    def heuristic(self
-                  , state: WorldState
-                  , last_actions: Tuple[Action, ...] = None
-                  ) -> float:
-        """Manhattan distance for each agent to the closest exit"""
-        agent_positions = self.world.agents_positions
-        exit_positions = self.world.exit_pos
-        total_distance = self.average_manhattan_distance_from_agents_to_exits(state)
-        # problem:  if agent has to get away from exit to get around a wall to reach the exit, a star chooses for him to stay in place
-        # tie breaking with the last actions 
-        # a last action STAY agent (if he had other options, but we don't take that into account here for simplicity) could have moved
-        # so he actually lost 1 turn
-        # for each action, if it was STAY
-        # and if the agent is not on an exit
-        # , add 1 to the total distance
-        if last_actions:
-            for i, action in enumerate(last_actions):
-                if action == Action.STAY and agent_positions[i] not in exit_positions:
-                    total_distance += 1
-        return total_distance
-
-class CornerProblemState:
-    def __init__(self, world_state: WorldState):
-        self.agents_positions = world_state.agents_positions
-        self.gems_collected = world_state.gems_collected
-        self.world_state = world_state
-
-class CornerSearchProblem(SimpleSearchProblem[WorldState]):
-    """Problème qui consiste à passer par les quatre coins du World 
-    puis d’atteindre une sortie."""
-    def __init__(self, world: World):
-        super().__init__(world)
-        self.corners = [(0, 0), (0, world.width - 1), (world.height - 1, 0), (world.height - 1, world.width - 1)]
-        self.initial_state = world.get_state()
-
-    def update_corners_reached(self
-                                 , corners_reached: list[Position]
-                                    , joint_actions: Tuple[Action, ...]
-                                    , agent_positions: list[Position]) -> list[Position]:
-        """Update the list of corners reached"""
-
-        for action in joint_actions:
-            if action != Action.STAY:
-                agent_position = agent_positions[joint_actions.index(action)]
-                if agent_position not in corners_reached and agent_position in self.corners:
-                    corners_reached.append(agent_position)
-
-        return corners_reached
-
-    def all_corners_reached(self
-                            , state
-                            , corners_reached: list[Position]) -> bool:
-        """Whether all corners are reached"""
-        return len(corners_reached) == len(self.corners)
-
-    def is_goal_state(self
-                      , state: WorldState
-                      , corners_reached: list[Position]) -> bool:
-        """Whether the given state is the goal state.
-        True if all corners are reached and all agents are on exit tiles
-        """
-        return self.all_corners_reached(state, corners_reached) and SimpleSearchProblem.is_goal_state(self, state)
-
-    def heuristic(self
-                  , state: WorldState
-                  , corners_reached: list[Position]
-                  ) -> float:
-        """"""
-        agents_positions = state.agents_positions
-        corners_to_reach = [corner for corner in self.corners if corner not in corners_reached]
-
-        cost = balanced_multi_salesmen_greedy_tsp(corners_to_reach
-                                                  , len(agents_positions)
-                                                  , agents_positions
-                                                  , self.world.exit_pos
-                                                  )[2]
-        return cost
-
-class GemProblemState:
-    """The state of the GemSearchProblem"""
-    def __init__(self, world_state: WorldState):
-        self.agents_positions = world_state.agents_positions
-        self.gems_collected = world_state.gems_collected
-        self.world_state = world_state
-
-class GemSearchProblem(SimpleSearchProblem[WorldState]):
-    """Modéliez le problème qui consiste à collecter toutes les gemmes de l’environnement 
-    puis à rejoindre les cases de sortie"""
-    def __init__(self, world: World):
-        super().__init__(world)
-        self.initial_state = world.get_state()
-
-    def update_gems_collected(self
-                                , gems_collected: list[Position]
-                                , joint_actions: Tuple[Action, ...]
-                                , agent_positions: list[Position]) -> list[Position]:
-        """Update the list of gems collected"""
-        for action in joint_actions:
-            if action != Action.STAY:
-                agent_position = agent_positions[joint_actions.index(action)]
-                if agent_position not in gems_collected and agent_position in [pos for pos, gem in self.world.gems]:
-                    gems_collected.append(agent_position)
-        return gems_collected
-
-    def all_gems_collected(self, state):
-        return sum(state.gems_collected) == self.world.n_gems
-
-    def is_goal_state(self
-                      , state
-                      ) -> bool:
-        return self.all_gems_collected(state) and super().is_goal_state(state)
-
-    def heuristic(self
-                  , state: WorldState
-                  , gems_collected
-                  ) -> float:
-        """The distance of each agent to each uncollected gem and to the closest exit
-        when all gems are collected, the distance of each agent to the closest exit"""
-        gems_to_collect = [gem[0] for gem in self.world.gems if not gem[0] in gems_collected]
-
-        cost = balanced_multi_salesmen_greedy_tsp(gems_to_collect
-                                                  , len(state.agents_positions)
-                                                  , state.agents_positions
-                                                  , self.world.exit_pos
-                                                  )[2]
-        return cost
-
-    ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\problem.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\search.py -----from dataclasses import dataclass
-from typing import Optional
-from lle import Action, World, WorldState
-
-from problem import CornerSearchProblem, GemSearchProblem, SearchProblem, SimpleSearchProblem, serialize, was
-from priority_queue import PriorityQueue
-# import sys
-# import auto_indent
-# from utils import print_items
-
-# sys.stdout = auto_indent.AutoIndent(sys.stdout)
-
-@dataclass
-class Solution:
-    actions: list[tuple[Action]]
-
-    @property
-    def n_steps(self) -> int:
-        return len(self.actions)
-
-def is_empty(data_structure) -> bool:
-    """Returns True if data_structure is empty, False otherwise"""
-    if isinstance(data_structure, list):
-        return len(data_structure) == 0
-    elif isinstance(data_structure, set):
-        return len(data_structure) == 0
-    elif isinstance(data_structure, PriorityQueue):
-        return data_structure.is_empty()
-
-def check_goal_state(problem: SearchProblem
-                     , current_state: WorldState
-                     , actions: list[tuple[Action]]
-                     , objectives_reached = None
-                     ) -> bool:
-    # Check if the current state is the goal state
-    if isinstance(problem, CornerSearchProblem):
-        current_state_is_goal_state = problem.is_goal_state(current_state, objectives_reached)
-    else:
-        current_state_is_goal_state = problem.is_goal_state(current_state)
-    if current_state_is_goal_state:
-        # print("Solution found!")
-        print("nodes expanded: ", problem.nodes_expanded)
-        # print("actions: ", actions)
-        problem.path_size = len(actions)
-        print( "n_steps: ", len(actions))
-        return Solution(actions)
-
-def get_initial_objectives_reached(problem: SearchProblem
-                                        , initial_state: WorldState
-                                        ) -> list[tuple[int, int]]:
-    objectives_reached = []
-    if isinstance(problem, CornerSearchProblem):
-        for corner in problem.corners:
-            if corner in initial_state.agents_positions:
-                objectives_reached.append(corner)
-    return objectives_reached
-    
-def tree_search(problem: SearchProblem, mode: str) -> Optional[Solution]:
-    """Tree search algorithm.
-    Args:
-        problem: the problem to solve.
-        mode: the search mode to use:
-            - "dfs": Depth-First Search
-            - "bfs": Breadth-First Search
-            - "astar": A* Search
-    Returns:
-        A solution to the problem, or None if no solution exists.
-    """
-    initial_state = problem.initial_state
-    actions = []
-    cost = 0
-    objectives_reached = get_initial_objectives_reached(problem, initial_state)
-    if mode == "astar":
-        data_structure = PriorityQueue() 
-        if isinstance(problem, CornerSearchProblem) or isinstance(problem, GemSearchProblem):
-            data_structure.push((initial_state
-                                 , actions
-                                 , objectives_reached)
-                                , cost)
-        else:
-            data_structure.push((initial_state
-                                 , actions
-                                 )
-                                , cost)
-    else:
-        data_structure = [(initial_state
-                           , actions)]  #  to keep track of states
-    visited = set()  # Set to keep track of visited states
-    while not is_empty(data_structure):
-        # Pop the top state from the data_structure
-        if mode == "bfs":
-            current_state, actions = data_structure.pop(0)
-        else:
-            if isinstance(problem, CornerSearchProblem) or isinstance(problem, GemSearchProblem):
-                current_state, actions, objectives_reached = data_structure.pop()
-            else:
-                current_state, actions = data_structure.pop()
-        # Check if the current state is in the visited set
-        if was(current_state
-               , objectives_reached
-               , visited):
-            continue
-        solution = None
-        if isinstance(problem, CornerSearchProblem):
-            solution = check_goal_state(problem
-                            , current_state
-                            , actions
-                            , objectives_reached)
-        else:
-            solution = check_goal_state(problem
-                            , current_state
-                            , actions
-                            , None)
-        if solution:
-            return solution
-        current_state_hashable = serialize(current_state, objectives_reached)
-        visited.add(current_state_hashable)
-        # Add successors to data_structure
-        if isinstance(problem, CornerSearchProblem) or isinstance(problem, GemSearchProblem):
-            successors = problem.get_successors(current_state
-                                                ,visited
-                                                ,objectives_reached)
-        else:
-            successors = problem.get_successors(current_state
-                                            ,visited)
-        for successor_tuple in successors:  
-            if isinstance(problem, CornerSearchProblem) or isinstance(problem, GemSearchProblem):
-                successor, successor_actions, cost, objectives_reached = successor_tuple
-            else:
-                successor, successor_actions, cost = successor_tuple
-                objectives_reached = None
-            new_actions = actions + [successor_actions]
-            if mode == "astar":
-                if isinstance(problem, CornerSearchProblem) or isinstance(problem, GemSearchProblem):
-                    successor_cost = problem.heuristic(successor, objectives_reached)
-                    total_cost = cost + successor_cost
-                    data_structure.push((successor
-                                         , new_actions
-                                         , objectives_reached)
-                                        , total_cost)
-                else:
-                    successor_cost = problem.heuristic(successor, successor_actions)
-                    total_cost = cost + successor_cost
-                    data_structure.push((successor
-                                         , new_actions)
-                                        , total_cost)
-            else:
-                data_structure.append((successor, new_actions))
-    return None
-
-def dfs(problem: SearchProblem) -> Optional[Solution]:
-    """Depth-First Search"""
-    return tree_search(problem, "dfs")
-
-def bfs(problem: SearchProblem) -> Optional[Solution]:
-    """Breadth-First Search"""
-    return tree_search(problem, "bfs")
-
-def astar(problem: SearchProblem) -> Optional[Solution]:
-    """A* Search"""
-    return tree_search(problem, "astar")
-
-if __name__ == "__main__":
-    world = World.from_file("cartes/corners")
-    problem = CornerSearchProblem(world)
-    solution = astar(problem)
-    world.reset()
-    corners = set([(0, 0), (0, world.width - 1), (world.height - 1, 0), (world.height - 1, world.width - 1)])
-    for action in solution.actions:
-        world.step(action)
-        agent_pos = world.agents_positions[0]
-        if agent_pos in corners:
-            corners.remove(agent_pos)
-    assert len(corners) == 0, f"The agent did not reach these corners: {corners}"----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\search.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\travel_sales_man.py -----# Adjusted code based on user input
-import heapq
-from typing import List, Tuple
-import numpy as np
-from priority_queue import PriorityQueueOptimized
-from utils import min_distance_position
-
-# Adapted Greedy Algorithm with Balanced Total Distances
-def balanced_multi_salesmen_greedy_tsp(remaining_cities: List[Tuple[int, int]]
-                                       , num_salesmen: int
-                                       , start_cities: List[Tuple[int, int]]
-                                       , finish_cities: List[Tuple[int, int]]):
-    """Given a list of cities coordinates, returns a list of cities visited by each salesman
-    in the order that minimizes the total distance traveled.
-    """
-    
-    routes = {f"Salesman_{i+1}": [start_cities[i]] for i in range(num_salesmen)}
-    distances = {f"Salesman_{i+1}": 0.0 for i in range(num_salesmen)}
-
-    while remaining_cities:
-        for salesman in routes.keys():
-            if not remaining_cities:
-                break
-            
-            current_city = routes[salesman][-1]
-            nearest_city, nearest_distance = min_distance_position(routes[salesman][-1], remaining_cities)
-            distances[salesman] += nearest_distance
-            routes[salesman].append(nearest_city)
-            remaining_cities.remove(nearest_city)
-
-    for salesman in routes.keys():
-        current_city = routes[salesman][-1]
-        finish_city, final_distance = min_distance_position(current_city, finish_cities)
-        distances[salesman] += final_distance
-        routes[salesman].append(finish_city)
-        
-    total_distance = sum(distances.values())
-    return routes, distances, total_distance
-
-
-# Greedy Algorithm with Min Heap (Priority Queue)
-def greedy_tsp_heap(cities_to_visit
-                    , start_city=None
-                    , finish_city=None):
-    """Given a dict of cities and their coordinates, returns a list of cities
-    visited in the order that minimizes the total distance traveled.
-    Route: A→C→B→D→E→A
-    Total Distance: 12.35
-    Elapsed Time: 0.0000703 seconds"""
-
-    road = [start_city]
-    current_city = start_city
-    total_distance = 0.0
-
-    def distance(city1, city2):
-        x1, y1 = cities_to_visit[city1]
-        x2, y2 = cities_to_visit[city2]
-        return np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-
-    while cities_to_visit:
-        heap = [(distance(current_city, city), city) for city in cities_to_visit]
-        heapq.heapify(heap)
-        nearest_distance, nearest_city = heapq.heappop(heap)
-        total_distance += nearest_distance
-        road.append(nearest_city)
-        current_city = nearest_city
-        cities_to_visit.remove(nearest_city)
-
-    total_distance += distance(current_city, finish_city)
-    road.append(finish_city)
-
-    return road, total_distance
-
-
-def greedy_tsp_optimized_pq(cities):
-    """Given a dict of cities and their coordinates, returns a list of cities
-    visited in the order that minimizes the total distance traveled.
-    Elapsed Time: 0.0002046 seconds"""
-    start_city = list(cities.keys())[0]
-    road = [start_city]
-    cities_to_visit = list(set(cities.keys()) - set(road))
-    current_city = start_city
-    total_distance = 0.0
-
-    def distance(city1, city2):
-        x1, y1 = cities[city1]
-        x2, y2 = cities[city2]
-        return np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-
-    pq = PriorityQueueOptimized()
-
-    while cities_to_visit:
-        for city in cities_to_visit:
-            pq.push(city, distance(current_city, city))
-        
-        nearest_city = pq.pop()
-        nearest_distance = distance(current_city, nearest_city)
-        total_distance += nearest_distance
-        road.append(nearest_city)
-        current_city = nearest_city
-        cities_to_visit.remove(nearest_city)
-
-    total_distance += distance(current_city, start_city)
-    road.append(start_city)
-
-    return road, total_distance----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\graph_search\travel_sales_man.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\adversarial_search.py -----from typing import List, Tuple
-from lle import Action
-from mdp import MDP, S, A
-from world_mdp import BetterValueFunction, WorldMDP
-
-WORLD_STEP_NOT_POSSIBLE_ERROR = "There is no more step to take"
-
-def transition(mdp: MDP[A, S], state: S, action: A, depth: int = 0) -> S:
-    """Returns the state reached by performing the given action in the given state."""
-    if isinstance(mdp, BetterValueFunction):
-        new_state = mdp.transition(state, action, depth)
-    else:
-        new_state = mdp.transition(state, action)
-    if isinstance(mdp, WorldMDP):
-        if mdp.was_visited(new_state):
-            raise ValueError("was visited")
-        mdp.add_to_visited(new_state)
-    return new_state
-            
-        
-def _max(mdp: MDP[A, S], state: S, max_depth: int, depth: int = 0) -> Tuple[float, A]:
-    """Returns the value of the state and the action that maximizes it."""
-    if mdp.is_final(state) or depth == max_depth :
-        return state.value, None
-    best_value = float('-inf')
-    best_action = None
-    mdp_available_actions = mdp.available_actions(state)
-    for action in mdp_available_actions:
-        try:
-            new_state = transition(mdp, state, action, depth)
-      
-            if new_state.current_agent == 0:
-                value, _ = _max(mdp, new_state, max_depth, depth + 1)
-            else:
-                value = _min(mdp, new_state, max_depth, depth + 1)
-            if value > best_value:
-                best_value = value
-                best_action = action
-            if isinstance(mdp, WorldMDP):
-                mdp.remove_from_visited(new_state)
-        except ValueError:
-            # print(WORLD_STEP_NOT_POSSIBLE_ERROR)
-            pass
-    return best_value, best_action
-
-def _min(mdp: MDP[A, S], state: S, max_depth: int, depth: int = 0) -> float:
-    """Returns the worst value of the state."""
-    if mdp.is_final(state) or depth == max_depth:
-        return state.value
-    worst_value = float('inf')
-    for action in mdp.available_actions(state):
-        try:
-            new_state = transition(mdp, state, action, depth)
-        
-            if new_state.current_agent == 0:
-                value, _ = _max(mdp, new_state, max_depth, depth + 1)
-            else:
-                value = _min(mdp, new_state, max_depth, depth)
-            worst_value = min(worst_value, value)
-            if isinstance(mdp, WorldMDP):
-                mdp.remove_from_visited(new_state)
-        except ValueError:
-            # print(WORLD_STEP_NOT_POSSIBLE_ERROR)
-            pass
-        
-    return worst_value
-
-def minimax(mdp: MDP[A, S], state: S, max_depth: int) -> A:
-    """Returns the action to be performed by Agent 0 in the given state. 
-    This function only accepts 
-    states where it's Agent 0's turn to play 
-    and raises a ValueError otherwise. 
-    Don't forget that there may be more than one opponent"""
-    if state.current_agent != 0:
-        raise ValueError("It's not Agent 0's turn to play")
-    value, action = _max(mdp, state, max_depth, 0)
-    return action
-
-def _alpha_beta_max(mdp: MDP[A, S], state: S, alpha: float, beta: float, max_depth: int, depth: int = 0) -> Tuple[float, A, float, float]:
-    if mdp.is_final(state) or depth == max_depth:
-        return state.value, None
-    best_value = float('-inf')
-    best_action = None
-    available_actions = mdp.available_actions(state)
-    for action in available_actions:
-        try:
-            new_state = transition(mdp, state, action, depth)
-    
-            if new_state.current_agent == 0:
-                value, _ = _alpha_beta_max(mdp, new_state, alpha, beta, max_depth, depth + 1)
-            else:
-                value = _alpha_beta_min(mdp, new_state, alpha, beta, max_depth, depth + 1)
-            if value > best_value:
-                best_value = value
-                best_action = action
-            if isinstance(mdp, WorldMDP):
-                mdp.remove_from_visited(new_state)
-            if beta <= best_value:  # Beta cutoff
-                return best_value, best_action
-            alpha = max(alpha, best_value)  # Update alpha after cutoff: fail hard
-        except ValueError:
-            # print(WORLD_STEP_NOT_POSSIBLE_ERROR)
-            pass
-
-    return best_value, best_action
-
-def _alpha_beta_min(mdp: MDP[A, S], state: S, alpha: float, beta: float, max_depth: int, depth: int = 0) -> Tuple[float, A, float, float]:
-    if mdp.is_final(state) or depth == max_depth:
-        return state.value
-    worst_value = float('inf')
-    available_actions = mdp.available_actions(state)
-    for action in available_actions:
-        try:
-            new_state = transition(mdp, state, action, depth)
-    
-            if new_state.current_agent == 0:
-                value, _ = _alpha_beta_max(mdp, new_state, alpha, beta, max_depth, depth + 1)
-            else:
-                value = _alpha_beta_min(mdp, new_state, alpha, beta, max_depth, depth)
-            worst_value = min(worst_value, value)
-            if isinstance(mdp, WorldMDP):
-                mdp.remove_from_visited(new_state)
-            if worst_value <= alpha:  # Alpha cutoff
-                return worst_value
-            beta = min(beta, worst_value)  # Update beta after cutoff: fail hard
-        except ValueError:
-            # print(WORLD_STEP_NOT_POSSIBLE_ERROR)
-            pass
-    return worst_value
-
-def alpha_beta(mdp: MDP[A, S]
-               , state: S
-               , max_depth: int) -> A: # todo good node ordering reduces time complexity to O(b^m/2)
-    """The alpha-beta pruning algorithm 
-    is an improvement over 
-    minimax 
-    that allows for pruning of the search tree."""
-    # todo In maxn (Luckhardt and Irani, 1986), 
-    # the extension of minimax to multi-player games
-    # , pruning is not as successful.
-    if state.current_agent != 0:
-        raise ValueError("It's not Agent 0's turn to play")
-    alpha = float('-inf')
-    beta = float('inf')
-    value, action = _alpha_beta_max(mdp, 
-                                    state, 
-                                    alpha, 
-                                    beta, 
-                                    max_depth, 
-                                    0)
-    return action
-
-def _expectimax_max(mdp: MDP[A, S], 
-                    state: S, 
-                    max_depth: int, 
-                    depth: int = 0
-                    ) -> Tuple[float, A]:
-    if mdp.is_final(state) or depth == max_depth:
-        return state.value, None
-    best_value = float('-inf')
-    best_action = None
-    for action in mdp.available_actions(state):
-        try:
-            new_state = transition(mdp, 
-                                   state, 
-                                   action, 
-                                   depth
-                                    )
-
-            if new_state.current_agent == 0:
-                value, _ = _expectimax_max(mdp, 
-                                        new_state, 
-                                        max_depth, 
-                                        depth + 1
-                                        )
-            else:
-                value = _expectimax_exp(mdp, new_state, max_depth, depth + 1)
-            if value > best_value:
-                best_value = value
-                best_action = action
-            if isinstance(mdp, WorldMDP):
-                mdp.remove_from_visited(new_state)
-        except ValueError:
-            # print(WORLD_STEP_NOT_POSSIBLE_ERROR)
-            pass
-    return best_value, best_action
-
-def _expectimax_exp(mdp: MDP[A, S],
-                     state: S, 
-                     max_depth: int, 
-                     depth: int = 0
-                    ) -> float:
-    """Returns the expected value of the state.
-    The expected value of a state is
-    the average value of the state
-    after all possible actions are performed.
-    """
-    if mdp.is_final(state) or depth == max_depth:
-        return state.value
-    total_value = 0
-    num_actions = len(mdp.available_actions(state))
-    for action in mdp.available_actions(state):
-        try:
-            new_state = transition(mdp, state, action, depth)
-    
-            if new_state.current_agent == 0:
-                value, _ = _expectimax_max(mdp, new_state, max_depth, depth + 1)
-            else:
-                value = _expectimax_exp(mdp, new_state, max_depth, depth)
-            total_value += value
-            if isinstance(mdp, WorldMDP):
-                mdp.remove_from_visited(new_state)
-        except ValueError:
-            # print(WORLD_STEP_NOT_POSSIBLE_ERROR)
-            pass
-    expected_value = total_value / num_actions if num_actions != 0 else 0
-    return expected_value
-
-def expectimax(mdp: MDP[A, S], 
-               state: S, 
-               max_depth: int
-               ) -> Action:
-    """ The 'expectimax' algorithm allows for 
-    modeling the probabilistic behavior of humans 
-    who might make suboptimal choices. 
-    The nature of expectimax requires that we know 
-    the probability that the opponent will take each action. 
-    Here, we will assume that 
-    the other agents take actions that are uniformly random."""
-    if state.current_agent != 0:
-        raise ValueError("It's not Agent 0's turn to play")
-    _, action = _expectimax_max(mdp, state, max_depth, 0)
-    return action
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\adversarial_search.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\latextest.py -----import matplotlib.pyplot as plt
-
-plt.rcParams['text.usetex'] = True
-plt.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
-
-plt.figure()
-plt.title(r'Test $\text{with\;\;\;spaces}$')
-plt.show()
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\latextest.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\map_display.py -----import cv2
-from lle import World
-
-
-map2023_10_29_13_48_15 = """.   G   S1 
-L0E S0  .  
-X   @   X  
-"""
-results2023_10_29_13_48_15 = {
-"depth":  3 ,
-"minimax":  27 ,
-"minimax_with_better_value_function":  27 ,
-"alpha_beta":  22 ,
-"alpha_beta_with_better_value_function":  16 ,
-"expectimax":  27 ,
-"action_minimax":  " North " ,
-"action_minimax_with_better_value_function":  " North " ,
-"action_alpha_beta":  " North " ,
-"action_alpha_beta_with_better_value_function":  " North " ,
-"action_expectimax":  " North " ,
-}
-
-map2023_10_29_13_49_35 = """.  S0 S2 X 
-.  .  G  . 
-.  @  .  G 
-.  .  S1 . 
-.  .  X  X 
-"""
-results2023_10_29_13_49_35 = {
-"depth":  4 ,
-"minimax":  2706 ,
-"minimax_with_better_value_function":  2706 ,
-"alpha_beta":  312 ,
-"alpha_beta_with_better_value_function":  366 ,
-"expectimax":  2706 ,
-"action_minimax":  " Stay " ,
-"action_minimax_with_better_value_function":  " Stay " ,
-"action_alpha_beta":  " Stay " ,
-"action_alpha_beta_with_better_value_function":  " South " ,
-"action_expectimax":  " South " ,
-}
-
-map2023_10_29_13_53_25 = """G  .  .  .  .  G 
-X  .  G  S2 S0 G 
-.  .  G  X  S1 X 
-.  .  G  .  .  . 
-"""
-results2023_10_29_13_53_25 = {
-"depth":  4 ,
-"minimax":  3160 ,
-"minimax_with_better_value_function":  3160 ,
-"alpha_beta":  929 ,
-"alpha_beta_with_better_value_function":  436 ,
-"expectimax":  3160 ,
-"action_minimax":  " East " ,
-"action_minimax_with_better_value_function":  " East " ,
-"action_alpha_beta":  " East " ,
-"action_alpha_beta_with_better_value_function":  " East " ,
-"action_expectimax":  " East " ,
-}
-
-map2023_10_29_13_55_47 = """.   .   L0S .   .   S2 
-X   L1S .   S1  .   .  
-X   .   .   @   S0  X  
-"""
-results2023_10_29_13_55_47 = {
-"depth":  4 ,
-"minimax":  701 ,
-"minimax_with_better_value_function":  701 ,
-"alpha_beta":  297 ,
-"alpha_beta_with_better_value_function":  385 ,
-"expectimax":  701 ,
-"action_minimax":  " Stay " ,
-"action_minimax_with_better_value_function":  " North " ,
-"action_alpha_beta":  " Stay " ,
-"action_alpha_beta_with_better_value_function":  " North " ,
-"action_expectimax":  " Stay " ,
-}
-
-map2023_10_29_13_56_42 = """.  X  G 
-@  @  S0
-.  .  . 
-.  .  . 
-.  X  S1
-"""
-
-def display(map_str, map_name):
-    world_instance = World(map_str)
-    img = world_instance.get_image()
-    cv2.imshow("Visualisation", img)
-    cv2.waitKey(0) # Attend que l'utilisateur appuie sur 'enter'
-    cv2.waitKey(1) # continue l'exécution du code
-    #save img
-    cv2.imwrite(map_name, img)
-
-maps_names = ["map2023_10_29_13_48_15", "map2023_10_29_13_49_35", "map2023_10_29_13_53_25", "map2023_10_29_13_55_47", "map2023_10_29_13_56_42"]
-map_names_png = ["map2023_10_29_13_48_15.png", "map2023_10_29_13_49_35.png", "map2023_10_29_13_53_25.png", "map2023_10_29_13_55_47.png", "map2023_10_29_13_56_42.png"]
-maps = [map2023_10_29_13_48_15, map2023_10_29_13_49_35, map2023_10_29_13_53_25, map2023_10_29_13_55_47, map2023_10_29_13_56_42]
-for map_str, map_name in zip(maps, map_names_png):
-    display(map_str, map_name)----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\map_display.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\map_generator.py -----import random
-
-
-class MapGenerator:
-    def __init__(self
-                 , map_width = 9
-                 , map_height = 9
-                 , map_type = "random"
-                 ):
-        self.map_width = map_width
-        self.map_height = map_height
-        self.map_type = map_type
-        self.map = []
-        self.map = self.generate_map_str()
-    
-
-    def generate_map_str(self):
-        # Generate map based on map_type
-        random_params = self.generate_random_params()
-        random_map = self.generate_random_map(**random_params)
-        # random_map_str = self.map_to_str(random_map)
-        matrix_layout = self.matrix_to_layout(random_map)
-        return matrix_layout        
-        
-    def generate_random_map(self
-                               , rows=9
-                               , cols=9
-                               , num_agents=1
-                               , num_gems=0
-                               , num_lasers=0
-                               ):
-        """
-        Generate a random map of dimensions (rows x cols) with given elements.
-        
-        Parameters:
-        - rows: Number of rows
-        - cols: Number of columns
-        - num_agents: Number of agents (default is 1)
-        - num_gems: Number of gems (default is 0)
-        - num_lasers: Number of lasers (default is 0)
-        
-        Returns:
-        - A list of lists representing the map
-        """
-        # if rows*cols < num_agents*2 + num_gems + num_lasers:
-        #     rows = cols = num_agents*2 + num_gems + num_lasers
-        # Initialize the map with floor tiles '.' and walls '@'
-        map_grid = [['.' for _ in range(cols)] for _ in range(rows)]
-        
-        
-        
-        # Place agents' start positions
-        for i in range(num_agents):
-            placed = False
-            while not placed:
-                r, c = random.randint(0, rows-1), random.randint(0, cols-1)
-                if map_grid[r][c] == '.':
-                    map_grid[r][c] = f'S{i}'
-                    placed = True
-        
-        # Place exits (same number as agents)
-        for _ in range(num_agents):
-            placed = False
-            while not placed:
-                r, c = random.randint(0, rows-1), random.randint(0, cols-1)
-                if map_grid[r][c] == '.':
-                    map_grid[r][c] = 'X'
-                    placed = True
-        
-        # Place gems
-        for _ in range(num_gems):
-            for _ in range(3):
-                r, c = random.randint(0, rows-1), random.randint(0, cols-1)
-                if map_grid[r][c] == '.':
-                    map_grid[r][c] = 'G'
-                    break
-        
-        # Place lasers
-        for i in range(num_lasers):
-            for _ in range(3):
-                r, c = random.randint(0, rows-1), random.randint(0, cols-1)
-                if map_grid[r][c] == '.':
-                    direction = random.choice(['N', 'S', 'E', 'W'])
-                    map_grid[r][c] = f'L{i}{direction}'
-                    break
-        # Randomly place walls (20% of the map)
-        for _ in range((rows * cols) // 5):
-            r, c = random.randint(0, rows-1), random.randint(0, cols-1)
-            if map_grid[r][c] == '.':
-                map_grid[r][c] = '@'
-        
-        return map_grid
-
-    # Function to generate random but reasonable parameters for the map
-    def generate_random_params(self
-                            #    , max_rows=4
-                               , max_rows=6
-                            #    , max_rows=9
-                            #    , max_rows=5
-                            #    , max_cols=4
-                               , max_cols=6
-                            #    , max_cols=9
-                            #    , max_cols=5
-                               , max_agents=3
-                               , max_gems=6
-                               , max_lasers=3):
-        """
-        Generate random but reasonable parameters for the map.
-        
-        Parameters:
-        - max_rows: Maximum number of rows (default is 9)
-        - max_cols: Maximum number of columns (default is 9)
-        - max_agents: Maximum number of agents (default is 4)
-        - max_gems: Maximum number of gems (default is 6)
-        - max_lasers: Maximum number of lasers (default is 3)
-        
-        Returns:
-        - A dictionary containing the generated parameters
-        """
-        rows_min = 3
-        # rows_min = 5
-        cols_min = 3
-        # cols_min = 5
-        rows = random.randint(rows_min
-                              , max_rows)
-        cols = random.randint(cols_min
-                              , max_cols)
-        max_agents = min(max_agents, rows*cols//2)
-        num_agents = random.randint(2, max_agents)
-        print("rows: ", rows)
-        print("cols: ", cols)
-        print("num_agents: ", num_agents)
-
-        params = {
-            "rows": rows,
-            "cols": cols,
-            "num_agents": num_agents,
-            "num_gems": random.randint(0, max_gems),
-            "num_lasers": random.randint(0, max_lasers)
-        }
-        
-        return params
-
-    def map_to_string(self
-                      , map_grid):
-        """
-        Convert a given map into a string.
-        
-        Parameters:
-        - map_grid: A list of lists representing the map.
-        
-        Returns:
-        - A string representing the map.
-        """
-        return "\n".join(" ".join(row) for row in map_grid)
-    
-    def matrix_to_layout(self
-                         ,matrix):
-        """
-        Convert a given matrix into a layout.
-        
-        Parameters:
-        matrix (list of list of str): A matrix representing the layout.
-
-        Returns:
-        list of str: Each string represents a row in the layout.
-        """
-        # Determine the maximum length of any element in the matrix for alignment
-        max_len = max(len(str(item)) for row in matrix for item in row)
-        
-        layout = """"""
-        # layout += "\n"
-
-        for row in matrix:
-            # Align the elements by padding with spaces
-            aligned_row = " ".join(str(item).ljust(max_len) for item in row)
-            layout += aligned_row + "\n"
-            
-        return layout
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\map_generator.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\mdp.py -----from typing import TypeVar, Generic
-from abc import abstractmethod, ABC
-from dataclasses import dataclass
-
-
-@dataclass
-class State(ABC):
-    """
-    State in an adversarial MDP.
-    It must somehow know whose agent's turn it is.
-    """
-
-    value: float
-    current_agent: int
-
-
-A = TypeVar("A")
-S = TypeVar("S", bound=State)
-
-
-class MDP(ABC, Generic[A, S]):
-    """Adversarial Markov Decision Process"""
-
-    def __init__(self):
-        super().__init__()
-        self.n_expanded_states = 0
-
-    @abstractmethod
-    def reset(self) -> S:
-        """Reset the MDP to its initial state and returns it."""
-
-    @abstractmethod
-    def available_actions(self, state: S) -> list[A]:
-        """Returns the list of available actions for the current agent from the given state."""
-
-    @abstractmethod
-    def transition(self, state: S, action: A) -> S:
-        """Returns the next state and the reward."""
-
-    @abstractmethod
-    def is_final(self, state: S) -> bool:
-        """Returns whether the given state is final."""
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\mdp.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\stock_tree.py -----import copy
-import datetime
-import os
-import sys
-from typing import List, Tuple
-
-from lle import Action, World
-from mdp import MDP, S, A
-
-from world_mdp import BetterValueFunction, WorldMDP
-from anytree import Node, RenderTree
-from anytree.exporter import UniqueDotExporter
-
-
-def stock_tree(mdp: MDP[A, S]
-               , algorithm: str
-                ) -> None:
-    """Stocks the tree in a png file"""
-    if isinstance(mdp, WorldMDP):
-        if not os.path.exists('tree/current/'+algorithm):
-            os.makedirs('tree/current/'+algorithm)
-        UniqueDotExporter(mdp.root).to_picture("tree/current/"+algorithm+".png")
-        print("tree stocked in tree/current/"+algorithm+".png")
-
-        date_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        if not os.path.exists('tree/'+algorithm):
-            os.makedirs('tree/'+algorithm)
-        UniqueDotExporter(mdp.root).to_picture("tree/"+algorithm+"/"+date_time+".png")
-        print("tree stocked in tree/"+algorithm+"/"+date_time+".png")
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\stock_tree.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\utils.py -----# def min_distance_position(position, positions):
-#     # Create a cost vector
-#     cost_vector = np.zeros(len(positions))
-    
-#     for i, point in enumerate(positions):
-#         cost_vector[i] = ((position[0] - point[0]) ** 2 + (position[1] - point[1]) ** 2) ** 0.5
-
-#     # Find the index of the minimum distance
-#     min_index = np.argmin(cost_vector)
-
-#     # Extract the closest position and its distance
-#     closest_position = positions[min_index]
-#     min_distance = cost_vector[min_index]
-
-#     return closest_position, min_distance
-
-from typing import List, Tuple
-
-
-def get_distance(coord1, coord2):
-    """Returns the distance between two coordinates"""
-    x1, y1 = coord1
-    x2, y2 = coord2
-    return abs(x1 - x2) + abs(y1 - y2)
-
-def min_distance_position(position : Tuple[int, int]
-                          , positions: List[Tuple[int, int]] 
-                            ) -> Tuple[Tuple[int, int], float]:
-    """Returns the position in positions that is closest to position"""
-    min_distance = float("inf")
-    min_position = None
-    for pos in positions:
-        distance = 0
-        distance = get_distance(position, pos)
-        # print(distance)
-        if distance < min_distance:
-            min_distance = distance
-            min_position = pos
-    return min_position, min_distance
-
-# def order_items()
-# function to print visited set or stack items in terminal
-def print_items(items
-                , title="items:"
-                , transform=None) -> None:
-    """Prints items in terminal
-    Args:
-        items: items to print
-    T is a generic type variable
-    possible types for T:
-    set, list, tuple, dict, etc."""
-    print(title)
-    i = 0
-    for item in items:
-        i += 1
-        print(i, item)
-    print("")
-
-
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\utils.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\world_mdp.py -----import copy
-from dataclasses import dataclass
-import random
-import sys
-from typing import List, Optional, Tuple#, override
-import lle
-from lle import Position, World, Action
-from mdp import A, MDP, State
-
-# import auto_indent
-
-from anytree import Node, RenderTree
-from loguru import logger
-import numpy as np
-from scipy.optimize import linear_sum_assignment
-
-# sys.stdout = auto_indent.AutoIndent(sys.stdout)
-
-def get_distance(coord1, coord2):
-    """Returns the distance between two coordinates"""
-    x1, y1 = coord1
-    x2, y2 = coord2
-    return abs(x1 - x2) + abs(y1 - y2)
-
-def min_distance_position(position : Tuple[int, int]
-                          , positions: list[Tuple[int, int]] 
-                            ) -> Tuple[Tuple[int, int], float]:
-    """Returns the position in positions that is closest to position"""
-    min_distance = float("inf")
-    min_position = None
-    for pos in positions:
-        distance = 0
-        distance = get_distance(position, pos)
-        if distance < min_distance:
-            min_distance = distance
-            min_position = pos
-    return min_position, min_distance
-
-def min_distance_pairing(list_1
-                             , list_2):
-        # Create a cost matrix
-        cost_matrix = np.zeros((len(list_1), len(list_2)))
-        for i, point1 in enumerate(list_1):
-            for j, point2 in enumerate(list_2):
-                cost_matrix[i, j] = ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
-        # Hungarian algorithm:
-        # from cost_matrix, it does the pairing by minimizing the total distance
-        row_ind, col_ind = linear_sum_assignment(cost_matrix)
-        # Extract the paired points, their distances, and the minimum total distance
-        paired_points = []
-        distances = []
-        min_total_distance = 0
-        for i, j in zip(row_ind, col_ind):
-            paired_points.append((list_1[i], list_2[j]))
-            distances.append(cost_matrix[i, j])
-            min_total_distance += cost_matrix[i, j]
-        return paired_points, distances, min_total_distance
-
-
-@dataclass
-class MyWorldState(State):
-    """Comme il s’agit d’un MDP à plusieurs agents et à tour par tour, 
-    chaque état doit retenir à quel agent
-    c’est le tour d’effectuer une action.
-    """
-    # la valeur d’un état correspond à la somme des rewards obtenues par les actions de l’agent 0 
-    # (c’est-à-dire les gemmes collectées + arriver sur une case de ﬁn)
-    value: float 
-    current_agent: int
-    last_action: Action
-    agents_positions: list
-    gems_collected: list[bool]
-    value_vector: List[float]
-    alpha: Optional[float] = None
-    beta: Optional[float] = None
-    # Add more attributes here if needed.
-    def __init__(self
-                 , value: float
-                 , value_vector: List[float]
-                 , current_agent: int
-                 , world: World
-                 , world_string: str = None
-                 , last_action: Action = None
-                 ):
-        super().__init__(value, current_agent)
-        self.world = world
-        if world_string:
-            self.world_string = world_string
-        else:
-            self.world_string = world.world_string
-        self.agents_positions = world.agents_positions
-        self.gems_collected = world.get_state().gems_collected
-        self.value_vector = value_vector
-        self.node = None
-        if last_action:
-            self.last_action = last_action
-        else:
-            self.last_action = None
-
-    def get_agents_positions(self) -> list:
-        # return self.agents_positions
-        return self.world.agents_positions
-    
-    def layout_to_matrix(self
-                         , layout):
-        """
-        Convert a given layout into a matrix where each first row of each line
-        contains the (group of) character of the layout line.
-        Parameters:
-        layout (str): A multi-line string where each line represents a row in the layout.
-        Returns:
-        list of list of str: A matrix representing the layout.
-        """
-        # Split the layout into lines
-        lines = layout.strip().split('\n')
-        matrix = []
-        max_cols = 0  # Keep track of the maximum number of columns
-        # Convert each line into a row in the matrix
-        for line in lines:
-            row = [char for char in line.split() if char != ' ']
-            matrix.append(row)
-            max_cols = max(max_cols, len(row))
-        # Fill in missing columns with '.'
-        for row in matrix:
-            while len(row) < max_cols:
-                row.append('.')
-        return matrix
-    
-    def matrix_to_layout(self
-                         ,matrix):
-        """
-        Convert a given matrix into a layout.
-        
-        Parameters:
-        matrix (list of list of str): A matrix representing the layout.
-
-        Returns:
-        list of str: Each string represents a row in the layout.
-        """
-        # Determine the maximum length of any element in the matrix for alignment
-        max_len = max(len(str(item)) for row in matrix for item in row)
-        layout = ""
-        for row in matrix:
-            # Align the elements by padding with spaces
-            aligned_row = " ".join(str(item).ljust(max_len) for item in row)
-            layout += aligned_row + "\n"
-            
-        return layout
-
-    
-    def update_world_string(self
-                            ,current_agent: int
-                            ,current_agent_previous_position: Position
-                            ,action) -> None:
-        """Updates world_string attribute with current world state:
-        current agent position, gems collected, etc."""
-        matrix = self.layout_to_matrix(self.world_string)
-        if action != Action.STAY:
-            agent_string = "S"+str(current_agent)
-            matrix[current_agent_previous_position[0]][current_agent_previous_position[1]] = "."
-            matrix[self.agents_positions[current_agent][0]][self.agents_positions[current_agent][1]] = agent_string
-            matrix_after_action = matrix
-            layout_after_action = self.matrix_to_layout(matrix_after_action)
-            self.world_string = layout_after_action
-            
-    def to_string(self) -> str:
-        """Returns a string representation of the state.
-        with each state attribute on a new line."""
-        # return f"current_agent: {self.current_agent}, value: {self.value}, value_vector: {self.value_vector}, agents_positions: {self.agents_positions}, gems_collected: {self.gems_collected}"
-        state_attributes = f"current_agent: {self.current_agent}\n"
-        
-        if self.last_action :
-            state_attributes += f"last_action: {self.last_action}\n"
-        state_attributes += f"value: {self.value}\n"
-        state_attributes += f"value_vector: {self.value_vector}\n"
-        state_attributes += f"agents_positions: {self.agents_positions}\n"
-        state_attributes += f"gems_collected: {self.gems_collected}\n"
-        state_attributes += f"world: \n{self.world_string}\n"
-        return state_attributes
-    
-    def serialize(self) -> tuple:
-        """Serialize the given world state.
-        Args:
-            world_state: the world state to serialize.
-        Returns:
-            A tuple that represents the given world state.
-        """
-        return (tuple(self.agents_positions), tuple(self.gems_collected), self.current_agent)
-    
-
-class WorldMDP(MDP[Action, MyWorldState]):
-    def __init__(self
-                 , world: World):
-        self.world = world
-        world.reset()
-        self.n_agents = world.n_agents
-
-        self.initial_state = world.get_state()
-        self.root = None
-
-        self.visited = set() # visited states
-        # nodes dict
-        self.nodes = {} # key: state, value: node
-        self.n_expanded_states = 0
-        self.lasers_dangerous_for_agents = self.get_lasers_dangerous_for_agents()
-
-    def get_lasers_dangerous_for_agents(self) -> list[list[Position]]:
-        """Returns a list of lists
-        , each corresponding to the agent of same index
-        , containing positions of the lasers of a different agent_id (color)."""
-
-        lasers_dangerous_for_agents = [[] for _ in range(self.world.n_agents)]
-        laser_sources = self.world.laser_sources
-
-        for laser_source in laser_sources:
-            laser_source_position = laser_source[0]
-            laser_source_agent_id = laser_source[1].agent_id
-            #add the laser source position to the list of lasers dangerous for the agents of index different from laser_source_agent_id
-            for agent_id in range(self.world.n_agents):
-                if agent_id != laser_source_agent_id:
-                    lasers_dangerous_for_agents[agent_id].append(laser_source_position)
-
-        return lasers_dangerous_for_agents
-
-    def reset(self):
-        """The world.reset() method returns an initial state of the game. 
-        After performing reset(), 
-        it's Agent 0's turn to take an action. 
-        Thus, world.transition(Action.NORTH) 
-        will only move Agent 0 to the north, 
-        while all other agents will remain in place. 
-        Then, it's Agent 1's turn to move, and so on"""
-        self.n_expanded_states = 0
-        self.world.reset()
-        return MyWorldState(0.0
-                            , [0.0 for _ in range(self.world.n_agents)]
-                            , 0
-                            , self.world)
-
-    def available_actions(self, state: MyWorldState) -> list[Action]:
-        """returns the actions available to the current agent."""
-        world_available_actions = state.world.available_actions()
-        current_agent = state.current_agent
-        current_agent_available_actions = world_available_actions[current_agent]
-        return current_agent_available_actions
-      
-    def is_final(self, state: MyWorldState) -> bool:
-        """returns True if the state is final, False otherwise."""
-        return state.world.done and not [gem[0] for gem in state.world.gems if not gem[1].is_collected]
-
-    def get_actions(self
-                , current_agent: int
-                , action: Action) -> list[Action]:
-        """from current agent action, returns list with action at agent index and STAY at others's ."""
-        actions = [Action.STAY for _ in range(self.world.n_agents)]
-        actions[current_agent] = action
-        return actions
-
-    def convert_to_WorldState(self, state: MyWorldState) -> lle.WorldState:
-        """Converts MyWorldState to lle.WorldState"""
-        return lle.WorldState(state.agents_positions, state.gems_collected)
-    
-    def agents_each_on_different_exit_pos(self
-                                          , state: MyWorldState) -> bool:
-        """Whether each agent is on a different exit position."""
-        agent_positions = set(state.world.agents_positions)  
-
-        exit_positions = set(self.world.exit_pos)  
-        # Intersect the sets to find agents that are on exit positions
-        agents_on_exits = agent_positions.intersection(exit_positions)
-        # Check if the number of agents on exits is equal to the total number of agents
-        # and if each agent is on a different exit
-        return len(agents_on_exits) == len(agent_positions) # and len(agents_on_exits) == len(exit_positions)
-
-    def current_agent_on_exit(self
-                              , state: MyWorldState
-                              , current_agent: int
-                              ) -> bool:
-        """Whether the current agent is on an exit position."""
-        current_agent_position = state.agents_positions[current_agent]
-        return current_agent_position in self.world.exit_pos
-
-    def add_to_visited(self
-                          , state: MyWorldState) -> None:
-        """Adds state to visited states."""
-        self.visited.add(state.serialize())
-
-    def remove_from_visited(self
-                            , state: MyWorldState) -> None:
-        """Removes state from visited states."""
-        self.visited.remove(state.serialize())
-
-    def was_visited(self,
-                    state: MyWorldState) -> bool:
-        return state.serialize() in self.visited
-    
-    def add_value_to_node(self
-                          , state
-                          , value: float
-                          , discriminator: str
-                          , alpha: float = None
-                            , beta: float = None
-                          ) -> None:
-        """Adds value to node"""
-        #add best_value to the node name
-        new_state_string = state.to_string()
-        new_state_string_with_best_value = new_state_string + "\n "+discriminator+" value : " + str(value)
-        if alpha != None:
-            new_state_string_with_best_value += "\n alpha : " + str(alpha)
-        if beta != None:
-            new_state_string_with_best_value += "\n beta : " + str(beta)
-        if self.is_final(state):
-            new_state_string_with_best_value += "\n FINAL"
-        # replace
-        self.nodes[new_state_string].name = new_state_string_with_best_value
-
-    def transition(self
-                   , state: MyWorldState
-                   , action: Action
-                   ) -> MyWorldState:
-        """Returns the next state and the reward.
-        If Agent 0 dies during a transition, 
-        the state value immediately drops to 
-        lle.REWARD_AGENT_DIED (-1), 
-        without taking into account any gems already collected
-        """
-        self.n_expanded_states += 1
-        simulation_world = copy.deepcopy(state.world)
-        world_string = copy.deepcopy(state.world_string)
-        simulation_world.set_state(self.convert_to_WorldState(state))
-
-        simulation_state = simulation_world.get_state()
-        simulation_state_current_agent = state.current_agent
-        current_agent_previous_position = simulation_state.agents_positions[simulation_state_current_agent]
-        actions = self.get_actions(simulation_state_current_agent, action)
-        next_state_value_vector = copy.deepcopy(state.value_vector)
-        reward = 0.0
-        reward = simulation_world.step(actions)
-        next_state_value_vector[simulation_state_current_agent] += reward
-        if simulation_state_current_agent == 0:
-            if reward == -1:
-                next_state_value_vector[0] = -1.0 #lle.REWARD_AGENT_DIED
-        next_state_current_agent = (simulation_state_current_agent+1)%simulation_world.n_agents
-        my_world_state_transitioned = MyWorldState(next_state_value_vector[0]
-                                                   , next_state_value_vector
-                                                   , next_state_current_agent
-                                                   , simulation_world
-                                                   , world_string
-                                                   , action
-                                                   )
-        my_world_state_transitioned.update_world_string(simulation_state_current_agent
-                                                        , current_agent_previous_position
-                                                        , actions)
-        return my_world_state_transitioned
-    
-
-def balanced_multi_salesmen_greedy_tsp(remaining_cities: list[Tuple[int, int]]
-                                       , num_salesmen: int
-                                       , start_cities: list[Tuple[int, int]]
-                                       , finish_cities: list[Tuple[int, int]]
-                                       ) -> Tuple[dict[str, list[Tuple[int, int]]], dict[str, float], float]: 
-    #todo: calculate the distance between the last city and the finish city one time at problem creation
-    """Given a list of cities coordinates, returns a list of cities visited by each agent
-    in the order that minimizes the total distance traveled.
-    """
-    routes = {f"agent_{i+1}": [start_cities[i]] for i in range(num_salesmen)}
-    distances = {f"agent_{i+1}": 0.0 for i in range(num_salesmen)}
-    while remaining_cities:
-        for agent in routes.keys():
-            if not remaining_cities:
-                break
-            nearest_city, nearest_distance = min_distance_position(routes[agent][-1], remaining_cities)
-            distances[agent] += nearest_distance
-            routes[agent].append(nearest_city)
-            remaining_cities.remove(nearest_city)
-    for agent in routes.keys():
-        current_city = routes[agent][-1]
-        finish_city, final_distance = min_distance_position(current_city, finish_cities)
-        distances[agent] += final_distance
-        routes[agent].append(finish_city)
-    total_distance = sum(distances.values())
-    return routes, distances, total_distance
-
-
-class BetterValueFunction(WorldMDP):
-    """Subclass of WorldMDP
-    in which the state value
-      is calculated more intelligently than simply considering Agent 0's score. 
-     
-        Improvements:
-
-        If Agent 0 dies during a transition, 
-            the state value is reduced by #todo
-            , but the gems already collected are taken into account.
-        The value of a state is increased by 
-        the average of the score differences between Agent 0 and the other agents.."""
-    def get_position_after_action(self
-                                  , agent_pos: Tuple[int, int]
-                                    , action: Action
-                                    ) -> Tuple[int, int]:
-        """Returns the position of the agent after performing the given action in the given state."""
-        agent_pos_after_action = None
-        # Apply the action to the agent's position
-        if action == Action.NORTH:
-            agent_pos_after_action = (agent_pos[0] - 1, agent_pos[1])
-        elif action == Action.SOUTH:
-            agent_pos_after_action = (agent_pos[0] + 1, agent_pos[1])
-        elif action == Action.WEST:
-            agent_pos_after_action = (agent_pos[0], agent_pos[1] - 1)
-        elif action == Action.EAST:
-            agent_pos_after_action = (agent_pos[0], agent_pos[1] + 1)
-        elif action == Action.STAY:
-            agent_pos_after_action = (agent_pos[0], agent_pos[1])
-        else:
-            raise ValueError("Invalid action")
-        return agent_pos_after_action
-    
-    def get_available_actions_ordered(self
-                                    , state: MyWorldState
-                                    ) -> List[A]:
-        """Returns the available actions ordered by heuristic value"""
-        available_actions = super().available_actions(state)
-        current_agent = state.current_agent
-        # move STAY to the end of the list
-        available_actions_ordered = [action for action in available_actions if action != Action.STAY]
-        available_actions_ordered.append(Action.STAY)
-        for action in available_actions:
-            position_after_action = self.get_position_after_action(state.agents_positions[current_agent]
-                                                                    , action
-                                                                    )
-            # if not all gems are collected,
-            # not all (not gem for gem in state.gems_collected):
-            gems_to_collect = [gem[0] for gem in state.world.gems if not gem[1].is_collected]
-
-            if gems_to_collect:
-                # if action leads to a gem, move it to the top of the list
-                if position_after_action in [gem[0] for gem in state.world.gems]:
-                    available_actions_ordered.remove(action)
-                    available_actions_ordered.insert(0, action)
-            # if a laser sources has not the same color as the agent, 
-            if self.lasers_dangerous_for_agents[state.current_agent]:
-                if position_after_action in [laser[0] for laser in state.world.lasers if laser[1].is_on]:
-                    available_actions_ordered.remove(action)
-                    available_actions_ordered.append(action)
-
-        return available_actions_ordered
-
-    def available_actions(self, state: MyWorldState) -> list[Action]:
-        return self.get_available_actions_ordered(state)
-    
-    def transition(self
-                   , state: MyWorldState
-                   , action: Action
-                   , depth: int = 0
-                   ) -> MyWorldState:
-        """Returns the next state and the reward.
-        """
-        # Change the value of the state here.
-        state = super().transition(state
-                                   , action
-                                   )
-        n_agents = self.world.n_agents
-        previous_agent = (state.current_agent-1)%n_agents
-        current_agent = previous_agent
-        state_agents_positions = state.agents_positions
-        value = state.value
-        if value == -1 or value == 0:
-            return state
-        world_gems = state.world.gems
-        gems_to_collect = [gem[0] for gem in world_gems if not gem[1].is_collected]
-        _, distances, total_distance = balanced_multi_salesmen_greedy_tsp(copy.deepcopy(gems_to_collect)
-                                                       , n_agents
-                                                       , state_agents_positions
-                                                       , self.world.exit_pos)
-        current_agent_distance = distances[f"agent_{current_agent+1}"] # +1 because agent_0 is agent_1 #todo
-        if current_agent_distance == 1:
-            current_agent_distance = 1.5
-        other_agents_distances = [distances[f"agent_{i+1}"] for i in range(n_agents) if i != current_agent]
-        other_agents_average_distance_length = len(other_agents_distances)
-        if other_agents_average_distance_length == 0:
-            other_agents_average_distance_length = 1
-        if gems_to_collect:
-            # prefer current agent to be closer to the nearest gem
-            # and other agents to be far from the nearest gem
-            if current_agent_distance != 0:
-                value = value + (len(gems_to_collect) / current_agent_distance)
-        else:
-            # prefer agent to be closer to the exit
-            if current_agent_distance != 0:
-                value = value + (lle.REWARD_AGENT_JUST_ARRIVED / current_agent_distance)
-                # prefer all agents to be closer to the exit
-                average_distance_to_exit = total_distance/n_agents
-                # add reward for each agent being on exit lle.REWARD_AGENT_ON_EXIT/their distance to exit
-                if other_agents_distances:
-                    if all(distance == 0 for distance in other_agents_distances):
-                        value = value + lle.REWARD_END_GAME/average_distance_to_exit
-                else:
-                    value = value + lle.REWARD_END_GAME*10/current_agent_distance
-        state.value = value
-        state.value_vector[current_agent] = value
-        return state
-    
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2-adversarial\src\world_mdp.py -----
-
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\almost_equal.py -----def almost_equal(a, b):
     return abs(a - b) < 1e-6
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\almost_equal.py -----
@@ -2251,83 +250,8 @@ def never_end_the_game() -> Parameters:
     )
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\analysis.py -----
 
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\graph_mdp.py -----import json
-from dataclasses import dataclass
-from mdp import MDP
-
-Action = str
-State = str
-
-
-@dataclass
-class Transition:
-    source: State
-    action: Action
-    destination: State
-    reward: float
-    probability: float
-
-
-class GraphMDP(MDP[str, str]):
-    @staticmethod
-    def from_json(filename: str) -> "GraphMDP":
-        with open(filename, "r") as f:
-            data = json.load(f)
-            start_states = data["start_state"]
-            end_states = data["end_states"]
-            transitions = {}
-            for source, actions in data["transitions"].items():
-                transitions[source] = {}
-                for action, destinations in actions.items():
-                    transitions[source][action] = []
-                    for dest in destinations:
-                        transitions[source][action].append(
-                            Transition(
-                                source,
-                                action,
-                                dest["to"],
-                                dest["reward"],
-                                dest["probability"],
-                            )
-                        )
-            return GraphMDP(start_states, end_states, transitions)
-
-    def __init__(
-        self,
-        start_states: list[State],
-        end_states: list[State],
-        transitions: dict[State, dict[Action, list[Transition]]],
-    ):
-        self.start_states = set(start_states)
-        self.end_states = set(end_states)
-        self._transitions = transitions
-        self._all_states = self.start_states.union(self.end_states).union(
-            set(transitions.keys())
-        )
-
-    def is_final(self, state: State) -> bool:
-        return state in self.end_states
-
-    def transitions(self, state: State, action: Action) -> list[tuple[State, float]]:
-        return [
-            (t.destination, t.probability) for t in self._transitions[state][action]
-        ]
-
-    def available_actions(self, state: str):
-        return self._transitions[state].keys()
-
-    def reward(self, state: str, action: str, new_state) -> float:
-        transitions = self._transitions[state][action]
-        for t in transitions:
-            if t.destination == new_state:
-                return t.reward
-        raise ValueError(
-            f"Invalid transition from {state} to {new_state} with action {action}"
-        )
-
-    def states(self):
-        return self._all_states
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\graph_mdp.py -----
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\ApproximateQLearning.py -----# -Min 20 features pour 4 agents
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\ApproximateQLearning.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\mdp.py -----from typing import TypeVar, Generic
 from abc import abstractmethod, ABC
@@ -2365,11 +289,263 @@ class MDP(ABC, Generic[S, A]):
         
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\mdp.py -----
 
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----from rlenv import RLEnv, Observation
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qagent.py -----# qlearning inheriting agent
+
+from itertools import product
+import numpy as np
+import random
+import sys
+import os
+import time
+from rlenv import Observation, RLEnv
+from typing import Dict, Tuple, List, Iterable, Generic, Optional, Callable, Set
+from mdp import MDP, S, A
+from auto_indent import AutoIndent
+from world_mdp import WorldMDP
+import utils
+from lle import LLE, Action, Agent, AgentId, Position, WorldState
+from rlenv.wrappers import TimeLimit
+
+# import Action class :
+
+
+sys.stdout = AutoIndent(sys.stdout)
+
+
+# class QAgent(QLearning):
+class QAgent:
+    def __init__(
+        self,
+        # env: RLEnv,
+        mdp: MDP[S, A],
+        learning_rate: float = 0.1,
+        discount_factor: float = 0.9,
+        epsilon: float = 0.1,
+        seed: int = None,
+        id: AgentId = None,
+    ):
+        # Initialize the MDP
+        self.mdp = mdp
+        # Initialize parameters
+        self.learning_rate = learning_rate
+        self.discount_factor = discount_factor
+        self.epsilon = epsilon
+        self.id = id
+        print("self.id:", self.id)
+
+        # Initialize the environment
+        # self.env = env
+
+        # Initialize Q-table as a dictionary
+        # Pour favoriser l’exploration, initialisez vos 𝑄(𝑠, 𝑎) à 1 et non à 0
+        self.q_table = {
+            state: {action.value: 1 for action in Action.ALL} for state in mdp.states()
+        }  # dict of dicts
+
+        # Initialize a random number generator
+        self.rng = np.random.default_rng(seed)  # Random number generator instance
+
+    def hash(self, state: WorldState, action: Action) -> Tuple[WorldState, Action]:
+        return (state, action.value)
+
+    def observe(self, observation: Observation):
+        """Observe the given observation"""
+        # Lorsque vous récupérez une observation, vous pouvez accéder à son contenu avec observation.data
+        # qui contient un tableau numpy dont la forme est (n_agents, ...)
+
+        observation_data = observation.data
+        print("observation_data:", observation_data)
+
+    def get_state_observation(
+        self,
+        state: WorldState,
+    ) -> Observation:
+        """Get the observation for the given state"""
+        return Observation(state)
+
+    def get_position(self, matrix: np.ndarray) -> np.ndarray:
+        """Get the position of the agent"""
+        # return np.where(matrix == 1)
+
+        print("matrix:", matrix)
+        print("np.nonzero(matrix):", np.nonzero(matrix))
+        print("np.transpose(np.nonzero(matrix)):", np.transpose(np.nonzero(matrix)))
+        return np.transpose(np.nonzero(matrix))
+
+    def get_valid_actions(
+        self,
+        observation: Observation,
+    ) -> List[Action]:
+        """Get the list of valid actions for the given observation"""
+        observation_data = observation.data
+        print("observation_data:", observation_data)
+        agent_position = self.get_position(observation_data[0][0])
+
+        return world.available_actions()
+
+    def agent_position_after_action(
+        self, agent_pos: Position, action: Action
+    ) -> Position:
+        """The position of an agent after applying the given action."""
+        try:
+            print("agent_pos", agent_pos)
+            print("action", action)
+            agent_pos_after_action = agent_pos + action.delta
+            print("agent_pos_after_action", agent_pos_after_action)
+        except ValueError:
+            raise ValueError("Invalid action")
+        return agent_pos_after_action
+
+    def are_valid_joint_actions(
+        self, state: WorldState, joint_actions: Tuple[Action, ...]
+    ) -> bool:
+        """Whether the given joint actions are valid.
+        an action is valid if it is available for an agent
+        and if it does not lead the agent to be on the same position as another agent"""
+        # print("are_valid_joint_actions()")
+        # print("state", state)
+        # print("joint_actions", joint_actions)
+        # print("state.agents_positions", state.agents_positions)
+        # # calculate agent positions after applying the joint action
+        agents_positions_after_joint_actions = []
+        for i, agent_pos in enumerate(state.agents_positions):
+            agent_pos_after_action = self.agent_position_after_action(
+                agent_pos, joint_actions[i]
+            )
+            agents_positions_after_joint_actions.append(agent_pos_after_action)
+        return self.no_duplicate_in(agents_positions_after_joint_actions)
+
+    def get_valid_joint_actions(
+        self, state: WorldState, available_actions: Tuple[Tuple[Action, ...], ...]
+    ) -> Iterable[Tuple[Action, ...]]:
+        """Yield all possible joint actions that can be taken from the given state.
+        Hint: you can use `self.world.available_actions()` to get the available actions for each agent.
+        """
+        # print("available_actions", available_actions)
+        # cartesian product of the agents' actions
+        for joint_actions in product(*available_actions):
+            # print("joint_actions", joint_actions)
+
+            if self.are_valid_joint_actions(state, joint_actions):
+                yield joint_actions
+
+    def get_agents_positions(
+        self,
+        #  state: np.ndarray
+        observation: Observation,
+    ) -> List[Position]:
+        """Get the positions of all agents in the given observation.state"""
+        observation_data = observation.data
+        print("observation_data:", observation_data)
+        state = observation.state
+        print("state:", state)
+
+        agents_positions = []
+        for agent in self.mdp.world.agents:
+            agent_position = self.get_position(state[agent.id])
+            agents_positions.append(agent_position)
+
+        return agents_positions
+
+    def get_ones_indexes(
+        self,
+        array: np.ndarray,
+    ) -> List[int]:
+        """Get the indexes of all ones in the given array"""
+        ones_indexes = []
+        for i, value in enumerate(array):
+            if value == 1:
+                ones_indexes.append(i)
+     
+        print("ones_indexes:", ones_indexes)
+        return ones_indexes
+
+    def choose_action(
+        self,
+        observation: Observation,  # from instructions
+    ):
+        """Choose an action using the epsilon-greedy policy"""
+        state = observation.state
+        # #state type:
+        # print("type(state):", type(state))
+        # print("state:", state)
+        # world = self.mdp.world
+        # print("world:", world)
+
+        # # valid_actions = self.get_valid_joint_actions(
+        # # world_available_actions = self.mdp.world.available_actions()
+        # world_available_actions = self.mdp.available_actions(observation.state)
+        # print("world_available_actions:", world_available_actions)
+        # valid_actions = self.mdp.world.available_actions()[self.id]
+        # print("valid_actions:", valid_actions)
+        # self.get_position(observation.data[0][0])
+        observation_available_actions = observation.available_actions
+        print("observation_available_actions:", observation_available_actions)
+        current_agent_available_actions = observation_available_actions[self.id]
+
+        valid_actions = self.get_ones_indexes(current_agent_available_actions)
+        print("valid_actions:", valid_actions)
+        if self.rng.uniform(0, 1) < self.epsilon:
+            # Exploration: Random Action
+
+            action = self.rng.choice(valid_actions)
+        else:
+            # Exploitation: Best known action
+            state_actions = self.q_table.get(observation, {})
+            if state_actions:
+                action = max(state_actions, key=state_actions.get)
+            else:
+                action = self.rng.choice(valid_actions)
+        return action
+
+    def update(self, state, action, reward, next_state):
+        """Update the Q-table using the Bellman equation"""
+        # Get the current Q value
+        current_q = self.q_table.get(state, {}).get(action, 1)  # 1 = default value
+        # Find the max Q value for the actions in the next state
+        next_state_actions = self.q_table.get(next_state, {})
+        max_next_q = max(next_state_actions.values(), default=0)
+        # Update the Q value using the Bellman equation
+        new_q = current_q + self.learning_rate * (
+            reward + self.discount_factor * max_next_q - current_q
+        )
+        # Update the Q-table
+        self.q_table.setdefault(state, {})[action] = new_q
+
+
+if __name__ == "__main__":
+    # Create the environment
+    env = LLE.level(1)
+    # Create the MDP
+    mdp = WorldMDP(env.world)
+    print(mdp.world)
+
+    # Create the agents
+    agent = QAgent(mdp, AgentId(1))
+
+    # # Train the agent
+    # agent.train(env, episodes_quantity=100)
+    # # Test the agent
+    # agent.test(env, episodes_quantity=100)
+    # # Save the agent
+    # agent.save(
+    #     "qlearning_agent.pkl"
+    # )  # pkl = pickle = sérialisation de données en Python
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qagent.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----from lle import Agent, ObservationType
+from rlenv import RLEnv, Observation
 import numpy as np
 import numpy.typing as npt
 import sys
 from mdp import MDP, S, A
+from lle import LLE, Action, Agent, AgentId, WorldState
+from rlenv.wrappers import TimeLimit
+from qagent import QAgent
+from auto_indent import AutoIndent
+from world_mdp import WorldMDP
+
+sys.stdout = AutoIndent(sys.stdout)
 
 
 class QLearning:
@@ -2381,7 +557,6 @@ class QLearning:
         learning_rate: float,
         discount_factor: float,
         epsilon: float,
-        actions: list,
         seed: int = None,
     ):
         # Initialize parameters
@@ -2389,73 +564,79 @@ class QLearning:
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
         self.epsilon = epsilon
-        self.actions = actions  # List of possible actions
-        # Initialize Q-table as a dictionary
-        # Pour favoriser l’exploration, initialisez vos 𝑄(𝑠, 𝑎) à 1 et non à 0
-        self.q_table = {
-            state: {action: 1 for action in actions} for state in mdp.states()
-        }
+        # Create the agents
+        self.agents = [
+            QAgent(mdp, learning_rate, discount_factor, epsilon, id=AgentId(i))
+            # for i in range(env.world.n_agents)
+            for i in range(mdp.world.n_agents)
+        ]
 
-        # Initialize a random number generator
-        self.rng = np.random.default_rng(seed)  # Random number generator instance
+    # # Initialize a random number generator
+    # self.rng = np.random.default_rng(seed)  # Random number generator instance
 
-    def choose_action(self, state):
-        """Choose an action using the epsilon-greedy policy"""
-        if self.rng.uniform(0, 1) < self.epsilon:
-            # Exploration: Random Action
-            action = self.rng.choice(self.actions)
-        else:
-            # Exploitation: Best known action
-            state_actions = self.q_table.get(state, {})
-            if state_actions:
-                action = max(state_actions, key=state_actions.get)
-            else:
-                action = self.rng.choice(self.actions)
-        return action
-
-    def update(self, state, action, reward, next_state):
-        """Update the Q-table using the Bellman equation"""
-        # Get the current Q value
-        current_q = self.q_table.get(state, {}).get(action, 0)
-        # Find the max Q value for the actions in the next state
-        next_state_actions = self.q_table.get(next_state, {})
-        max_next_q = max(next_state_actions.values(), default=0)
-        # Update the Q value using the Bellman equation
-        new_q = current_q + self.learning_rate * (
-            reward + self.discount_factor * max_next_q - current_q
-        )
-        # Update the Q-table
-        self.q_table.setdefault(state, {})[action] = new_q
-
-    def train(self, env: RLEnv, episodes_quantity: int):
+    def train(self, agents, episodes_quantity: int):
         """Train the agent for the given number of episodes"""
-        for _ in range(episodes_quantity):
-            # Reset the environment
-            state = env.reset()
-            done = False
-            while not done:
-                # Choose an action
-                action = self.choose_action(state)
-                # Take the action
-                next_state, reward, done = env.step(action)
-                # Update the Q-table
-                self.update(state, action, reward, next_state)
-                # Update the state
-                state = next_state
+        # from instructions:
+        env = TimeLimit(
+            LLE.level(1, ObservationType.LAYERED), 80
+        )  # Maximum 80 time steps         # from instructions
 
-    def test(self, env: RLEnv, episodes_quantity: int):
+        observation = env.reset()  # from instructions
+        observation_data = observation.data
+        observation_hash = self.numpy_table_hash(observation_data)
+        print("observation_data:", observation_data)
+        print("observation_hash:", observation_hash)
+
+        done = truncated = False  # from instructions
+        score = 0  # from instructions
+        while not (done or truncated):  # from instructions
+            actions = [  # from instructions
+                a.choose_action(observation) for a in agents  # from instructions
+            ]  # from instructions
+            print("actions:", actions)
+            # get action[0] type:
+            print("type(actions[0]):", type(actions[0]))
+            # north = Action(0)
+            # print("north:", north)
+            # south = Action(1)
+            # print("south:", south)
+
+            next_observation, reward, done, truncated, info = env.step(
+                actions
+            )  # from instructions
+            print("observation:", next_observation)
+            print("reward:", reward)
+            print("done:", done)
+            print("truncated:", truncated)
+            print("info:", info)
+
+            for a in agents:  # from instructions
+                print("a:", a)
+                print("a.id:", a.id)
+                a.update(  # from instructions
+                    observation, actions[a.id], reward, next_observation
+                )
+            score += reward  # from instructions
+            print("score:", score)
+            observation = next_observation
+
+    def test(self, env: RLEnv, trained_agents, episodes_quantity: int):
         """Test the agent for the given number of episodes"""
-        for _ in range(episodes_quantity):
+        for episode in range(episodes_quantity):
             # Reset the environment
-            state = env.reset()
+            observation = env.reset()
             done = False
+            actions_taken = []
             while not done:
-                # Choose an action
-                action = self.choose_action(state)
-                # Take the action
-                next_state, _, done = env.step(action)
-                # Update the state
-                state = next_state
+                actions = [a.choose_action(observation) for a in trained_agents]
+                actions_taken.append(actions)
+                next_observation, _, done = env.step(actions)
+                observation = next_observation
+            # Print the result of the episode
+            if done:
+                print(f"Episode {episode + 1} finished. Actions taken: {actions_taken}")
+            else:
+                print(f"Episode {episode + 1} did not finish.")
 
     def show(self):
         """Show the Q-table"""
@@ -2469,30 +650,48 @@ class QLearning:
         """Return the Q-table as a string"""
         return str(self.q_table)
 
-    def numpy_table_hash(self):
+    def numpy_table_hash(self, numpy_table: npt.ArrayLike) -> int:
         """Return the hash of the Q-table as a numpy array"""
         # return np.array(list(self.q_table.items()), dtype=object).hash
 
         # using  hash(array.tobytes())
-        return hash(np.array(list(self.q_table.items()), dtype=object).tobytes())
+        return hash(np.array(list(numpy_table), dtype=object).tobytes())
 
 
 if __name__ == "__main__":
-    
-    # init
-    env = RLEnv("levels/level1.txt")
-    env.reset()
-    agent = QLearning(env.mdp, 0.1, 0.9, 0.1, env.world.available_actions()[0], 0)
-    # train
-    agent.train(env, 1000)
-    # test
-    agent.test(env, 100)
-    # show
-    agent.show()
-    # print
-    print(agent)
-    
+    # Create the environment
+    env = LLE.level(1, ObservationType.LAYERED)
+    mdp = WorldMDP(env.world)
+    print("mdp.world :", mdp.world)
+
+    # Train the agent
+    qlearning = QLearning(mdp, 0.1, 0.9, 0.1)
+    trained_agents = qlearning.train(qlearning.agents, episodes_quantity=100)
+    # Test the agents
+    qlearning.test(env, trained_agents, episodes_quantity=1)
+    # Save the agent
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning_training.py -----# Entraînez votre algorithme sur les niveaux 1, 3 et 6 de LLE. Dans votre rapport, créez un graphique
+# pour chacun de ces trois niveaux qui montre le score (c’est-à-dire la somme des rewards par épisode)
+# au cours de l’entrainement. 
+
+
+from rlenv import RLEnv
+
+
+def train_qlearning_agent(env: RLEnv, episodes_quantity: int):
+    """Train the agent for the given number of episodes"""
+    # Create the agent
+    agent = QLearningAgent(env)
+    # Train the agent
+    agent.train(env, episodes_quantity)
+    # Test the agent
+    agent.test(env, episodes_quantity)
+    # Return the agent
+    return agent
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning_training.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----import copy
 import sys
@@ -2515,10 +714,9 @@ class ValueIteration(Generic[S, A]):
         # senf.values est nécessaire pour fonctionner avec utils.show_values
         self.mdp = mdp
         self.gamma = gamma
-        # self.values = dict[S, float]()
-        self.values = {
-            state: 0.0 for state in mdp.states()
-        }  # Initialize all states with a default value
+        # Initialize all states as dictionary keys
+        # with a default value of 0.0
+        self.values = {state: 0.0 for state in mdp.states()}
         # utils.show_values(self.values)
         # utils.
 
@@ -2722,84 +920,6 @@ class WorldMDP(MDP[WorldState, list[Action]]):
             s = WorldState(list(pos), list(collected))
             yield s
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\world_mdp.py -----
-
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graph_mdp.py -----import json
-from dataclasses import dataclass
-from src.mdp import MDP
-
-Action = str
-State = str
-
-
-@dataclass
-class Transition:
-    source: State
-    action: Action
-    destination: State
-    reward: float
-    probability: float
-
-
-class GraphMDP(MDP[str, str]):
-    @staticmethod
-    def from_json(filename: str) -> "GraphMDP":
-        with open(filename, "r") as f:
-            data = json.load(f)
-            start_states = data["start_state"]
-            end_states = data["end_states"]
-            transitions = {}
-            for source, actions in data["transitions"].items():
-                transitions[source] = {}
-                for action, destinations in actions.items():
-                    transitions[source][action] = []
-                    for dest in destinations:
-                        transitions[source][action].append(
-                            Transition(
-                                source,
-                                action,
-                                dest["to"],
-                                dest["reward"],
-                                dest["probability"],
-                            )
-                        )
-            return GraphMDP(start_states, end_states, transitions)
-
-    def __init__(
-        self,
-        start_states: list[State],
-        end_states: list[State],
-        transitions: dict[State, dict[Action, list[Transition]]],
-    ):
-        self.start_states = set(start_states)
-        self.end_states = set(end_states)
-        self._transitions = transitions
-        self._all_states = self.start_states.union(self.end_states).union(
-            set(transitions.keys())
-        )
-
-    def is_final(self, state: State) -> bool:
-        return state in self.end_states
-
-    def transitions(self, state: State, action: Action) -> list[tuple[State, float]]:
-        return [
-            (t.destination, t.probability) for t in self._transitions[state][action]
-        ]
-
-    def available_actions(self, state: str):
-        return self._transitions[state].keys()
-
-    def reward(self, state: str, action: str, new_state) -> float:
-        transitions = self._transitions[state][action]
-        for t in transitions:
-            if t.destination == new_state:
-                return t.reward
-        raise ValueError(
-            f"Invalid transition from {state} to {new_state} with action {action}"
-        )
-
-    def states(self):
-        return self._all_states
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\graph_mdp.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\modified_reward_world.py -----from .world_mdp import WorldMDP
 from lle import Action, World, WorldState
