@@ -49,7 +49,8 @@ class QAgent:
         # Pour favoriser l’exploration, initialisez vos 𝑄(𝑠, 𝑎) à 1 et non à 0
         self.q_table = {
             observation: {action.value: 1 for action in Action.ALL}
-            for observation in mdp.observations()
+            # for observation in mdp.observations()
+            for observation in mdp.states()
         }  # dict of dicts
 
         # Initialize a random number generator
@@ -126,6 +127,10 @@ class QAgent:
         )
         # Update the Q-table
         self.q_table.setdefault(observation, {})[action] = new_q
+
+    def print_q_table(self):
+        """Print the Q-table as a table"""
+        pass
 
 
 if __name__ == "__main__":

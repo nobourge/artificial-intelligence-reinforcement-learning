@@ -31,32 +31,42 @@ class QLearning:
         self.level = level
         self.mdp = mdp
         self.env = LLE.level(level, ObservationType.LAYERED)
-        initial_state = mdp.world.initial_state
         initial_observation = self.env.reset()
         initial_observation_data = initial_observation.data
-        agents_quantity = mdp.world.n_agents
+        initial_observation_data_list = initial_observation_data[0]
+        print("initial_observation_data:\n", initial_observation_data_list)
+        initial_observation_shape = initial_observation_data.shape
+        agents_quantity = initial_observation_shape[0]
+        self.world_size = initial_observation_shape[1] * initial_observation_shape[2]
         print("agents_quantity:", agents_quantity)
-        agents_positions = [agent.position for agent in initial_state.agents]
+
+        agents_positions = mdp.world.agents_positions
         print("agents_positions:", agents_positions)
-        walls = np.transpose(
-            np.nonzero(initial_observation_data[len(agents_positions)])
+        self.walls = np.transpose(
+            np.nonzero(initial_observation_data_list[agents_quantity])
+            # get the walls from the observation
         )
-        print("walls:", walls)
-        lasers = [
+        print("walls:", self.walls)
+        self.not_wall_positions = np.transpose(
+            np.where(initial_observation_data_list[agents_quantity] == 0)
+        )
+        print("not_wall_positions:", self.not_wall_positions)
+        self.not_wall_positions_quantity = len(self.not_wall_positions)
+        lasers_matrices_list = [
             np.transpose(np.nonzero(layer))
-            for layer in initial_observation_data[len(agents_positions) : -2]
+            for layer in initial_observation_data_list[agents_quantity:-2]
         ]
-        print("lasers:", lasers)
-        exits = np.transpose(np.nonzero(initial_observation_data[-1]))
+        print("lasers_matrices_list:", lasers_matrices_list)
+        exits = np.transpose(np.nonzero(initial_observation_data_list[-1]))
         print("exits:", exits)
-        gems = np.transpose(np.nonzero(initial_observation_data[-2]))
+        gems = np.transpose(np.nonzero(initial_observation_data_list[-2]))
         print("gems:", gems)
 
         self.adapt_learning_parameters(
-            mdp, agents_quantity, agents_positions, lasers, exits, gems
+            mdp, agents_quantity, agents_positions, lasers_matrices_list, exits, gems
         )
         # Create the agents
-        self.agents = [
+        self.qagents = [
             QAgent(mdp, learning_rate, discount_factor, epsilon, id=AgentId(i))
             # for i in range(env.world.n_agents)
             for i in range(mdp.world.n_agents)
@@ -65,14 +75,15 @@ class QLearning:
     # # Initialize a random number generator
     # self.rng = np.random.default_rng(seed)  # Random number generator instance
 
-    def get_dangerosity(self, mdp: MDP[S, A], lasers) -> float:
+    def get_dangerosity(self, lasers) -> float:
         """Return the dangerosity of the given MDP"""
-        world = mdp.world
-        observation = Observation(world)
-        # count the number of dangerous cells:
         dangerous_cells = 0
         for matrix in lasers:
             dangerous_cells += np.count_nonzero(matrix)
+
+        dangerosity = dangerous_cells / len(self.not_wall_positions)
+        print("dangerosity:", dangerosity)
+        return dangerosity
 
     def get_reward_live(
         self,
@@ -84,7 +95,10 @@ class QLearning:
         gems: list,
     ) -> float:
         """Return the reward_live of the given MDP"""
-        pass
+        dangerosity = self.get_dangerosity(lasers)
+        reward_live = dangerosity - 1
+        print("reward_live:", reward_live)
+        return reward_live
 
     def adapt_learning_parameters(
         self,
@@ -132,6 +146,8 @@ class QLearning:
             next_observation, reward, done, truncated, info = env.step(
                 actions
             )  # from instructions
+            if reward == 0:
+                reward = self.reward_live
             print("observation:", next_observation)
             print("reward:", reward)
             print("done:", done)
@@ -213,27 +229,28 @@ if __name__ == "__main__":
         #   learning_rate = 0.1,
         #   learning_rate = 0.01,
         discount_factor=0.9,
-        epsilon=0.1
+        epsilon=0.5
+        # epsilon=0.1
         #   epsilon=0
     )
-    trained_agents = qlearning.train(qlearning.agents, episodes_quantity=100)
+    # trained_agents = qlearning.train(qlearning.qagents, episodes_quantity=100)
 
-    # terminal prompt to continue:
-    # input("Press Enter to continue...")
+    # # terminal prompt to continue:
+    # # input("Press Enter to continue...")
 
-    # Test the agents
-    actions_taken = qlearning.test(env, trained_agents, episodes_quantity=1, save=True)
+    # # Test the agents
+    # actions_taken = qlearning.test(lle, trained_agents, episodes_quantity=1, save=True)
 
-    # display the solution:
-    solution = Solution(actions_taken)
-    print("solution:", solution)
+    # # display the solution:
+    # solution = Solution(actions_taken)
+    # print("solution:", solution)
 
-    # display the solution:
-    display_solution(
-        "solution",
-        #  env_world,
-        env,
-        solution,
-    )
+    # # display the solution:
+    # display_solution(
+    #     "solution",
+    #     #  env_world,
+    #     lle,
+    #     solution,
+    # )
 
-    # Save the agent
+    # # Save the agent
