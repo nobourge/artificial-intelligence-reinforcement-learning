@@ -20,18 +20,22 @@ class QLearning:
 
     def __init__(
         self,
+        lle,
         mdp: MDP[S, A],
         learning_rate: float,  # rate of learning
         discount_factor: float,  # favoring future rewards
         epsilon: float,  # exploration rate = noise
         seed: int = None,
-        level: int = 1,
+        level: int = None,
     ):
         # Initialize parameters
         self.level = level
         self.mdp = mdp
-        self.env = LLE.level(level, ObservationType.LAYERED)
-        initial_observation = self.env.reset()
+        if lle:
+            self.lle = lle
+        elif level:
+            self.lle = LLE.level(level, ObservationType.LAYERED)
+        initial_observation = self.lle.reset()
         initial_observation_data = initial_observation.data
         initial_observation_data_list = initial_observation_data[0]
         print("initial_observation_data:\n", initial_observation_data_list)
@@ -48,7 +52,8 @@ class QLearning:
         )
         print("walls:", self.walls)
         self.not_wall_positions = np.transpose(
-            np.where(initial_observation_data_list[agents_quantity] == 0)
+            # np.where(initial_observation_data_list[agents_quantity] == 0)
+            np.argwhere(initial_observation_data_list[agents_quantity] == 0)
         )
         print("not_wall_positions:", self.not_wall_positions)
         self.not_wall_positions_quantity = len(self.not_wall_positions)
@@ -57,17 +62,24 @@ class QLearning:
             for layer in initial_observation_data_list[agents_quantity:-2]
         ]
         print("lasers_matrices_list:", lasers_matrices_list)
-        exits = np.transpose(np.nonzero(initial_observation_data_list[-1]))
-        print("exits:", exits)
-        gems = np.transpose(np.nonzero(initial_observation_data_list[-2]))
-        print("gems:", gems)
+        self.exits = np.transpose(np.nonzero(initial_observation_data_list[-1]))
+        print("exits:", self.exits)
+        self.gems = np.transpose(np.nonzero(initial_observation_data_list[-2]))
+        print("gems:", self.gems)
 
         self.adapt_learning_parameters(
-            mdp, agents_quantity, agents_positions, lasers_matrices_list, exits, gems
+            lasers_matrices_list,
         )
         # Create the agents
         self.qagents = [
-            QAgent(mdp, learning_rate, discount_factor, epsilon, id=AgentId(i))
+            QAgent(
+                   self.world_size,
+                mdp,
+                   learning_rate,
+                    discount_factor, 
+                    epsilon, 
+                    id=AgentId(i)
+                    )
             # for i in range(env.world.n_agents)
             for i in range(mdp.world.n_agents)
         ]
@@ -87,12 +99,12 @@ class QLearning:
 
     def get_reward_live(
         self,
-        mdp: MDP[S, A],
-        agents_quantity: int,
-        agents_positions: list,
+        # mdp: MDP[S, A],
+        # agents_quantity: int,
+        # agents_positions: list,
         lasers: list,
-        exits: list,
-        gems: list,
+        # exits: list,
+        # gems: list,
     ) -> float:
         """Return the reward_live of the given MDP"""
         dangerosity = self.get_dangerosity(lasers)
@@ -102,67 +114,89 @@ class QLearning:
 
     def adapt_learning_parameters(
         self,
-        mdp: MDP[S, A],
-        agents_quantity: int,
-        agents_positions: list,
+        # agents_quantity: int,
+        # agents_positions: list,
         lasers: list,
-        exits: list,
-        gems: list,
+        # gems: list,
     ):
         """Adapt the learning parameters to the given MDP"""
         # if the world is dangerous, increase the learning rate
-        dangerosity = self.get_dangerosity(lasers)
+        # dangerosity = self.get_dangerosity(lasers)
         self.reward_live = self.get_reward_live(
-            mdp, agents_quantity, agents_positions, lasers, exits, gems
+            # agents_quantity,
+            # agents_positions,
+            lasers,
+            # gems
         )
 
-    def train(self, agents, episodes_quantity: int):
+    def episode_results(self, 
+                        episode, 
+                        actions_taken=None, 
+                        done=False,
+                        truncated=False
+                        ):
+        """Print the results of the episode"""
+            # Print the result of the episode
+        if done:
+            print(f"Episode {episode + 1} finished. Actions taken: {actions_taken}")
+        elif truncated:
+            print(f"Episode {episode + 1} truncated.")
+        else:
+            print(f"Episode {episode + 1} did not finish.")
+
+    def train(
+        self,
+        agents,
+        episodes_quantity: int,
+        step_limit: int = 80,
+    ):
         """Train the agent for the given number of episodes"""
-        # from instructions:
-        env = TimeLimit(
-            LLE.level(1, ObservationType.LAYERED), 80
-        )  # Maximum 80 time steps         # from instructions
+        if self.level:
+            env = TimeLimit(
+                LLE.level(1, ObservationType.LAYERED),
+                step_limit,
+            )  # Maximum 80 time steps         # from instructions
+        elif self.lle:
+            env = TimeLimit(self.lle, 80)
+        for episode in range(episodes_quantity):
+            observation = env.reset()  # from instructions
+            # observation_data = observation.data
+            # print("observation_data:", observation_data)
+            done = truncated = False  # from instructions
+            actions_taken = []
+            score = 0  # from instructions
+            while not (done or truncated):  # from instructions
+                actions = [  # from instructions
+                    a.choose_action(observation) for a in agents  # from instructions
+                ]  # from instructions
+                print("actions:", actions)
+                print("type(actions[0]):", type(actions[0]))
+                actions_taken.append(actions)
+                next_observation, reward, done, truncated, info = env.step(
+                    actions
+                )  # from instructions
+                if reward == 0:
+                    reward = self.reward_live
+                print("observation:", next_observation)
+                print("reward:", reward)
+                print("done:", done)
+                print("truncated:", truncated)
+                print("info:", info)
 
-        observation = env.reset()  # from instructions
-        observation_data = observation.data
-        observation_hash = self.numpy_table_hash(observation_data)
-        print("observation_data:", observation_data)
-        print("observation_hash:", observation_hash)
-
-        done = truncated = False  # from instructions
-        score = 0  # from instructions
-        while not (done or truncated):  # from instructions
-            actions = [  # from instructions
-                a.choose_action(observation) for a in agents  # from instructions
-            ]  # from instructions
-            print("actions:", actions)
-            # get action[0] type:
-            print("type(actions[0]):", type(actions[0]))
-            # north = Action(0)
-            # print("north:", north)
-            # south = Action(1)
-            # print("south:", south)
-
-            next_observation, reward, done, truncated, info = env.step(
-                actions
-            )  # from instructions
-            if reward == 0:
-                reward = self.reward_live
-            print("observation:", next_observation)
-            print("reward:", reward)
-            print("done:", done)
-            print("truncated:", truncated)
-            print("info:", info)
-
-            for a in agents:  # from instructions
-                print("a:", a)
-                print("a.id:", a.id)
-                a.update(  # from instructions
-                    observation, actions[a.id], reward, next_observation
-                )
-            score += reward  # from instructions
-            print("score:", score)
-            observation = next_observation
+                for a in agents:  # from instructions
+                    print("a:", a)
+                    print("a.id:", a.id)
+                    a.update(  # from instructions
+                        observation, actions[a.id], reward, next_observation
+                    )
+                score += reward  # from instructions
+                print("score:", score)
+                observation = next_observation
+            self.episode_results(episode, 
+                                 actions_taken, 
+                                 done, 
+                                 truncated
+                                 )
         return agents
 
     def test(
@@ -176,9 +210,13 @@ class QLearning:
             actions_taken = []
             while not done:
                 actions = [a.choose_action(observation) for a in trained_agents]
-                print("actions:", actions)
+                # print("actions:", actions)
                 actions_taken.append(actions)
                 next_observation, reward, done, truncated, info = env.step(actions)
+                print("reward:", reward)
+                # print("done:", done)
+                print("truncated:", truncated)
+                print("info:", info)
                 observation = next_observation
             # Print the result of the episode
             if done:
@@ -213,13 +251,18 @@ class QLearning:
 
 if __name__ == "__main__":
     # Create the environment
-    lle = LLE.level(1, ObservationType.LAYERED)
+    worldstr = """
+    . S0 . X"""
+
+    lle = LLE.from_str(worldstr, ObservationType.LAYERED)
+    # lle = LLE.level(1, ObservationType.LAYERED)
     env_world = lle.world
     mdp = WorldMDP(env_world)
     print("mdp.world :", mdp.world)
 
     # Train the agent
     qlearning = QLearning(
+        lle,
         mdp,
         #   learning_rate = 0.9,
         #   learning_rate = 0.7,
@@ -233,24 +276,24 @@ if __name__ == "__main__":
         # epsilon=0.1
         #   epsilon=0
     )
-    # trained_agents = qlearning.train(qlearning.qagents, episodes_quantity=100)
+    trained_agents = qlearning.train(qlearning.qagents, episodes_quantity=100)
 
-    # # terminal prompt to continue:
-    # # input("Press Enter to continue...")
+    # terminal prompt to continue:
+    # input("Press Enter to continue...")
 
-    # # Test the agents
-    # actions_taken = qlearning.test(lle, trained_agents, episodes_quantity=1, save=True)
+    # Test the agents
+    actions_taken = qlearning.test(lle, trained_agents, episodes_quantity=1, save=True)
 
-    # # display the solution:
-    # solution = Solution(actions_taken)
-    # print("solution:", solution)
+    # display the solution:
+    solution = Solution(actions_taken)
+    print("solution:", solution)
 
-    # # display the solution:
-    # display_solution(
-    #     "solution",
-    #     #  env_world,
-    #     lle,
-    #     solution,
-    # )
+    # display the solution:
+    display_solution(
+        "solution",
+        #  env_world,
+        lle,
+        solution,
+    )
 
     # # Save the agent

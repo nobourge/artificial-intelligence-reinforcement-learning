@@ -10,6 +10,7 @@ from rlenv import Observation, RLEnv
 from typing import Dict, Tuple, List, Iterable, Generic, Optional, Callable, Set
 from mdp import MDP, S, A
 from auto_indent import AutoIndent
+from qvalues_displayer import QValuesDisplayer
 from world_mdp import WorldMDP
 import utils
 from lle import LLE, Action, Agent, AgentId, Position, WorldState
@@ -26,6 +27,7 @@ class QAgent:
     def __init__(
         self,
         # env: RLEnv,
+        world_size: int,
         mdp: MDP[S, A],
         learning_rate: float = 0.1,
         discount_factor: float = 0.9,
@@ -33,6 +35,10 @@ class QAgent:
         seed: int = None,
         id: AgentId = None,
     ):
+        """Initialize the agent"""
+        # Initialize the environment
+        # self.env = env
+        self.world_size = world_size
         # Initialize the MDP
         self.mdp = mdp
         # Initialize parameters
@@ -52,6 +58,9 @@ class QAgent:
             # for observation in mdp.observations()
             for observation in mdp.states()
         }  # dict of dicts
+
+        self.qvalues_displayer = QValuesDisplayer(self.world_size,
+                                                  self.q_table)
 
         # Initialize a random number generator
         self.rng = np.random.default_rng(seed)  # Random number generator instance
@@ -106,6 +115,7 @@ class QAgent:
             observation_actions = self.q_table.get(observation, {})
             if observation_actions:
                 action = max(observation_actions, key=observation_actions.get)
+                print("max(", observation_actions, "):", action)
             else:
                 action = self.rng.choice(valid_actions)
         return action
@@ -113,7 +123,7 @@ class QAgent:
 
     def update(self, observation, action, reward, next_observation):
         """Update the Q-table using the Bellman equation adapted for Q-learning:
-        𝑄(𝑠, 𝑎) ← (1 − 𝛼)𝑄(𝑠, 𝑎) + 𝛼[𝑅(𝑠, 𝑎, 𝑠′ + 𝛾𝑉 (𝑠′)] """
+        𝑄(𝑠, 𝑎) ← (1 − 𝛼)𝑄(𝑠, 𝑎) + 𝛼[𝑅(𝑠, 𝑎, 𝑠 + 𝛾𝑉 (𝑠′)] """
         # Get the current Q value
         current_q = self.q_table.get(observation, {}).get(
             action, 1
@@ -128,9 +138,12 @@ class QAgent:
         # Update the Q-table
         self.q_table.setdefault(observation, {})[action] = new_q
 
+        # self.qvalues_displayer.display_qvalues_board(self.q_table)
+
     def print_q_table(self):
         """Print the Q-table as a table"""
         pass
+
 
 
 if __name__ == "__main__":
@@ -141,7 +154,7 @@ if __name__ == "__main__":
     print(mdp.world)
 
     # Create the agents
-    agent = QAgent(mdp, AgentId(1))
+    # agent = QAgent(mdp, AgentId(1))
 
     # # Train the agent
     # agent.train(env, episodes_quantity=100)

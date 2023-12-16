@@ -4,8 +4,6 @@ from rlenv import RLEnv
 #   import Solution class:
 from solution import Solution
 
-
-
 DISPLAY = True
 SAVE = False
 
