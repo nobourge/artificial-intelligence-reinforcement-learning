@@ -26,8 +26,11 @@ def display_solution(name: str,
     print("world:", world)
     display_world(name, world)
 
-    for actions in solution.actions:
-        print("actions:", actions)
+    solution_actions = solution.actions
+    actions_quantity = len(solution_actions)
+    print("actions_quantity:", actions_quantity)
+    for actions in solution_actions:
+        # print("actions:", actions)
         env.step(actions)
         display_world(name, world)
 

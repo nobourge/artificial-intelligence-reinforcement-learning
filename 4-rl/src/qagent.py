@@ -98,28 +98,38 @@ class QAgent:
     def choose_action(
         self,
         observation: Observation,  # from instructions
+        training: bool = True,
+        episodes_quantity: int = 100,
+        current_episode: int = 0,
     ):
         """Choose an action using the epsilon-greedy policy"""
-        observation_available_actions = observation.available_actions
-        # print("observation_available_actions:", observation_available_actions)
-        current_agent_available_actions = observation_available_actions[self.id]
-
-        valid_actions = self.get_ones_indexes(current_agent_available_actions)
-        # print("valid_actions:", valid_actions)
-        if self.rng.uniform(0, 1) < self.epsilon:
-            # Exploration: Random Action
-
-            action = self.rng.choice(valid_actions)
-        else:
+        exploitation = False
+        exploration = False
+        if training:
+            # Update epsilon
+            epsilon = self.epsilon * (1 - current_episode / episodes_quantity)
+            # print("epsilon:", epsilon)
+            if epsilon < self.rng.uniform(0, 1):
+                exploitation = True
+            else:
+                exploration = True
+        if not training or exploitation:
             # Exploitation: Best known action
             observation_actions = self.q_table.get(observation, {})
             if observation_actions:
+                # print("observation_actions:", observation_actions)
                 action = max(observation_actions, key=observation_actions.get)
-                print("max(", observation_actions, "):", action)
             else:
-                action = self.rng.choice(valid_actions)
+                exploration = True
+        if exploration:
+            observation_available_actions = observation.available_actions
+            # print("observation_available_actions:", observation_available_actions)
+            current_agent_available_actions = observation_available_actions[self.id]
+
+            valid_actions = self.get_ones_indexes(current_agent_available_actions)
+            action = self.rng.choice(valid_actions)
+
         return action
-        # return Action(action)
 
     def update(self, observation, action, reward, next_observation):
         """Update the Q-table using the Bellman equation adapted for Q-learning:
@@ -132,9 +142,7 @@ class QAgent:
         next_observation_actions = self.q_table.get(next_observation, {})
         max_next_q = max(next_observation_actions.values(), default=0)
         # Update the Q value using the Bellman equation
-        new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (
-            reward + self.discount_factor * max_next_q
-        )
+        new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (reward + self.discount_factor * max_next_q)
         # Update the Q-table
         self.q_table.setdefault(observation, {})[action] = new_q
 

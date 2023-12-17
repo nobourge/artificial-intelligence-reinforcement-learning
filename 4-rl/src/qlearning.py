@@ -9,6 +9,7 @@ from rlenv.wrappers import TimeLimit
 from qagent import QAgent
 from auto_indent import AutoIndent
 from solution import Solution
+from scores_displayer import ScoresDisplayer
 from visualize import display_solution
 from world_mdp import WorldMDP
 
@@ -24,7 +25,7 @@ class QLearning:
         mdp: MDP[S, A],
         learning_rate: float,  # rate of learning
         discount_factor: float,  # favoring future rewards
-        epsilon: float,  # exploration rate = noise
+        noise: float,  # exploration rate = noise
         seed: int = None,
         level: int = None,
     ):
@@ -38,7 +39,7 @@ class QLearning:
         initial_observation = self.lle.reset()
         initial_observation_data = initial_observation.data
         initial_observation_data_list = initial_observation_data[0]
-        print("initial_observation_data:\n", initial_observation_data_list)
+        # print("initial_observation_data:\n", initial_observation_data_list)
         initial_observation_shape = initial_observation_data.shape
         agents_quantity = initial_observation_shape[0]
         self.world_size = initial_observation_shape[1] * initial_observation_shape[2]
@@ -77,7 +78,7 @@ class QLearning:
                 mdp,
                    learning_rate,
                     discount_factor, 
-                    epsilon, 
+                    noise, 
                     id=AgentId(i)
                     )
             # for i in range(env.world.n_agents)
@@ -158,7 +159,9 @@ class QLearning:
             )  # Maximum 80 time steps         # from instructions
         elif self.lle:
             env = TimeLimit(self.lle, 80)
+        scores = []  
         for episode in range(episodes_quantity):
+            print("episode:", episode)
             observation = env.reset()  # from instructions
             # observation_data = observation.data
             # print("observation_data:", observation_data)
@@ -167,37 +170,41 @@ class QLearning:
             score = 0  # from instructions
             while not (done or truncated):  # from instructions
                 actions = [  # from instructions
-                    a.choose_action(observation) for a in agents  # from instructions
+                    a.choose_action(observation
+                                    , episodes_quantity=episodes_quantity
+                                    , current_episode=episode
+                                    ) 
+                                    for a in agents  # from instructions
                 ]  # from instructions
-                print("actions:", actions)
-                print("type(actions[0]):", type(actions[0]))
+                # print("actions:", actions)
                 actions_taken.append(actions)
                 next_observation, reward, done, truncated, info = env.step(
                     actions
                 )  # from instructions
                 if reward == 0:
                     reward = self.reward_live
-                print("observation:", next_observation)
-                print("reward:", reward)
-                print("done:", done)
-                print("truncated:", truncated)
-                print("info:", info)
+                # print("observation:", next_observation)
+                # print("reward:", reward)
+                # print("done:", done)
+                # print("truncated:", truncated)
+                # print("info:", info)
 
                 for a in agents:  # from instructions
-                    print("a:", a)
-                    print("a.id:", a.id)
+                    # print("a:", a)
+                    # print("a.id:", a.id)
                     a.update(  # from instructions
                         observation, actions[a.id], reward, next_observation
                     )
                 score += reward  # from instructions
-                print("score:", score)
                 observation = next_observation
+            print("score:", score)
+            scores.append(score)
             self.episode_results(episode, 
                                  actions_taken, 
                                  done, 
                                  truncated
                                  )
-        return agents
+        return agents, scores
 
     def test(
         self, env: RLEnv, trained_agents, episodes_quantity: int, save: bool = False
@@ -209,14 +216,14 @@ class QLearning:
             done = False
             actions_taken = []
             while not done:
-                actions = [a.choose_action(observation) for a in trained_agents]
+                actions = [a.choose_action(observation, training=False) for a in trained_agents]
                 # print("actions:", actions)
                 actions_taken.append(actions)
                 next_observation, reward, done, truncated, info = env.step(actions)
-                print("reward:", reward)
+                # print("reward:", reward)
                 # print("done:", done)
-                print("truncated:", truncated)
-                print("info:", info)
+                # print("truncated:", truncated)
+                # print("info:", info)
                 observation = next_observation
             # Print the result of the episode
             if done:
@@ -254,8 +261,8 @@ if __name__ == "__main__":
     worldstr = """
     . S0 . X"""
 
-    lle = LLE.from_str(worldstr, ObservationType.LAYERED)
-    # lle = LLE.level(1, ObservationType.LAYERED)
+    # lle = LLE.from_str(worldstr, ObservationType.LAYERED)
+    lle = LLE.level(1, ObservationType.LAYERED)
     env_world = lle.world
     mdp = WorldMDP(env_world)
     print("mdp.world :", mdp.world)
@@ -267,16 +274,21 @@ if __name__ == "__main__":
         #   learning_rate = 0.9,
         #   learning_rate = 0.7,
         #   learning_rate = 0.5,
+        #   learning_rate = 0.4,
         #   learning_rate = 0.3,
-        learning_rate=0.2,
+        learning_rate=0.2, # 420
         #   learning_rate = 0.1,
         #   learning_rate = 0.01,
         discount_factor=0.9,
-        epsilon=0.5
-        # epsilon=0.1
-        #   epsilon=0
+        noise=0.5
+        # noise=0.4,
+        # noise=0.1
+        #   noise=0
     )
-    trained_agents = qlearning.train(qlearning.qagents, episodes_quantity=100)
+    trained_agents, scores = qlearning.train(qlearning.qagents, episodes_quantity=1000)
+
+    scores_displayer = ScoresDisplayer(scores, "Scores")
+    scores_displayer.display()
 
     # terminal prompt to continue:
     # input("Press Enter to continue...")
