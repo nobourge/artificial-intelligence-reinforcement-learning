@@ -37,50 +37,17 @@ class QLearning:
         elif level:
             self.lle = LLE.level(level, ObservationType.LAYERED)
         initial_observation = self.lle.reset()
-        initial_observation_data = initial_observation.data
-        initial_observation_data_list = initial_observation_data[0]
-        # print("initial_observation_data:\n", initial_observation_data_list)
-        initial_observation_shape = initial_observation_data.shape
-        agents_quantity = initial_observation_shape[0]
-        self.world_size = initial_observation_shape[1] * initial_observation_shape[2]
-        print("agents_quantity:", agents_quantity)
 
-        agents_positions = mdp.world.agents_positions
-        print("agents_positions:", agents_positions)
-        self.walls = np.transpose(
-            np.nonzero(initial_observation_data_list[agents_quantity])
-            # get the walls from the observation
-        )
-        print("walls:", self.walls)
-        self.not_wall_positions = np.transpose(
-            # np.where(initial_observation_data_list[agents_quantity] == 0)
-            np.argwhere(initial_observation_data_list[agents_quantity] == 0)
-        )
-        print("not_wall_positions:", self.not_wall_positions)
-        self.not_wall_positions_quantity = len(self.not_wall_positions)
-        lasers_matrices_list = [
-            np.transpose(np.nonzero(layer))
-            for layer in initial_observation_data_list[agents_quantity:-2]
-        ]
-        print("lasers_matrices_list:", lasers_matrices_list)
-        self.exits = np.transpose(np.nonzero(initial_observation_data_list[-1]))
-        print("exits:", self.exits)
-        self.gems = np.transpose(np.nonzero(initial_observation_data_list[-2]))
-        print("gems:", self.gems)
-
-        self.adapt_learning_parameters(
-            lasers_matrices_list,
-        )
         # Create the agents
         self.qagents = [
             QAgent(
-                   self.world_size,
+                initial_observation,
                 mdp,
-                   learning_rate,
-                    discount_factor, 
-                    noise, 
-                    id=AgentId(i)
-                    )
+                learning_rate,
+                discount_factor,
+                noise,
+                id=AgentId(i),
+            )
             # for i in range(env.world.n_agents)
             for i in range(mdp.world.n_agents)
         ]
@@ -88,62 +55,21 @@ class QLearning:
     # # Initialize a random number generator
     # self.rng = np.random.default_rng(seed)  # Random number generator instance
 
-    def get_dangerosity(self, lasers) -> float:
-        """Return the dangerosity of the given MDP"""
-        dangerous_cells = 0
-        for matrix in lasers:
-            dangerous_cells += np.count_nonzero(matrix)
-
-        dangerosity = dangerous_cells / len(self.not_wall_positions)
-        print("dangerosity:", dangerosity)
-        return dangerosity
-
-    def get_reward_live(
-        self,
-        # mdp: MDP[S, A],
-        # agents_quantity: int,
-        # agents_positions: list,
-        lasers: list,
-        # exits: list,
-        # gems: list,
-    ) -> float:
-        """Return the reward_live of the given MDP"""
-        dangerosity = self.get_dangerosity(lasers)
-        reward_live = dangerosity - 1
-        print("reward_live:", reward_live)
-        return reward_live
-
-    def adapt_learning_parameters(
-        self,
-        # agents_quantity: int,
-        # agents_positions: list,
-        lasers: list,
-        # gems: list,
+    def print_episode_results(
+        self, episode, actions_taken=None, done=False, truncated=False, score=None
     ):
-        """Adapt the learning parameters to the given MDP"""
-        # if the world is dangerous, increase the learning rate
-        # dangerosity = self.get_dangerosity(lasers)
-        self.reward_live = self.get_reward_live(
-            # agents_quantity,
-            # agents_positions,
-            lasers,
-            # gems
-        )
-
-    def episode_results(self, 
-                        episode, 
-                        actions_taken=None, 
-                        done=False,
-                        truncated=False
-                        ):
         """Print the results of the episode"""
-            # Print the result of the episode
+        # Print the result of the episode
         if done:
-            print(f"Episode {episode + 1} finished. Actions taken: {actions_taken}")
+            print(f"Episode {episode + 1} finished. ")
         elif truncated:
             print(f"Episode {episode + 1} truncated.")
         else:
             print(f"Episode {episode + 1} did not finish.")
+        if actions_taken:
+            print(f"Actions taken: {actions_taken}")
+            print(f"Actions taken quantity: {len(actions_taken)}")
+        print("score:", score)
 
     def train(
         self,
@@ -159,9 +85,9 @@ class QLearning:
             )  # Maximum 80 time steps         # from instructions
         elif self.lle:
             env = TimeLimit(self.lle, 80)
-        scores = []  
+        scores = []
         for episode in range(episodes_quantity):
-            print("episode:", episode)
+            # print("episode:", episode)
             observation = env.reset()  # from instructions
             # observation_data = observation.data
             # print("observation_data:", observation_data)
@@ -170,19 +96,20 @@ class QLearning:
             score = 0  # from instructions
             while not (done or truncated):  # from instructions
                 actions = [  # from instructions
-                    a.choose_action(observation
-                                    , episodes_quantity=episodes_quantity
-                                    , current_episode=episode
-                                    ) 
-                                    for a in agents  # from instructions
+                    a.choose_action(
+                        observation,
+                        episodes_quantity=episodes_quantity,
+                        current_episode=episode,
+                    )
+                    for a in agents  # from instructions
                 ]  # from instructions
                 # print("actions:", actions)
                 actions_taken.append(actions)
                 next_observation, reward, done, truncated, info = env.step(
                     actions
                 )  # from instructions
-                if reward == 0:
-                    reward = self.reward_live
+                # if reward == 0:
+                #     reward = self.reward_live #todo
                 # print("observation:", next_observation)
                 # print("reward:", reward)
                 # print("done:", done)
@@ -197,13 +124,13 @@ class QLearning:
                     )
                 score += reward  # from instructions
                 observation = next_observation
-            print("score:", score)
             scores.append(score)
-            self.episode_results(episode, 
-                                 actions_taken, 
-                                 done, 
-                                 truncated
-                                 )
+            # self.print_episode_results(episode,
+            #                      actions_taken,
+            #                      done,
+            #                      truncated,
+            # score
+            #                      )
         return agents, scores
 
     def test(
@@ -215,9 +142,13 @@ class QLearning:
             observation = env.reset()
             done = False
             actions_taken = []
+            step_number = 0
             while not done:
-                actions = [a.choose_action(observation, training=False) for a in trained_agents]
-                # print("actions:", actions)
+                step_number += 1
+                actions = [
+                    a.choose_action(observation, training=False) for a in trained_agents
+                ]
+                print("step ", step_number, " actions:", actions)
                 actions_taken.append(actions)
                 next_observation, reward, done, truncated, info = env.step(actions)
                 # print("reward:", reward)
@@ -258,11 +189,17 @@ class QLearning:
 
 if __name__ == "__main__":
     # Create the environment
+    # worldstr = """
+    # . S0 . X"""
     worldstr = """
-    . S0 . X"""
+    . S0 . X
+    . S1 . X
+    . . L0N ."""
 
     # lle = LLE.from_str(worldstr, ObservationType.LAYERED)
-    lle = LLE.level(1, ObservationType.LAYERED)
+    # lle = LLE.level(1, ObservationType.LAYERED)
+    # lle = LLE.level(3, ObservationType.LAYERED)
+    lle = LLE.level(6, ObservationType.LAYERED)
     env_world = lle.world
     mdp = WorldMDP(env_world)
     print("mdp.world :", mdp.world)
@@ -276,16 +213,21 @@ if __name__ == "__main__":
         #   learning_rate = 0.5,
         #   learning_rate = 0.4,
         #   learning_rate = 0.3,
-        learning_rate=0.2, # 420
-        #   learning_rate = 0.1,
+        # learning_rate=0.2, # lvl1 perfect
+        learning_rate=0.1,
         #   learning_rate = 0.01,
-        discount_factor=0.9,
-        noise=0.5
-        # noise=0.4,
-        # noise=0.1
-        #   noise=0
+        # discount_factor=0.9, # lvl1 perfect
+        discount_factor=0.5,
+        # noise=0.8,
+        # noise=0.6,
+        # noise=0.5, #lvl1 perfect
+        noise=0.4,
+        # noise=0.2,
+        # noise=0.1,
+        #   noise=0,
     )
-    trained_agents, scores = qlearning.train(qlearning.qagents, episodes_quantity=1000)
+    trained_agents, scores = qlearning.train(qlearning.qagents, episodes_quantity=1000000)
+    # trained_agents, scores = qlearning.train(qlearning.qagents, episodes_quantity=100)
 
     scores_displayer = ScoresDisplayer(scores, "Scores")
     scores_displayer.display()

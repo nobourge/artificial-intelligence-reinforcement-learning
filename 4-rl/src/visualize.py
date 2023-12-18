@@ -23,7 +23,7 @@ def display_solution(name: str,
                      ):
     env.reset()
     world = env.world
-    print("world:", world)
+    # print("world:", world)
     display_world(name, world)
 
     solution_actions = solution.actions

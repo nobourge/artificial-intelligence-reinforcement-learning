@@ -1,3 +1,5 @@
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\actions_taken_1.txt -----[[1], [2], [2], [1], [1], [1], [2], [1], [3], [1], [3], [1], [1], [1], [1], [3]]----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\actions_taken_1.txt -----
+
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2023-2024 projet RL for chatGPT.txt -----Dans ce projet, vous allez implémenter des algorithmes d’apprentissage par renforcement (reinforce-
 ment learning). On vous fournit des fichiers de base pour le projet que vous pouvez les télécharger sur
 l’université virtuelle.
@@ -188,6 +190,949 @@ observation.state, à la différence que le WorldState auquel vous êtes habitu�
 formé en tableau numpy pour être utilisable dans le contexte du deep MARL.
 7----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\in\2023-2024 projet RL for chatGPT.txt -----
 
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.aux -----\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Project Overview}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Objective}{1}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Methodology}{1}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Implementation}{1}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Value Iteration}{1}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Q-Learning}{1}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Epsilon Decay}{1}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Parameter Adaptation in Q-Agents}{2}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiment and Analysis}{2}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Experimental Setup}{2}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{2}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Value Iteration}{2}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Limitations}{2}{subsubsection.5.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}Offline Planner}{2}{subsubsection.5.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Q-Learning}{2}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Level 1}{2}{subsubsection.5.2.1}\protected@file@percent }
+\bibstyle{plain}
+\bibdata{references}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Q-Learning on Level 1}}{3}{figure.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Level 3}{3}{subsubsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Level 6}{3}{subsubsection.5.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Adapting Algorithms to Multi-Agent Scenarios}{3}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{3}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}References}{3}{section.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Q-Learning on Level 3}}{4}{figure.2}\protected@file@percent }
+\gdef \@abspage@last{4}
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.aux -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.bbl -----\begin{thebibliography}{}
+
+\end{thebibliography}
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.bbl -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.blg -----This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: report.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: plain.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+I found no \citation commands---while reading file report.aux
+Database file #1: references.bib
+You've used 0 entries,
+            2118 wiz_defined-function locations,
+            497 strings with 3995 characters,
+and the built_in function-call counts, 18 in all, are:
+= -- 0
+> -- 0
+< -- 0
++ -- 0
+- -- 0
+* -- 2
+:= -- 7
+add.period$ -- 0
+call.type$ -- 0
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 0
+duplicate$ -- 0
+empty$ -- 1
+format.name$ -- 0
+if$ -- 1
+int.to.chr$ -- 0
+int.to.str$ -- 0
+missing$ -- 0
+newline$ -- 3
+num.names$ -- 0
+pop$ -- 0
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 1
+stack$ -- 0
+substring$ -- 0
+swap$ -- 0
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 0
+width$ -- 0
+write$ -- 2
+(There was 1 error message)
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.blg -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.fdb_latexmk -----# Fdb version 4
+["bibtex report"] 1702840326 "report.aux" "report.bbl" "report" 1702840328 0
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/bibtex/bib/feupphdteses/references.bib" 1366808100 2206 985e03fb36d872d306e76cfacc160693 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/bibtex/bst/bibtex/plain.bst" 1291864736 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
+  "report.aux" 1702840327 3506 1683ab5a460741aceae66b89853550ba "pdflatex"
+  (generated)
+  "report.bbl"
+  "report.blg"
+  (rewritten before read)
+["pdflatex"] 1702840326 "d:/bourg/Documents/GitHub/artificial-intelligence-reinforcement-learning/4-rl/doc/out/report.tex" "report.pdf" "report" 1702840328 0
+  "C:/Users/bourg/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1702835291 279778 aa8c8b08a6e6f5b912fcdb1120e47ad8 ""
+  "C:/Users/bourg/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1695220016 24142036 d6c2244ed847199d8344867affd5c17b ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1233951848 1004 54797486969f23fa377b128694d548df ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1233951848 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmbx10.tfm" 1136765053 1328 c834bbb027764024c09d3d2bf908b5f0 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmbx12.tfm" 1136765053 1324 c910af8c371558dc20f2d7822f66fe64 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmex10.tfm" 1136765053 992 662f679a0b3d2d53c1b94050fdaa3f50 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi10.tfm" 1136765053 1528 abec98dbc43e172678c11b3b9031252a ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi12.tfm" 1136765053 1524 4414a8315f39513458b80dfc63bff03a ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi6.tfm" 1136765053 1512 f21f83efb36853c0b70002322c1ab3ad ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi8.tfm" 1136765053 1520 eccf95517727cb11801f4f1aee3a21b4 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr10.tfm" 1136765053 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr12.tfm" 1136765053 1288 655e228510b4c2a1abe905c368440826 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr17.tfm" 1136765053 1292 296a67155bdbfc32aa9c636f21e91433 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr6.tfm" 1136765053 1300 b62933e007d01cfd073f79b963c01526 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr8.tfm" 1136765053 1292 21c1c5bfeaebccffdb478fd231a0997d ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy10.tfm" 1136765053 1124 6c73e740cf17375f03eec0ee63599741 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy6.tfm" 1136765053 1116 933a60c408fc0a863a92debe84b2d294 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy8.tfm" 1136765053 1120 8b7d695260f3cff42e636090a8002094 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1247593066 34811 78b52f49e893bcba91bd7581cdc144c0 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1247593066 32080 340ef9bf63678554ee606688e7b5339d ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1247593067 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1247593067 35752 024fb6c41858982481f6968b5fc26508 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1247593067 32722 d7379af29a190c3f453aba36302ff5a9 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1247593066 32362 bc3f3eec7ab7d65fe700963d4017d32c ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1247593067 32726 39f0f9e62e84beb801509898a605dbd5 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1247593067 32569 5e5ddc8df908dea60932f3c484a54c0d ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/context/base/mkii/supp-pdf.mkii" 1580390158 71627 94eb9990bed73c364d7f53f960cc8c5b ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/atbegshi/atbegshi.sty" 1575571100 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/bigintcalc/bigintcalc.sty" 1576433602 40635 c40361e206be584d448876bba8a64a3b ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/bitset/bitset.sty" 1575926576 33961 6b5c75130e435b2bfdb9f480a09a39f9 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/gettitlestring/gettitlestring.sty" 1576433666 8371 9d55b8bd010bc717624922fb3477d92e ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/iftex/iftex.sty" 1643997108 7237 bdd120a32c8fdb4b433cf9ca2e7cd98a ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/iftex/ifvtex.sty" 1643997108 1057 525c2192b5febbd8c1f662c9468335bb ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/infwarerr/infwarerr.sty" 1575399508 8356 7bbb2c2373aa810be568c29e333da8ed ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/intcalc/intcalc.sty" 1576433764 31769 002a487f55041f8e805cfbf6385ffd97 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/kvdefinekeys/kvdefinekeys.sty" 1576763304 5412 d5a2436094cd7be85769db90f29250a6 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/ltxcmds/ltxcmds.sty" 1601732009 18568 4409f8f50cd365c68e684407e5350b1b ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/pdfescape/pdfescape.sty" 1575926700 19007 15924f7228aca6c6d184b115f4baa231 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/pdftexcmds/pdftexcmds.sty" 1623001677 20089 80423eac55aa175305d35b49e04fe23b ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/generic/uniquecounter/uniquecounter.sty" 1576434012 7008 f92eaa0a3872ed622bbf538217cd2ab7 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/00miktex/epstopdf-sys.cfg" 1616067285 584 2a1075dd71571459f59146da9f7502ad ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amsbsy.sty" 1686928188 2222 499d61426192c39efd8f410ee1a52b9c ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amsgen.sty" 1686928187 4173 82ac04dfb1256038fad068287fbb4fe6 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amsmath.sty" 1686928188 88371 d84032c0f422c3d1e282266c01bef237 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amsopn.sty" 1686928188 4474 b811654f4bf125f11506d13d13647efb ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amstext.sty" 1686928188 2444 0d0c1ee65478277e8015d65b86983da2 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/atveryend/atveryend.sty" 1576101110 19336 ce7ae9438967282886b3b036cfad1e4d ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/auxhook/auxhook.sty" 1576538732 3935 57aa3c3e203a5c2effb4d2bd2efbc323 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/base/article.cls" 1687170546 20144 fbcf51733730d8f1a62143512ff5b1fe ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/base/atbegshi-ltx.sty" 1687170546 3045 909ba7bc518ac6e8e7ef69971d52f389 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/base/atveryend-ltx.sty" 1687170546 2462 91a1cb69153367feea29040eef0c27f4 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/base/size11.clo" 1687170546 8464 a4a9a859b7fd5b6c1450673c4d301348 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/epstopdf-pkg/epstopdf-base.sty" 1622999586 13886 d1306dcf79a944f6988e688c1785f9ce ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/etoolbox/etoolbox.sty" 1601894156 46845 3b58f70c6e861a13d927bff09d35ecbc ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/geometry/geometry.cfg" 1578053545 1104 7ac475a4e3466b0b43e138e9356bda83 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/geometry/geometry.sty" 1578053545 42759 9cf6c5257b1bc7af01a58859749dd37a ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/graphics-cfg/graphics.cfg" 1465890692 1224 978390e9c2234eab29404bc21b268d1e ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/graphics-def/pdftex.def" 1663915090 19448 1e988b341dda20961a6b931bcde55519 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/graphics/graphics.sty" 1665063979 18387 8f900a490197ebaf93c02ae9476d4b09 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/graphics/graphicx.sty" 1665063979 8010 a8d949cbdbc5c983593827c9eec252e1 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/graphics/keyval.sty" 1665063979 2671 7e67d78d9b88c845599a85b2d41f2e39 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/graphics/trig.sty" 1665063979 4023 293ea1c16429fc0c4cf605f4da1791a9 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/hycolor/hycolor.sty" 1580380792 18571 4c28a13fc3d975e6e81c9bea1d697276 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/hpdftex.def" 1688828205 48313 3e63f55d416cb9a219ad316780ed6e84 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/hyperref.sty" 1688828205 220504 169e62639b625d84e162873f334fc3b1 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/nameref.sty" 1688828205 13887 0d9aeb0c8de393ccff89a8c740a0ac64 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/pd1enc.def" 1688828205 14247 b5446170da36f22f2489e5f7d943db5c ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/puenc.def" 1688828205 117118 5595bc841ebb373d40a4c1ec21cfadda ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/kvoptions/kvoptions.sty" 1656232881 22555 6d8e155cfef6d82c3d5c742fea7c992e ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/kvsetkeys/kvsetkeys.sty" 1665062733 13815 760b0c02f691ea230f5359c4e1de23a7 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1681893161 29940 9473d58112bc8a88f5505b823a053dde ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/letltxmacro/letltxmacro.sty" 1575399536 5766 13a9e8766c47f30327caf893ece86ac8 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/listings/listings.cfg" 1679057124 1829 d8258b7d94f5f955e70c623e525f9f45 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/listings/listings.sty" 1679057124 80947 75a96bb4c9f40ae31d54a01d924df2ff ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/listings/lstmisc.sty" 1679057124 77021 d05e9115c67855816136d82929db8892 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/refcount/refcount.sty" 1576433952 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1657797096 9714 ba3194bd52c8499b3f1e3eb91d409670 ""
+  "C:/Users/bourg/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
+  "d:/bourg/Documents/GitHub/artificial-intelligence-reinforcement-learning/4-rl/doc/out/report.tex" 1702840322 5642 79d6ea67c9c237423750e6f8a7c76296 ""
+  "level1.png" 1702834738 18812 bfc9a8826dd3fc858a4ab837c6921109 ""
+  "level3.png" 1702838685 16465 1bc9cff3f76fe4c6bf54d8658d8ebbe1 ""
+  "report.aux" 1702840327 3506 1683ab5a460741aceae66b89853550ba "pdflatex"
+  "report.bbl" 1702840326 52 0eba253fc001332e731e8aba3f23127b "bibtex report"
+  "report.out" 1702840327 2853 c5b5e9c44306443a2acaf548ae771f67 "pdflatex"
+  "report.tex" 1702840322 5642 79d6ea67c9c237423750e6f8a7c76296 ""
+  (generated)
+  "report.aux"
+  "report.log"
+  "report.out"
+  "report.pdf"
+  (rewritten before read)
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.fdb_latexmk -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.fls -----PWD d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out
+INPUT C:\Users\bourg\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
+INPUT d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.tex
+OUTPUT report.log
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\size11.clo
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\size11.clo
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\size11.clo
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr10.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\geometry\geometry.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\geometry\geometry.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics\keyval.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics\keyval.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\iftex\ifvtex.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\iftex\ifvtex.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\iftex\iftex.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\iftex\iftex.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\geometry\geometry.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\geometry\geometry.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\geometry\geometry.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics\graphicx.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics\graphicx.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics\graphics.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics\graphics.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics\trig.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics\trig.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics-cfg\graphics.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics-cfg\graphics.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics-cfg\graphics.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics-def\pdftex.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics-def\pdftex.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\graphics-def\pdftex.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amsmath.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amsmath.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amsopn.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amstext.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amstext.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amsgen.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amsgen.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amsbsy.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amsbsy.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\amsmath\amsopn.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hyperref.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hyperref.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\ltxcmds\ltxcmds.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\ltxcmds\ltxcmds.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\pdftexcmds\pdftexcmds.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\pdftexcmds\pdftexcmds.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\infwarerr\infwarerr.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\infwarerr\infwarerr.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\kvsetkeys\kvsetkeys.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\kvsetkeys\kvsetkeys.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\kvdefinekeys\kvdefinekeys.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\kvdefinekeys\kvdefinekeys.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\pdfescape\pdfescape.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\pdfescape\pdfescape.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hycolor\hycolor.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hycolor\hycolor.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\letltxmacro\letltxmacro.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\letltxmacro\letltxmacro.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\auxhook\auxhook.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\auxhook\auxhook.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\nameref.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\nameref.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\refcount\refcount.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\refcount\refcount.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\gettitlestring\gettitlestring.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\gettitlestring\gettitlestring.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\kvoptions\kvoptions.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\kvoptions\kvoptions.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\etoolbox\etoolbox.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\etoolbox\etoolbox.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\pd1enc.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\pd1enc.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\pd1enc.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\intcalc\intcalc.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\intcalc\intcalc.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\puenc.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\puenc.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\puenc.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\url\url.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\url\url.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\bitset\bitset.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\bitset\bitset.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\bigintcalc\bigintcalc.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\bigintcalc\bigintcalc.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\atbegshi\atbegshi.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\atbegshi-ltx.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\atbegshi-ltx.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hpdftex.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hpdftex.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hpdftex.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\atveryend\atveryend.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\atveryend-ltx.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\base\atveryend-ltx.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\rerunfilecheck\rerunfilecheck.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\rerunfilecheck\rerunfilecheck.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\uniquecounter\uniquecounter.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\generic\uniquecounter\uniquecounter.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\listings\listings.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\listings\listings.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstmisc.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstmisc.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstmisc.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\listings\listings.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\listings\listings.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\listings\listings.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
+INPUT .\report.aux
+INPUT .\report.aux
+INPUT report.aux
+OUTPUT report.aux
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\epstopdf-pkg\epstopdf-base.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\epstopdf-pkg\epstopdf-base.sty
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
+INPUT .\report.out
+INPUT .\report.out
+INPUT report.out
+INPUT report.out
+OUTPUT report.pdf
+INPUT .\report.out
+INPUT .\report.out
+OUTPUT report.out
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr17.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr12.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr8.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr6.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmmi12.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmmi8.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmmi6.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmsy10.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmsy8.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmsy6.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmex10.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\cmextra\cmex8.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\cmextra\cmex7.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr12.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx12.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx12.tfm
+INPUT C:\Users\bourg\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmmi10.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmsy10.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmex10.tfm
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx10.tfm
+INPUT .\level1.png
+INPUT .\level1.png
+INPUT .\level1.png
+INPUT .\level1.png
+INPUT .\level1.png
+INPUT .\level1.png
+INPUT .\level1.png
+INPUT .\level3.png
+INPUT .\level3.png
+INPUT .\level3.png
+INPUT .\level3.png
+INPUT .\level3.png
+INPUT .\level3.png
+INPUT .\level3.png
+INPUT .\report.bbl
+INPUT .\report.bbl
+INPUT report.bbl
+INPUT report.aux
+INPUT .\report.out
+INPUT .\report.out
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmbx10.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmbx10.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmbx12.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmbx12.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi10.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi10.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr10.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr10.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr12.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr12.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr17.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr17.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr8.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr8.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy10.pfb
+INPUT C:\Users\bourg\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy10.pfb
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.fls -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.log -----This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.9) (preloaded format=pdflatex 2023.9.20)  17 DEC 2023 20:12
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**d:/bourg/Documents/GitHub/artificial-intelligence-reinforcement-learning/4-rl/doc/out/report.tex
+(d:/bourg/Documents/GitHub/artificial-intelligence-reinforcement-learning/4-rl/doc/out/report.tex
+LaTeX2e <2023-06-01> patch level 1
+L3 programming layer <2023-08-29>
+(C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/base\size11.clo
+File: size11.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count185
+\c@section=\count186
+\c@subsection=\count187
+\c@subsubsection=\count188
+\c@paragraph=\count189
+\c@subparagraph=\count190
+\c@figure=\count191
+\c@table=\count192
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
+\bibindent=\dimen140
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+))
+\Gm@cnth=\count193
+\Gm@cntv=\count194
+\c@Gm@tempcnt=\count195
+\Gm@bindingoffset=\dimen141
+\Gm@wd@mp=\dimen142
+\Gm@odd@mp=\dimen143
+\Gm@even@mp=\dimen144
+\Gm@layoutwidth=\dimen145
+\Gm@layoutheight=\dimen146
+\Gm@layouthoffset=\dimen147
+\Gm@layoutvoffset=\dimen148
+\Gm@dimlist=\toks18
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen149
+\Gin@req@width=\dimen150
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+Package: amsmath 2023/05/13 v2.17o AMS math features
+\@mathmargin=\skip50
+
+For additional information on amsmath, use the `?' option.
+(C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks19
+\ex@=\dimen151
+)) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen152
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count196
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count197
+\leftroot@=\count198
+LaTeX Info: Redefining \overline on input line 399.
+LaTeX Info: Redefining \colon on input line 410.
+\classnum@=\count199
+\DOTSCASE@=\count266
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box51
+\strutbox@=\box52
+LaTeX Info: Redefining \big on input line 722.
+LaTeX Info: Redefining \Big on input line 723.
+LaTeX Info: Redefining \bigg on input line 724.
+LaTeX Info: Redefining \Bigg on input line 725.
+\big@size=\dimen153
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count267
+LaTeX Info: Redefining \bmod on input line 905.
+LaTeX Info: Redefining \pmod on input line 910.
+LaTeX Info: Redefining \smash on input line 940.
+LaTeX Info: Redefining \relbar on input line 970.
+LaTeX Info: Redefining \Relbar on input line 971.
+\c@MaxMatrixCols=\count268
+\dotsspace@=\muskip16
+\c@parentequation=\count269
+\dspbrk@lvl=\count270
+\tag@help=\toks20
+\row@=\count271
+\column@=\count272
+\maxfields@=\count273
+\andhelp@=\toks21
+\eqnshift@=\dimen154
+\alignsep@=\dimen155
+\tagshift@=\dimen156
+\tagwidth@=\dimen157
+\totwidth@=\dimen158
+\lineht@=\dimen159
+\@envbody=\toks22
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks23
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+Package: hyperref 2023-07-08 v7.01b Hypertext links for LaTeX
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO)
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.sty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/letltxmacro\letltxmacro.sty
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/auxhook\auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+Package: nameref 2023-08-07 v2.53 Cross-referencing by name of section
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettitlestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+))
+\c@section@level=\count274
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count275
+)
+\@linkdim=\dimen160
+\Hy@linkcounter=\count276
+\Hy@pagecounter=\count277
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+File: pd1enc.def 2023-07-08 v7.01b Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count278
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
+File: puenc.def 2023-07-08 v7.01b Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Hyper figures OFF on input line 4167.
+Package hyperref Info: Link nesting OFF on input line 4172.
+Package hyperref Info: Hyper index ON on input line 4175.
+Package hyperref Info: Plain pages OFF on input line 4182.
+Package hyperref Info: Backreferencing OFF on input line 4187.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4434.
+\c@Hy@tempcnt=\count279
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4772.
+\XeTeXLinkMargin=\dimen161
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO)
+))
+\Fld@menulength=\count280
+\Field@Width=\dimen162
+\Fld@charsize=\dimen163
+Package hyperref Info: Hyper figures OFF on input line 6051.
+Package hyperref Info: Link nesting OFF on input line 6056.
+Package hyperref Info: Hyper index ON on input line 6059.
+Package hyperref Info: backreferencing OFF on input line 6066.
+Package hyperref Info: Link coloring OFF on input line 6071.
+Package hyperref Info: Link coloring with OCG OFF on input line 6076.
+Package hyperref Info: PDF/A mode OFF on input line 6081.
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-ltx.sty
+Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
+package with kernel methods
+)
+\Hy@abspage=\count281
+\c@Item=\count282
+\c@Hfootnote=\count283
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+File: hpdftex.def 2023-07-08 v7.01b Hyperref driver for pdfTeX
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/base\atveryend-ltx.sty
+Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend package
+with kernel methods
+)
+\Fld@listcount=\count284
+\c@bookmark@seq@number=\count285
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfilecheck.sty
+Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquecounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 285.
+)
+\Hy@SectionHShift=\skip53
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+\lst@mode=\count286
+\lst@gtempboxa=\box53
+\lst@token=\toks24
+\lst@length=\count287
+\lst@currlwidth=\dimen164
+\lst@column=\count288
+\lst@pos=\count289
+\lst@lostspace=\dimen165
+\lst@width=\dimen166
+\lst@newlines=\count290
+\lst@lineno=\count291
+\lst@maxwidth=\dimen167
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
+File: lstmisc.sty 2023/02/27 1.9 (Carsten Heinz)
+\c@lstnumber=\count292
+\lst@skipnumbers=\count293
+\lst@framebox=\box54
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg
+File: listings.cfg 2023/02/27 1.9 listings configuration
+))
+Package: listings 2023/02/27 1.9 (Carsten Heinz)
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
+File: l3backend-pdftex.def 2023-04-19 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count294
+\l__pdf_internal_box=\box55
+) (report.aux)
+\openout1 = `report.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=452.9679pt
+* \textheight=700.50687pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=11.0pt
+* \footskip=30.0pt
+* \marginparwidth=59.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+(C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count295
+\scratchdimen=\dimen168
+\scratchbox=\box56
+\nofMPsegments=\count296
+\nofMParguments=\count297
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count298
+\MPscratchDim=\dimen169
+\MPnumerator=\count299
+\makeMPintoPDFobject=\count300
+\everyMPtoPDFconversion=\toks26
+) (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (C:\Users\bourg\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+))
+Package hyperref Info: Link coloring OFF on input line 14.
+ (report.out) (report.out)
+\@outlinefile=\write3
+\openout3 = `report.out'.
+
+\c@lstlisting=\count301
+ [1
+
+{C:/Users/bourg/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+<level1.png, id=100, 462.528pt x 346.896pt>
+File: level1.png Graphic file (type png)
+<use level1.png>
+Package pdftex.def Info: level1.png  used on input line 99.
+(pdftex.def)             Requested size: 362.37569pt x 271.79521pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<level3.png, id=102, 462.528pt x 346.896pt>
+File: level3.png Graphic file (type png)
+<use level3.png>
+Package pdftex.def Info: level3.png  used on input line 109.
+(pdftex.def)             Requested size: 362.37569pt x 271.79521pt.
+[2]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+(report.bbl
+
+LaTeX Warning: Empty `thebibliography' environment on input line 3.
+
+) [3 <./level1.png>] [4 <./level3.png>] (report.aux)
+ ***********
+LaTeX2e <2023-06-01> patch level 1
+L3 programming layer <2023-08-29>
+ ***********
+Package rerunfilecheck Info: File `report.out' has not changed.
+(rerunfilecheck)             Checksum: C5B5E9C44306443A2ACAF548AE771F67;2853.
+ ) 
+Here is how much of TeX's memory you used:
+ 10954 strings out of 475248
+ 169139 string characters out of 5757813
+ 1928801 words of memory out of 5000000
+ 32336 multiletter control sequences out of 15000+600000
+ 564138 words of font info for 57 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 75i,7n,79p,422b,461s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/bourg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on report.pdf (4 pages, 155678 bytes).
+PDF statistics:
+ 167 PDF objects out of 1000 (max. 8388607)
+ 31 named destinations out of 1000 (max. 500000)
+ 187 words of extra memory for PDF output out of 10000 (max. 10000000)
+
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.log -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.out -----\BOOKMARK [1][-]{section.1}{\376\377\000I\000n\000t\000r\000o\000d\000u\000c\000t\000i\000o\000n}{}% 1
+\BOOKMARK [1][-]{section.2}{\376\377\000P\000r\000o\000j\000e\000c\000t\000\040\000O\000v\000e\000r\000v\000i\000e\000w}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{\376\377\000O\000b\000j\000e\000c\000t\000i\000v\000e}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{\376\377\000M\000e\000t\000h\000o\000d\000o\000l\000o\000g\000y}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{\376\377\000I\000m\000p\000l\000e\000m\000e\000n\000t\000a\000t\000i\000o\000n}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{\376\377\000V\000a\000l\000u\000e\000\040\000I\000t\000e\000r\000a\000t\000i\000o\000n}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{\376\377\000Q\000-\000L\000e\000a\000r\000n\000i\000n\000g}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.3}{\376\377\000E\000p\000s\000i\000l\000o\000n\000\040\000D\000e\000c\000a\000y}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.4}{\376\377\000P\000a\000r\000a\000m\000e\000t\000e\000r\000\040\000A\000d\000a\000p\000t\000a\000t\000i\000o\000n\000\040\000i\000n\000\040\000Q\000-\000A\000g\000e\000n\000t\000s}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{\376\377\000E\000x\000p\000e\000r\000i\000m\000e\000n\000t\000\040\000a\000n\000d\000\040\000A\000n\000a\000l\000y\000s\000i\000s}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{\376\377\000E\000x\000p\000e\000r\000i\000m\000e\000n\000t\000a\000l\000\040\000S\000e\000t\000u\000p}{section.4}% 11
+\BOOKMARK [1][-]{section.5}{\376\377\000R\000e\000s\000u\000l\000t\000s}{}% 12
+\BOOKMARK [2][-]{subsection.5.1}{\376\377\000V\000a\000l\000u\000e\000\040\000I\000t\000e\000r\000a\000t\000i\000o\000n}{section.5}% 13
+\BOOKMARK [3][-]{subsubsection.5.1.1}{\376\377\000L\000i\000m\000i\000t\000a\000t\000i\000o\000n\000s}{subsection.5.1}% 14
+\BOOKMARK [3][-]{subsubsection.5.1.2}{\376\377\000O\000f\000f\000l\000i\000n\000e\000\040\000P\000l\000a\000n\000n\000e\000r}{subsection.5.1}% 15
+\BOOKMARK [2][-]{subsection.5.2}{\376\377\000Q\000-\000L\000e\000a\000r\000n\000i\000n\000g}{section.5}% 16
+\BOOKMARK [3][-]{subsubsection.5.2.1}{\376\377\000L\000e\000v\000e\000l\000\040\0001}{subsection.5.2}% 17
+\BOOKMARK [3][-]{subsubsection.5.2.2}{\376\377\000L\000e\000v\000e\000l\000\040\0003}{subsection.5.2}% 18
+\BOOKMARK [3][-]{subsubsection.5.2.3}{\376\377\000L\000e\000v\000e\000l\000\040\0006}{subsection.5.2}% 19
+\BOOKMARK [2][-]{subsection.5.3}{\376\377\000A\000d\000a\000p\000t\000i\000n\000g\000\040\000A\000l\000g\000o\000r\000i\000t\000h\000m\000s\000\040\000t\000o\000\040\000M\000u\000l\000t\000i\000-\000A\000g\000e\000n\000t\000\040\000S\000c\000e\000n\000a\000r\000i\000o\000s}{section.5}% 20
+\BOOKMARK [1][-]{section.6}{\376\377\000C\000o\000n\000c\000l\000u\000s\000i\000o\000n}{}% 21
+\BOOKMARK [1][-]{section.7}{\376\377\000R\000e\000f\000e\000r\000e\000n\000c\000e\000s}{}% 22
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.out -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.tex -----\documentclass[11pt]{article}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\geometry{a4paper, margin=1in}
+
+\title{Reinforcement Learning Project Report: Implementing and Analyzing RL Algorithms in MDP}
+\author{[Noé Bourgeois]}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This report presents the implementation and analysis of two key reinforcement learning algorithms: 
+Value Iteration and Q-Learning within a Markov Decision Process (MDP) framework. 
+This project extends foundational concepts from "2-adversarial" into a more complex, 
+multi-agent setting, emphasizing algorithmic adaptability and robustness.
+
+\section{Project Overview}
+\subsection{Objective}
+The objective of this project is to develop and analyze algorithms that can efficiently solve complex decision-making problems modeled as MDPs, 
+with a focus on environments characterized by multiple agents and uncertain outcomes.
+
+\subsection{Methodology}
+The project methodology involves implementing the Value Iteration and Q-Learning algorithms, 
+conducting experiments to evaluate their performance, and analyzing their behavior in various simulated environments.
+
+\section{Implementation}
+\subsection{Value Iteration}
+The Value Iteration algorithm was implemented following the Bellman Equation. 
+This iterative process updates the value of each state until it converges to the optimal value function.
+
+\subsection{Q-Learning}
+Q-Learning was implemented as a model-free reinforcement learning algorithm. 
+A notable feature of our implementation is 
+the dynamic adaptation of the exploration rate, 
+controlled by the epsilon parameter, 
+and the automatic adjustment of the Q-agent parameters.
+
+\subsection{Epsilon Decay}
+In our Q-Learning implementation, the exploration rate, 
+governed by the epsilon parameter, 
+is progressively reduced throughout the training episodes. 
+This approach starts with a high exploration rate, 
+favoring the discovery of new states and actions. 
+As the agent learns more about the environment, 
+the need for exploration decreases, 
+and the focus shifts towards exploitation of the known states. 
+Epsilon decays to zero over time, 
+indicating a gradual shift from exploration to exploitation.
+
+\begin{equation}
+    \epsilon = \max(\epsilon_{\text{min}}, \epsilon \times \text{decay\_rate})
+\end{equation}
+
+This decay mechanism ensures that the agent efficiently learns the optimal policy 
+by balancing between exploring unknown parts of the state space and exploiting the knowledge it has already acquired.
+
+\subsection{Parameter Adaptation in Q-Agents}
+Our Q-agents are designed to automatically adapt their learning parameters 
+based on the feedback received from the environment. This self-adaptation mechanism allows 
+the agents to adjust their learning strategy to different situations encountered during training. 
+For instance, the learning rate and the discount factor are dynamically adjusted 
+to optimize the learning process in response to the complexity and the dynamics of the environment.
+
+The combination of epsilon decay and parameter adaptation in Q-agents significantly enhances the learning efficiency, 
+making our implementation robust and effective across various scenarios and environments.
+
+\section{Experiment and Analysis}
+\subsection{Experimental Setup}
+Experiments were conducted in a simulated grid-world environment, 
+where an agent's objective was to navigate to a specific location while avoiding obstacles and negative rewards.
+
+\section{Results}
+\subsection{Value Iteration}
+Value Iteration converged to the optimal policy after a certain number of iterations. 
+The algorithm demonstrated efficiency in deterministic environments but struggled in environments with higher stochasticity.
+
+\subsubsection{Limitations}
+The primary limitation observed in Value Iteration is its ineffectiveness in large state spaces due to computational constraints.
+
+\subsubsection{Offline Planner}
+Value Iteration functions as an offline planner because 
+it requires a complete and accurate model of the environment to compute the optimal policy.
+
+\subsection{Q-Learning}
+
+\subsubsection{Level 1}
+The Q-Learning algorithm was first applied to Level 1 of the simulated environment. 
+The graph below shows the learning curve and policy effectiveness at this level.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{level1.png}
+\caption{Q-Learning on Level 1}
+\end{figure}
+
+\subsubsection{Level 3}
+Similarly, the algorithm's performance on Level 3 was evaluated. 
+The graph below illustrates the algorithm's adaptability and learning progression at this more complex level.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{level3.png}
+\caption{Q-Learning on Level 3}
+\end{figure}
+
+\subsubsection{Level 6}
+For this level, we get a memory error at qtable creation.
+
+
+
+\subsection{Adapting Algorithms to Multi-Agent Scenarios}
+Adapting these algorithms to multi-agent scenarios involved 
+considering the actions of other agents in the environment, 
+which introduced additional complexity and uncertainty.
+
+\section{Conclusion}
+This project offered deep insights into the dynamics of reinforcement learning algorithms in MDPs. 
+It highlighted the strengths and weaknesses of Value Iteration and Q-Learning, 
+providing a clear understanding of their applicability in different scenarios.
+
+\section{References}
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\doc\out\report.tex -----
+
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\almost_equal.py -----def almost_equal(a, b):
     return abs(a - b) < 1e-6
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\almost_equal.py -----
@@ -301,6 +1246,7 @@ from rlenv import Observation, RLEnv
 from typing import Dict, Tuple, List, Iterable, Generic, Optional, Callable, Set
 from mdp import MDP, S, A
 from auto_indent import AutoIndent
+from qvalues_displayer import QValuesDisplayer
 from world_mdp import WorldMDP
 import utils
 from lle import LLE, Action, Agent, AgentId, Position, WorldState
@@ -317,6 +1263,8 @@ class QAgent:
     def __init__(
         self,
         # env: RLEnv,
+        # world_size: int,
+        initial_observation: Observation,
         mdp: MDP[S, A],
         learning_rate: float = 0.1,
         discount_factor: float = 0.9,
@@ -324,6 +1272,12 @@ class QAgent:
         seed: int = None,
         id: AgentId = None,
     ):
+        """Initialize the agent"""
+        # Initialize the environment
+        # self.env = env
+        # self.world_size = world_size
+
+        self.analyse_observation(initial_observation, initial=True)
         # Initialize the MDP
         self.mdp = mdp
         # Initialize parameters
@@ -339,14 +1293,15 @@ class QAgent:
         # Initialize Q-table as a dictionary
         # Pour favoriser l’exploration, initialisez vos 𝑄(𝑠, 𝑎) à 1 et non à 0
         self.q_table = {
-            state: {action.value: 1 for action in Action.ALL} for state in mdp.states()
+            observation: {action.value: 1 for action in Action.ALL}
+            # for observation in mdp.observations()
+            for observation in mdp.states()
         }  # dict of dicts
+
+        self.qvalues_displayer = QValuesDisplayer(self.world_size, self.q_table)
 
         # Initialize a random number generator
         self.rng = np.random.default_rng(seed)  # Random number generator instance
-
-    def hash(self, state: WorldState, action: Action) -> Tuple[WorldState, Action]:
-        return (state, action.value)
 
     def observe(self, observation: Observation):
         """Observe the given observation"""
@@ -355,97 +1310,6 @@ class QAgent:
 
         observation_data = observation.data
         print("observation_data:", observation_data)
-
-    def get_state_observation(
-        self,
-        state: WorldState,
-    ) -> Observation:
-        """Get the observation for the given state"""
-        return Observation(state)
-
-    def get_position(self, matrix: np.ndarray) -> np.ndarray:
-        """Get the position of the agent"""
-        # return np.where(matrix == 1)
-
-        print("matrix:", matrix)
-        print("np.nonzero(matrix):", np.nonzero(matrix))
-        print("np.transpose(np.nonzero(matrix)):", np.transpose(np.nonzero(matrix)))
-        return np.transpose(np.nonzero(matrix))
-
-    def get_valid_actions(
-        self,
-        observation: Observation,
-    ) -> List[Action]:
-        """Get the list of valid actions for the given observation"""
-        observation_data = observation.data
-        print("observation_data:", observation_data)
-        agent_position = self.get_position(observation_data[0][0])
-
-        return world.available_actions()
-
-    def agent_position_after_action(
-        self, agent_pos: Position, action: Action
-    ) -> Position:
-        """The position of an agent after applying the given action."""
-        try:
-            print("agent_pos", agent_pos)
-            print("action", action)
-            agent_pos_after_action = agent_pos + action.delta
-            print("agent_pos_after_action", agent_pos_after_action)
-        except ValueError:
-            raise ValueError("Invalid action")
-        return agent_pos_after_action
-
-    def are_valid_joint_actions(
-        self, state: WorldState, joint_actions: Tuple[Action, ...]
-    ) -> bool:
-        """Whether the given joint actions are valid.
-        an action is valid if it is available for an agent
-        and if it does not lead the agent to be on the same position as another agent"""
-        # print("are_valid_joint_actions()")
-        # print("state", state)
-        # print("joint_actions", joint_actions)
-        # print("state.agents_positions", state.agents_positions)
-        # # calculate agent positions after applying the joint action
-        agents_positions_after_joint_actions = []
-        for i, agent_pos in enumerate(state.agents_positions):
-            agent_pos_after_action = self.agent_position_after_action(
-                agent_pos, joint_actions[i]
-            )
-            agents_positions_after_joint_actions.append(agent_pos_after_action)
-        return self.no_duplicate_in(agents_positions_after_joint_actions)
-
-    def get_valid_joint_actions(
-        self, state: WorldState, available_actions: Tuple[Tuple[Action, ...], ...]
-    ) -> Iterable[Tuple[Action, ...]]:
-        """Yield all possible joint actions that can be taken from the given state.
-        Hint: you can use `self.world.available_actions()` to get the available actions for each agent.
-        """
-        # print("available_actions", available_actions)
-        # cartesian product of the agents' actions
-        for joint_actions in product(*available_actions):
-            # print("joint_actions", joint_actions)
-
-            if self.are_valid_joint_actions(state, joint_actions):
-                yield joint_actions
-
-    def get_agents_positions(
-        self,
-        #  state: np.ndarray
-        observation: Observation,
-    ) -> List[Position]:
-        """Get the positions of all agents in the given observation.state"""
-        observation_data = observation.data
-        print("observation_data:", observation_data)
-        state = observation.state
-        print("state:", state)
-
-        agents_positions = []
-        for agent in self.mdp.world.agents:
-            agent_position = self.get_position(state[agent.id])
-            agents_positions.append(agent_position)
-
-        return agents_positions
 
     def get_ones_indexes(
         self,
@@ -456,81 +1320,150 @@ class QAgent:
         for i, value in enumerate(array):
             if value == 1:
                 ones_indexes.append(i)
-     
-        print("ones_indexes:", ones_indexes)
+
+        # print("ones_indexes:", ones_indexes)
         return ones_indexes
 
     def choose_action(
         self,
         observation: Observation,  # from instructions
+        training: bool = True,
+        episodes_quantity: int = 100,
+        current_episode: int = 0,
     ):
         """Choose an action using the epsilon-greedy policy"""
-        state = observation.state
-        # #state type:
-        # print("type(state):", type(state))
-        # print("state:", state)
-        # world = self.mdp.world
-        # print("world:", world)
-
-        # # valid_actions = self.get_valid_joint_actions(
-        # # world_available_actions = self.mdp.world.available_actions()
-        # world_available_actions = self.mdp.available_actions(observation.state)
-        # print("world_available_actions:", world_available_actions)
-        # valid_actions = self.mdp.world.available_actions()[self.id]
-        # print("valid_actions:", valid_actions)
-        # self.get_position(observation.data[0][0])
-        observation_available_actions = observation.available_actions
-        print("observation_available_actions:", observation_available_actions)
-        current_agent_available_actions = observation_available_actions[self.id]
-
-        valid_actions = self.get_ones_indexes(current_agent_available_actions)
-        print("valid_actions:", valid_actions)
-        if self.rng.uniform(0, 1) < self.epsilon:
-            # Exploration: Random Action
-
-            action = self.rng.choice(valid_actions)
-        else:
-            # Exploitation: Best known action
-            state_actions = self.q_table.get(observation, {})
-            if state_actions:
-                action = max(state_actions, key=state_actions.get)
+        exploitation = False
+        exploration = False
+        if training:
+            # Update epsilon
+            epsilon = self.epsilon * (1 - current_episode / episodes_quantity)
+            # print("epsilon:", epsilon)
+            if epsilon < self.rng.uniform(0, 1):
+                exploitation = True
             else:
-                action = self.rng.choice(valid_actions)
+                exploration = True
+        if not training or exploitation:
+            # Exploitation: Best known action
+            observation_actions = self.q_table.get(observation, {})
+            if observation_actions:
+                # print("observation_actions:", observation_actions)
+                action = max(observation_actions, key=observation_actions.get)
+            else:
+                exploration = True
+        if exploration:
+            observation_available_actions = observation.available_actions
+            # print("observation_available_actions:", observation_available_actions)
+            current_agent_available_actions = observation_available_actions[self.id]
+
+            valid_actions = self.get_ones_indexes(current_agent_available_actions)
+            action = self.rng.choice(valid_actions)
+
         return action
 
-    def update(self, state, action, reward, next_state):
-        """Update the Q-table using the Bellman equation"""
+    def get_dangerosity(self, lasers) -> float:
+        """Return the dangerosity of the given MDP"""
+        dangerous_cells_quantity = 0
+        # remove matrix with index of the agent id
+        dangerous_lasers_matrices_indexes = lasers[: self.id] + lasers[self.id + 1 :]
+        for matrix in dangerous_lasers_matrices_indexes:
+            dangerous_cells_quantity += np.count_nonzero(matrix)
+
+        # print("dangerous_cells_quantity:", dangerous_cells_quantity)
+        dangerosity = dangerous_cells_quantity / len(self.not_wall_positions)
+        # print("dangerosity:", dangerosity)
+        return dangerosity
+
+    def adapt_reward_live(
+        self,
+    ) -> float:
+        """Return the reward_live of the given MDP
+        if the world is dangerous, the reward_live is null
+        if the world is safe, the reward_live is negative
+        """
+        self.reward_live = self.dangerosity - 1
+        # print("reward_live:", self.reward_live)
+
+    def adapt_learning_rate(
+        self,
+    ):
+        """Adapt the learning rate to the given MDP"""
+        # if the world is dangerous, increase the learning rate
+        self.learning_rate = 0.2 + self.dangerosity
+        # print("learning_rate:", self.learning_rate)
+
+    def adapt_discount_factor(
+        self,
+    ):
+        """Adapt the discount factor to the given MDP"""
+        # if the world is dangerous, increase the discount factor
+        self.discount_factor = 0.9 - self.dangerosity
+        # print("discount_factor:", self.discount_factor)
+
+    def adapt_learning_parameters(
+        self,
+        lasers: list,
+    ):
+        """Adapt the learning parameters to the given MDP"""
+        # if the world is dangerous, increase the learning rate
+        self.dangerosity = self.get_dangerosity(lasers)
+        self.adapt_reward_live()
+        self.adapt_learning_rate()
+        self.adapt_discount_factor()
+
+    def analyse_observation(
+        self,
+        observation: Observation,
+        initial: bool = False,
+    ):
+        observation_data = observation.data
+        observation_data_list = observation_data[0]
+        # print("observation_data:\n", observation_data_list)
+        observation_shape = observation_data.shape
+        if initial:
+            self.agents_quantity = observation_shape[0]
+            self.world_size = observation_shape[1] * observation_shape[2]
+            print("self.agents_quantity:", self.agents_quantity)
+            self.exits = np.transpose(np.nonzero(observation_data_list[-1]))
+            print("exits:", self.exits)
+            # agents_positions = mdp.world.agents_positions
+            # print("agents_positions:", agents_positions)
+            self.walls = np.transpose(
+                np.nonzero(observation_data_list[self.agents_quantity])
+            )
+            print("walls:", self.walls)
+            self.not_wall_positions = np.argwhere(observation_data_list[self.agents_quantity] == 0)
+            print("not_wall_positions:", self.not_wall_positions)
+            self.not_wall_positions_quantity = len(self.not_wall_positions)
+        lasers_matrices_list = [
+            np.transpose(np.nonzero(layer))
+            for layer in observation_data_list[self.agents_quantity:-2]
+        ]
+        self.gems = np.transpose(np.nonzero(observation_data_list[-2]))
+        # print("gems:", self.gems)
+        return lasers_matrices_list
+
+    def update(self, observation, action, reward, next_observation):
+        """Update the Q-table using the Bellman equation adapted for Q-learning:
+        𝑄(𝑠, 𝑎) ← (1 − 𝛼)𝑄(𝑠, 𝑎) + 𝛼[𝑅(𝑠, 𝑎, + 𝛾𝑉 (𝑠′)] """
+        lasers_matrices_list = self.analyse_observation(observation)
+        self.adapt_learning_parameters(
+            lasers_matrices_list,
+        )
         # Get the current Q value
-        current_q = self.q_table.get(state, {}).get(action, 1)  # 1 = default value
-        # Find the max Q value for the actions in the next state
-        next_state_actions = self.q_table.get(next_state, {})
-        max_next_q = max(next_state_actions.values(), default=0)
+        current_q = self.q_table.get(observation, {}).get(
+            action, 1
+        )  # 1 = default value
+        # Find the max Q value for the actions in the next observation
+        next_observation_actions = self.q_table.get(next_observation, {})
+        max_next_q = max(next_observation_actions.values(), default=0)
         # Update the Q value using the Bellman equation
-        new_q = current_q + self.learning_rate * (
-            reward + self.discount_factor * max_next_q - current_q
+        new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (
+            reward + self.discount_factor * max_next_q
         )
         # Update the Q-table
-        self.q_table.setdefault(state, {})[action] = new_q
+        self.q_table.setdefault(observation, {})[action] = new_q
 
-
-if __name__ == "__main__":
-    # Create the environment
-    env = LLE.level(1)
-    # Create the MDP
-    mdp = WorldMDP(env.world)
-    print(mdp.world)
-
-    # Create the agents
-    agent = QAgent(mdp, AgentId(1))
-
-    # # Train the agent
-    # agent.train(env, episodes_quantity=100)
-    # # Test the agent
-    # agent.test(env, episodes_quantity=100)
-    # # Save the agent
-    # agent.save(
-    #     "qlearning_agent.pkl"
-    # )  # pkl = pickle = sérialisation de données en Python
+        # self.qvalues_displayer.display_qvalues_board(self.q_table)
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qagent.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----from lle import Agent, ObservationType
@@ -543,6 +1476,9 @@ from lle import LLE, Action, Agent, AgentId, WorldState
 from rlenv.wrappers import TimeLimit
 from qagent import QAgent
 from auto_indent import AutoIndent
+from solution import Solution
+from scores_displayer import ScoresDisplayer
+from visualize import display_solution
 from world_mdp import WorldMDP
 
 sys.stdout = AutoIndent(sys.stdout)
@@ -553,20 +1489,33 @@ class QLearning:
 
     def __init__(
         self,
+        lle,
         mdp: MDP[S, A],
-        learning_rate: float,
-        discount_factor: float,
-        epsilon: float,
+        learning_rate: float,  # rate of learning
+        discount_factor: float,  # favoring future rewards
+        noise: float,  # exploration rate = noise
         seed: int = None,
+        level: int = None,
     ):
         # Initialize parameters
+        self.level = level
         self.mdp = mdp
-        self.learning_rate = learning_rate
-        self.discount_factor = discount_factor
-        self.epsilon = epsilon
+        if lle:
+            self.lle = lle
+        elif level:
+            self.lle = LLE.level(level, ObservationType.LAYERED)
+        initial_observation = self.lle.reset()
+
         # Create the agents
-        self.agents = [
-            QAgent(mdp, learning_rate, discount_factor, epsilon, id=AgentId(i))
+        self.qagents = [
+            QAgent(
+                initial_observation,
+                mdp,
+                learning_rate,
+                discount_factor,
+                noise,
+                id=AgentId(i),
+            )
             # for i in range(env.world.n_agents)
             for i in range(mdp.world.n_agents)
         ]
@@ -574,67 +1523,115 @@ class QLearning:
     # # Initialize a random number generator
     # self.rng = np.random.default_rng(seed)  # Random number generator instance
 
-    def train(self, agents, episodes_quantity: int):
+    def print_episode_results(
+        self, episode, actions_taken=None, done=False, truncated=False, score=None
+    ):
+        """Print the results of the episode"""
+        # Print the result of the episode
+        if done:
+            print(f"Episode {episode + 1} finished. ")
+        elif truncated:
+            print(f"Episode {episode + 1} truncated.")
+        else:
+            print(f"Episode {episode + 1} did not finish.")
+        if actions_taken:
+            print(f"Actions taken: {actions_taken}")
+            print(f"Actions taken quantity: {len(actions_taken)}")
+        print("score:", score)
+
+    def train(
+        self,
+        agents,
+        episodes_quantity: int,
+        step_limit: int = 80,
+    ):
         """Train the agent for the given number of episodes"""
-        # from instructions:
-        env = TimeLimit(
-            LLE.level(1, ObservationType.LAYERED), 80
-        )  # Maximum 80 time steps         # from instructions
+        if self.level:
+            env = TimeLimit(
+                LLE.level(1, ObservationType.LAYERED),
+                step_limit,
+            )  # Maximum 80 time steps         # from instructions
+        elif self.lle:
+            env = TimeLimit(self.lle, 80)
+        scores = []
+        for episode in range(episodes_quantity):
+            # print("episode:", episode)
+            observation = env.reset()  # from instructions
+            # observation_data = observation.data
+            # print("observation_data:", observation_data)
+            done = truncated = False  # from instructions
+            actions_taken = []
+            score = 0  # from instructions
+            while not (done or truncated):  # from instructions
+                actions = [  # from instructions
+                    a.choose_action(
+                        observation,
+                        episodes_quantity=episodes_quantity,
+                        current_episode=episode,
+                    )
+                    for a in agents  # from instructions
+                ]  # from instructions
+                # print("actions:", actions)
+                actions_taken.append(actions)
+                next_observation, reward, done, truncated, info = env.step(
+                    actions
+                )  # from instructions
+                # if reward == 0:
+                #     reward = self.reward_live #todo
+                # print("observation:", next_observation)
+                # print("reward:", reward)
+                # print("done:", done)
+                # print("truncated:", truncated)
+                # print("info:", info)
 
-        observation = env.reset()  # from instructions
-        observation_data = observation.data
-        observation_hash = self.numpy_table_hash(observation_data)
-        print("observation_data:", observation_data)
-        print("observation_hash:", observation_hash)
+                for a in agents:  # from instructions
+                    # print("a:", a)
+                    # print("a.id:", a.id)
+                    a.update(  # from instructions
+                        observation, actions[a.id], reward, next_observation
+                    )
+                score += reward  # from instructions
+                observation = next_observation
+            scores.append(score)
+            # self.print_episode_results(episode,
+            #                      actions_taken,
+            #                      done,
+            #                      truncated,
+            # score
+            #                      )
+        return agents, scores
 
-        done = truncated = False  # from instructions
-        score = 0  # from instructions
-        while not (done or truncated):  # from instructions
-            actions = [  # from instructions
-                a.choose_action(observation) for a in agents  # from instructions
-            ]  # from instructions
-            print("actions:", actions)
-            # get action[0] type:
-            print("type(actions[0]):", type(actions[0]))
-            # north = Action(0)
-            # print("north:", north)
-            # south = Action(1)
-            # print("south:", south)
-
-            next_observation, reward, done, truncated, info = env.step(
-                actions
-            )  # from instructions
-            print("observation:", next_observation)
-            print("reward:", reward)
-            print("done:", done)
-            print("truncated:", truncated)
-            print("info:", info)
-
-            for a in agents:  # from instructions
-                print("a:", a)
-                print("a.id:", a.id)
-                a.update(  # from instructions
-                    observation, actions[a.id], reward, next_observation
-                )
-            score += reward  # from instructions
-            print("score:", score)
-            observation = next_observation
-
-    def test(self, env: RLEnv, trained_agents, episodes_quantity: int):
+    def test(
+        self, env: RLEnv, trained_agents, episodes_quantity: int, save: bool = False
+    ):
         """Test the agent for the given number of episodes"""
         for episode in range(episodes_quantity):
             # Reset the environment
             observation = env.reset()
             done = False
             actions_taken = []
+            step_number = 0
             while not done:
-                actions = [a.choose_action(observation) for a in trained_agents]
+                step_number += 1
+                actions = [
+                    a.choose_action(observation, training=False) for a in trained_agents
+                ]
+                print("step ", step_number, " actions:", actions)
                 actions_taken.append(actions)
-                next_observation, _, done = env.step(actions)
+                next_observation, reward, done, truncated, info = env.step(actions)
+                # print("reward:", reward)
+                # print("done:", done)
+                # print("truncated:", truncated)
+                # print("info:", info)
                 observation = next_observation
             # Print the result of the episode
             if done:
                 print(f"Episode {episode + 1} finished. Actions taken: {actions_taken}")
+                if save:
+                    # Save the actions taken
+                    with open(f"actions_taken_{episode + 1}.txt", "w") as f:
+                        f.write(str(actions_taken))
+                return actions_taken
             else:
                 print(f"Episode {episode + 1} did not finish.")
 
@@ -660,43 +1657,179 @@ class QLearning:
 
 if __name__ == "__main__":
     # Create the environment
-    env = LLE.level(1, ObservationType.LAYERED)
-    mdp = WorldMDP(env.world)
+    # worldstr = """
+    # . S0 . X"""
+    worldstr = """
+    . S0 . X
+    . S1 . X
+    . . L0N ."""
+
+    # lle = LLE.from_str(worldstr, ObservationType.LAYERED)
+    # lle = LLE.level(1, ObservationType.LAYERED)
+    # lle = LLE.level(3, ObservationType.LAYERED)
+    lle = LLE.level(6, ObservationType.LAYERED)
+    env_world = lle.world
+    mdp = WorldMDP(env_world)
     print("mdp.world :", mdp.world)
 
     # Train the agent
-    qlearning = QLearning(mdp, 0.1, 0.9, 0.1)
-    trained_agents = qlearning.train(qlearning.agents, episodes_quantity=100)
+    qlearning = QLearning(
+        lle,
+        mdp,
+        #   learning_rate = 0.9,
+        #   learning_rate = 0.7,
+        #   learning_rate = 0.5,
+        #   learning_rate = 0.4,
+        #   learning_rate = 0.3,
+        # learning_rate=0.2, # lvl1 perfect
+        learning_rate=0.1,
+        #   learning_rate = 0.01,
+        # discount_factor=0.9, # lvl1 perfect
+        discount_factor=0.5,
+        # noise=0.8,
+        # noise=0.6,
+        # noise=0.5, #lvl1 perfect
+        noise=0.4,
+        # noise=0.2,
+        # noise=0.1,
+        #   noise=0,
+    )
+    trained_agents, scores = qlearning.train(qlearning.qagents, episodes_quantity=1000000)
+    # trained_agents, scores = qlearning.train(qlearning.qagents, episodes_quantity=100)
+
+    scores_displayer = ScoresDisplayer(scores, "Scores")
+    scores_displayer.display()
+
+    # terminal prompt to continue:
+    # input("Press Enter to continue...")
+
     # Test the agents
-    qlearning.test(env, trained_agents, episodes_quantity=1)
-    # Save the agent
+    actions_taken = qlearning.test(lle, trained_agents, episodes_quantity=1, save=True)
+
+    # display the solution:
+    solution = Solution(actions_taken)
+    print("solution:", solution)
+
+    # display the solution:
+    display_solution(
+        "solution",
+        #  env_world,
+        lle,
+        solution,
+    )
+
+    # # Save the agent
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning.py -----
 
------ Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning_training.py -----# Entraînez votre algorithme sur les niveaux 1, 3 et 6 de LLE. Dans votre rapport, créez un graphique
-# pour chacun de ces trois niveaux qui montre le score (c’est-à-dire la somme des rewards par épisode)
-# au cours de l’entrainement. 
-
-
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qvalues_displayer.py -----
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import numpy as np
 from rlenv import RLEnv
 
+class QValuesDisplayer:
+    def __init__(self, 
+                 world_size : int,
+                 qtable : np.ndarray,
+                 ):
+        self.qtable = qtable
+        self.board_size = world_size
+        print("self.board_size:", self.board_size)
 
-def train_qlearning_agent(env: RLEnv, episodes_quantity: int):
-    """Train the agent for the given number of episodes"""
-    # Create the agent
-    agent = QLearningAgent(env)
-    # Train the agent
-    agent.train(env, episodes_quantity)
-    # Test the agent
-    agent.test(env, episodes_quantity)
-    # Return the agent
-    return agent
+    def draw_board_with_triangles_and_values(self,
+                                             ax, 
+                                             values
+                                             ):
+        # Set the limits of the axis
+        ax.set_xlim([0, self.board_size])
+        ax.set_ylim([0, self.board_size])
 
------ End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qlearning_training.py -----
+        # Draw the board
+        for x in range(self.board_size):
+            for y in range(self.board_size):
+                # Define the corners of the square
+                square_corners = [(x, y), (x + 1, y), (x + 1, y + 1), (x, y + 1)]
+                square_center = (x + 0.5, y + 0.5)
+
+                # Draw 4 triangles within each square
+                for i in range(4):
+                    # Get the value for the current triangle
+                    value = values[x][y][i]
+                    triangle_corners = [
+                        square_corners[i],
+                        square_corners[(i + 1) % 4],
+                        square_center,
+                    ]
+                    polygon = patches.Polygon(
+                        triangle_corners,
+                        closed=True,
+                        edgecolor="black",
+                        facecolor=value,
+                    )
+                    ax.add_patch(polygon)
+
+                    # Calculate the center of the triangle for text placement
+                    triangle_center = np.mean(triangle_corners, axis=0)
+                    
+                    # Place the value in the center of the triangle
+                    ax.text(
+                        *triangle_center, str(value), ha="center", va="center", fontsize=8
+                    )
+
+    def display_qvalues_board(self,
+                              qvalues : np.ndarray
+                              ):
+        # Create a figure and axis
+        _, ax = plt.subplots()
+
+        # Define the board size and values for each triangle
+
+        # Draw the board with values
+        self.draw_board_with_triangles_and_values(ax, 
+                                                  qvalues
+                                                  )
+
+        # Remove axis labels
+        ax.axis("off")
+
+        plt.show()
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\qvalues_displayer.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\scores_displayer.py -----# class ScoresDisplayer displays a list of scores per episode graph in a window
+
+from matplotlib import pyplot as plt
+
+
+class ScoresDisplayer:
+    def __init__(self, scores, title):
+        self.scores = scores
+        self.title = title
+
+    def display(self):
+        plt.plot(self.scores)
+        plt.title(self.title)
+        plt.xlabel('Episode')
+        plt.ylabel('Score')
+        plt.show()----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\scores_displayer.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\solution.py -----from dataclasses import dataclass
+
+from lle import Action
+
+
+@dataclass
+class Solution:
+    actions: list[tuple[Action]]
+
+    @property
+    def n_steps(self) -> int:
+        return len(self.actions)
+----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\solution.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----import copy
 import sys
 
-from lle import World, WorldState
+from lle import LLE, World, WorldState
 from almost_equal import almost_equal
 from graph_mdp import GraphMDP
 from mdp import MDP, S, A
@@ -708,7 +1841,6 @@ import utils
 
 sys.stdout = AutoIndent(sys.stdout)
 
-
 class ValueIteration(Generic[S, A]):
     def __init__(self, mdp: MDP[S, A], gamma: float):  # discount factor
         # senf.values est nécessaire pour fonctionner avec utils.show_values
@@ -717,13 +1849,9 @@ class ValueIteration(Generic[S, A]):
         # Initialize all states as dictionary keys
         # with a default value of 0.0
         self.values = {state: 0.0 for state in mdp.states()}
-        # utils.show_values(self.values)
-        # utils.
 
     def value(self, state: S) -> float:
         """Returns the value of the given state."""
-        # return self.values[state]
-        # return self.values.get(state, 0.0)  # Default value if state not found
         if state not in self.values:
             return 0.0
         return self.values.get(state)
@@ -747,15 +1875,10 @@ class ValueIteration(Generic[S, A]):
         """
         qvalue = 0.0
         next_states_and_probs = self.mdp.transitions(state, action)
-        # print("next_states_and_probs: \n", next_states_and_probs, "\n")
         for next_state, prob in next_states_and_probs:
             reward = self.mdp.reward(state, action, next_state)
-            # print("P(", state, action, next_state, "):", prob)
-            # print("R(", state, action, next_state, "):", reward)
             next_state_value = self.value(next_state)
-            # print("V(", next_state, "):", next_state_value)
             qvalue += prob * (reward + self.gamma * next_state_value)
-        # print("Q-value of", state, action, ":", qvalue, "\n")
         return qvalue
 
     def _compute_value_from_qvalues(self, state: S) -> float:
@@ -767,7 +1890,6 @@ class ValueIteration(Generic[S, A]):
         This is a private method,
         meant to be used by the value_iteration method.
         """
-        # print("Computing value of", state)
         value = max(
             self.qvalue(state, action) for action in self.mdp.available_actions(state)
         )
@@ -777,7 +1899,6 @@ class ValueIteration(Generic[S, A]):
 
     def get_values_at_position(self, i: int, j: int) -> list[float]:
         """Returns the values of the states at the given position."""
-        # world_gems_quantity = self.mdp.
         states_at_position = [
             state for state in self.mdp.states() if state.agents_positions[0] == (i, j)
         ]
@@ -790,7 +1911,6 @@ class ValueIteration(Generic[S, A]):
         """In a map's representation table,
         each tile contains the possible values at that position."""
         if not isinstance(self.mdp, WorldMDP):
-            # print("Cannot print values table for non-world MDP")
             return None
         print("Iteration", n, "Values table: ")
         max_len = 0
@@ -810,62 +1930,71 @@ class ValueIteration(Generic[S, A]):
 
     def print_iteration_values(self, iteration: int):
         """Prints the states and their values."""
-        print("Iteration", iteration, "States and their values:")
         for state in self.mdp.states():
             print(state, self.value(state))
 
     def value_iteration(self, n: int):  # number of iterations
         """Performs value iteration for the given number of iterations."""
         for _ in range(n):
-            # print("Iteration", _)
             new_values = copy.deepcopy(self.values)
             for state in self.mdp.states():  # All states generator (not a list)
-                # print("State", state)
                 if self.mdp.is_final(state):
-                    # print("Final state", state)
                     new_values[state] = 0.0
                 else:
                     new_values[state] = self._compute_value_from_qvalues(state)
             self.values = new_values
             self.print_values_table(_)
-        # self.print_iteration_values(n)
-
-
-if __name__ == "__main__":
-    # graph
-    # b - +1 - a - -1 - c
-    # graph_file_name = "tests/graphs/graph1.json"
-    # mdp = GraphMDP.from_json(graph_file_name)
-    # gamma = 0.9
-    # algo = ValueIteration(mdp, gamma)
-    # # algo.value_iteration(10)
-    # algo.value_iteration(100)
-    # assert almost_equal(algo.qvalue("a", "left"), 0.6)  # no change from iteration 0
-    # assert almost_equal(
-    #     algo.qvalue("a", "right"), 0.90909090909
-    # )  # more than iteration 0 & 1
-    mdp = WorldMDP(
-        World(
-            """
-    .  . . X
-    .  @ . V
-    S0 . . ."""
-        )
-    )
-    algo = ValueIteration(mdp, 0.9)
-    algo.value_iteration(100)
-    expected = [
-        [1.62, 1.80, 2.0, 0.0],
-        [1.458, 0.0, 1.80, 0.0],
-        [1.3122, 1.458, 1.62, 1.458],
-    ]
-    for i in range(mdp.world.height):
-        for j in range(mdp.world.width):
-            print("State", (i, j))
-            state = WorldState([(i, j)], [])
-            print("Value:", algo.value(state))
-            assert almost_equal(algo.value(state), expected[i][j])
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\value_iteration.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\visualize.py -----import cv2
+from lle import LLE, World
+from rlenv import RLEnv
+#   import Solution class:
+from solution import Solution
+
+DISPLAY = True
+SAVE = False
+
+
+def display_world(name: str, world: "World"):
+    if DISPLAY:
+        img = world.get_image()
+        cv2.imshow(name, img)
+        cv2.waitKey(0)
+        cv2.waitKey(1)
+    if SAVE:
+        cv2.imwrite(f"visualisations/{name}.png", img)
+
+def display_solution(name: str, 
+                     env: RLEnv,
+                     solution : Solution
+                     ):
+    env.reset()
+    world = env.world
+    # print("world:", world)
+    display_world(name, world)
+
+    solution_actions = solution.actions
+    actions_quantity = len(solution_actions)
+    print("actions_quantity:", actions_quantity)
+    for actions in solution_actions:
+        # print("actions:", actions)
+        env.step(actions)
+        display_world(name, world)
+
+def display_solution_from_file(file_path: str):
+    file_name = file_path.split("/")[-1]
+    print("file_name:", file_name)
+    with open(file_path, "r") as file:
+        solution = Solution(eval(file.read()))
+        print("solution:", solution)
+        name = file_name.split(".")[0]
+        display_solution(file_path, 
+                         World(
+                                LLE.level(name)
+                         ), 
+                         solution
+                         )----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\visualize.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\src\world_mdp.py -----from itertools import product
 from typing import Iterable
@@ -1231,6 +2360,7 @@ def test_value_world_100():
             assert almost_equal(algo.value(state), expected[i][j])
 
 
+
 if __name__ == "__main__":
     print("hello world")
     test_value_0()
@@ -1244,6 +2374,27 @@ if __name__ == "__main__":
     test_value_world_100()
     print("ok")
 ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_value_iteration.py -----
+
+----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_value_iteration_level1.py -----from lle import LLE, Action, Agent, AgentId, Position, WorldState
+from world_mdp import WorldMDP
+from value_iteration import ValueIteration
+
+from tests import world_mdp
+
+
+def test_level_1():
+    """
+    test value of world states after 100 iterations
+    """
+    world = LLE.level(1).world
+    mdp = WorldMDP(
+        world
+        
+    )
+    algo = ValueIteration(mdp, 0.9)
+    algo.value_iteration(100)
+    algo.show_values()
+    ----- End of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\test_value_iteration_level1.py -----
 
 ----- Start of d:\bourg\Documents\GitHub\artificial-intelligence-reinforcement-learning\4-rl\tests\world_mdp.py -----from itertools import product
 from typing import Iterable

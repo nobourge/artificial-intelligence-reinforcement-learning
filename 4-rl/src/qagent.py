@@ -27,7 +27,8 @@ class QAgent:
     def __init__(
         self,
         # env: RLEnv,
-        world_size: int,
+        # world_size: int,
+        initial_observation: Observation,
         mdp: MDP[S, A],
         learning_rate: float = 0.1,
         discount_factor: float = 0.9,
@@ -38,7 +39,9 @@ class QAgent:
         """Initialize the agent"""
         # Initialize the environment
         # self.env = env
-        self.world_size = world_size
+        # self.world_size = world_size
+
+        self.analyse_observation(initial_observation, initial=True)
         # Initialize the MDP
         self.mdp = mdp
         # Initialize parameters
@@ -59,8 +62,7 @@ class QAgent:
             for observation in mdp.states()
         }  # dict of dicts
 
-        self.qvalues_displayer = QValuesDisplayer(self.world_size,
-                                                  self.q_table)
+        self.qvalues_displayer = QValuesDisplayer(self.world_size, self.q_table)
 
         # Initialize a random number generator
         self.rng = np.random.default_rng(seed)  # Random number generator instance
@@ -72,15 +74,6 @@ class QAgent:
 
         observation_data = observation.data
         print("observation_data:", observation_data)
-
-    def get_position(self, matrix: np.ndarray) -> np.ndarray:
-        """Get the position of the agent"""
-        # return np.where(matrix == 1)
-
-        print("matrix:", matrix)
-        print("np.nonzero(matrix):", np.nonzero(matrix))
-        print("np.transpose(np.nonzero(matrix)):", np.transpose(np.nonzero(matrix)))
-        return np.transpose(np.nonzero(matrix))
 
     def get_ones_indexes(
         self,
@@ -131,9 +124,95 @@ class QAgent:
 
         return action
 
+    def get_dangerosity(self, lasers) -> float:
+        """Return the dangerosity of the given MDP"""
+        dangerous_cells_quantity = 0
+        # remove matrix with index of the agent id
+        dangerous_lasers_matrices_indexes = lasers[: self.id] + lasers[self.id + 1 :]
+        for matrix in dangerous_lasers_matrices_indexes:
+            dangerous_cells_quantity += np.count_nonzero(matrix)
+
+        # print("dangerous_cells_quantity:", dangerous_cells_quantity)
+        dangerosity = dangerous_cells_quantity / len(self.not_wall_positions)
+        # print("dangerosity:", dangerosity)
+        return dangerosity
+
+    def adapt_reward_live(
+        self,
+    ) -> float:
+        """Return the reward_live of the given MDP
+        if the world is dangerous, the reward_live is null
+        if the world is safe, the reward_live is negative
+        """
+        self.reward_live = self.dangerosity - 1
+        # print("reward_live:", self.reward_live)
+
+    def adapt_learning_rate(
+        self,
+    ):
+        """Adapt the learning rate to the given MDP"""
+        # if the world is dangerous, increase the learning rate
+        self.learning_rate = 0.2 + self.dangerosity
+        # print("learning_rate:", self.learning_rate)
+
+    def adapt_discount_factor(
+        self,
+    ):
+        """Adapt the discount factor to the given MDP"""
+        # if the world is dangerous, increase the discount factor
+        self.discount_factor = 0.9 - self.dangerosity
+        # print("discount_factor:", self.discount_factor)
+
+    def adapt_learning_parameters(
+        self,
+        lasers: list,
+    ):
+        """Adapt the learning parameters to the given MDP"""
+        # if the world is dangerous, increase the learning rate
+        self.dangerosity = self.get_dangerosity(lasers)
+        self.adapt_reward_live()
+        self.adapt_learning_rate()
+        self.adapt_discount_factor()
+
+    def analyse_observation(
+        self,
+        observation: Observation,
+        initial: bool = False,
+    ):
+        observation_data = observation.data
+        observation_data_list = observation_data[0]
+        # print("observation_data:\n", observation_data_list)
+        observation_shape = observation_data.shape
+        if initial:
+            self.agents_quantity = observation_shape[0]
+            self.world_size = observation_shape[1] * observation_shape[2]
+            print("self.agents_quantity:", self.agents_quantity)
+            self.exits = np.transpose(np.nonzero(observation_data_list[-1]))
+            print("exits:", self.exits)
+            # agents_positions = mdp.world.agents_positions
+            # print("agents_positions:", agents_positions)
+            self.walls = np.transpose(
+                np.nonzero(observation_data_list[self.agents_quantity])
+            )
+            print("walls:", self.walls)
+            self.not_wall_positions = np.argwhere(observation_data_list[self.agents_quantity] == 0)
+            print("not_wall_positions:", self.not_wall_positions)
+            self.not_wall_positions_quantity = len(self.not_wall_positions)
+        lasers_matrices_list = [
+            np.transpose(np.nonzero(layer))
+            for layer in observation_data_list[self.agents_quantity:-2]
+        ]
+        self.gems = np.transpose(np.nonzero(observation_data_list[-2]))
+        # print("gems:", self.gems)
+        return lasers_matrices_list
+
     def update(self, observation, action, reward, next_observation):
         """Update the Q-table using the Bellman equation adapted for Q-learning:
-        𝑄(𝑠, 𝑎) ← (1 − 𝛼)𝑄(𝑠, 𝑎) + 𝛼[𝑅(𝑠, 𝑎, 𝑠 + 𝛾𝑉 (𝑠′)] """
+        𝑄(𝑠, 𝑎) ← (1 − 𝛼)𝑄(𝑠, 𝑎) + 𝛼[𝑅(𝑠, 𝑎, + 𝛾𝑉 (𝑠′)] """
+        lasers_matrices_list = self.analyse_observation(observation)
+        self.adapt_learning_parameters(
+            lasers_matrices_list,
+        )
         # Get the current Q value
         current_q = self.q_table.get(observation, {}).get(
             action, 1
@@ -142,33 +221,10 @@ class QAgent:
         next_observation_actions = self.q_table.get(next_observation, {})
         max_next_q = max(next_observation_actions.values(), default=0)
         # Update the Q value using the Bellman equation
-        new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (reward + self.discount_factor * max_next_q)
+        new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (
+            reward + self.discount_factor * max_next_q
+        )
         # Update the Q-table
         self.q_table.setdefault(observation, {})[action] = new_q
 
         # self.qvalues_displayer.display_qvalues_board(self.q_table)
-
-    def print_q_table(self):
-        """Print the Q-table as a table"""
-        pass
-
-
-
-if __name__ == "__main__":
-    # Create the environment
-    env = LLE.level(1)
-    # Create the MDP
-    mdp = WorldMDP(env.world)
-    print(mdp.world)
-
-    # Create the agents
-    # agent = QAgent(mdp, AgentId(1))
-
-    # # Train the agent
-    # agent.train(env, episodes_quantity=100)
-    # # Test the agent
-    # agent.test(env, episodes_quantity=100)
-    # # Save the agent
-    # agent.save(
-    #     "qlearning_agent.pkl"
-    # )  # pkl = pickle = sérialisation de données en Python

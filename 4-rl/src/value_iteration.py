@@ -1,7 +1,7 @@
 import copy
 import sys
 
-from lle import World, WorldState
+from lle import LLE, World, WorldState
 from almost_equal import almost_equal
 from graph_mdp import GraphMDP
 from mdp import MDP, S, A
@@ -13,7 +13,6 @@ import utils
 
 sys.stdout = AutoIndent(sys.stdout)
 
-
 class ValueIteration(Generic[S, A]):
     def __init__(self, mdp: MDP[S, A], gamma: float):  # discount factor
         # senf.values est nécessaire pour fonctionner avec utils.show_values
@@ -22,13 +21,9 @@ class ValueIteration(Generic[S, A]):
         # Initialize all states as dictionary keys
         # with a default value of 0.0
         self.values = {state: 0.0 for state in mdp.states()}
-        # utils.show_values(self.values)
-        # utils.
 
     def value(self, state: S) -> float:
         """Returns the value of the given state."""
-        # return self.values[state]
-        # return self.values.get(state, 0.0)  # Default value if state not found
         if state not in self.values:
             return 0.0
         return self.values.get(state)
@@ -52,15 +47,10 @@ class ValueIteration(Generic[S, A]):
         """
         qvalue = 0.0
         next_states_and_probs = self.mdp.transitions(state, action)
-        # print("next_states_and_probs: \n", next_states_and_probs, "\n")
         for next_state, prob in next_states_and_probs:
             reward = self.mdp.reward(state, action, next_state)
-            # print("P(", state, action, next_state, "):", prob)
-            # print("R(", state, action, next_state, "):", reward)
             next_state_value = self.value(next_state)
-            # print("V(", next_state, "):", next_state_value)
             qvalue += prob * (reward + self.gamma * next_state_value)
-        # print("Q-value of", state, action, ":", qvalue, "\n")
         return qvalue
 
     def _compute_value_from_qvalues(self, state: S) -> float:
@@ -72,7 +62,6 @@ class ValueIteration(Generic[S, A]):
         This is a private method,
         meant to be used by the value_iteration method.
         """
-        # print("Computing value of", state)
         value = max(
             self.qvalue(state, action) for action in self.mdp.available_actions(state)
         )
@@ -82,7 +71,6 @@ class ValueIteration(Generic[S, A]):
 
     def get_values_at_position(self, i: int, j: int) -> list[float]:
         """Returns the values of the states at the given position."""
-        # world_gems_quantity = self.mdp.
         states_at_position = [
             state for state in self.mdp.states() if state.agents_positions[0] == (i, j)
         ]
@@ -95,7 +83,6 @@ class ValueIteration(Generic[S, A]):
         """In a map's representation table,
         each tile contains the possible values at that position."""
         if not isinstance(self.mdp, WorldMDP):
-            # print("Cannot print values table for non-world MDP")
             return None
         print("Iteration", n, "Values table: ")
         max_len = 0
@@ -115,58 +102,17 @@ class ValueIteration(Generic[S, A]):
 
     def print_iteration_values(self, iteration: int):
         """Prints the states and their values."""
-        print("Iteration", iteration, "States and their values:")
         for state in self.mdp.states():
             print(state, self.value(state))
 
     def value_iteration(self, n: int):  # number of iterations
         """Performs value iteration for the given number of iterations."""
         for _ in range(n):
-            # print("Iteration", _)
             new_values = copy.deepcopy(self.values)
             for state in self.mdp.states():  # All states generator (not a list)
-                # print("State", state)
                 if self.mdp.is_final(state):
-                    # print("Final state", state)
                     new_values[state] = 0.0
                 else:
                     new_values[state] = self._compute_value_from_qvalues(state)
             self.values = new_values
             self.print_values_table(_)
-        # self.print_iteration_values(n)
-
-
-if __name__ == "__main__":
-    # graph
-    # b - +1 - a - -1 - c
-    # graph_file_name = "tests/graphs/graph1.json"
-    # mdp = GraphMDP.from_json(graph_file_name)
-    # gamma = 0.9
-    # algo = ValueIteration(mdp, gamma)
-    # # algo.value_iteration(10)
-    # algo.value_iteration(100)
-    # assert almost_equal(algo.qvalue("a", "left"), 0.6)  # no change from iteration 0
-    # assert almost_equal(
-    #     algo.qvalue("a", "right"), 0.90909090909
-    # )  # more than iteration 0 & 1
-    mdp = WorldMDP(
-        World(
-            """
-    .  . . X
-    .  @ . V
-    S0 . . ."""
-        )
-    )
-    algo = ValueIteration(mdp, 0.9)
-    algo.value_iteration(100)
-    expected = [
-        [1.62, 1.80, 2.0, 0.0],
-        [1.458, 0.0, 1.80, 0.0],
-        [1.3122, 1.458, 1.62, 1.458],
-    ]
-    for i in range(mdp.world.height):
-        for j in range(mdp.world.width):
-            print("State", (i, j))
-            state = WorldState([(i, j)], [])
-            print("Value:", algo.value(state))
-            assert almost_equal(algo.value(state), expected[i][j])

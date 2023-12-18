@@ -49,7 +49,7 @@ class Watcher:
             "log.txt",
             "pdfs_compare.py",
             "character_quantifier.py",
-            "report.tex",
+            # "report.tex",
             "graphs.py",
             "data.py",
             "extract_pdf_txt.py",
@@ -60,6 +60,7 @@ class Watcher:
             "report.pdf",
             "2-adversarial",
             "graph_mdp.py",
+            ".gitignore",
         ]
         self.EXCLUDE_PATHS = [
             # pytest cache
